@@ -35,3 +35,6 @@ class ChatResponse(BaseModel):
     clarifying_question: Optional[str] = Field(None)
     provenance: Optional[ProvenanceRecord] = Field(None)
     suggested_actions: List[str] = Field(default_factory=list)
+    vessel_profile: Optional[VesselProfile] = Field(None, description="Resolved vessel profile parameters for UI sync")
+    spatial_target: Optional[Dict[str, Any]] = Field(None, description="Spatial coordinates and bounds for dynamic map reveal")
+

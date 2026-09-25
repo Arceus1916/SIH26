@@ -1,281 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Project ORCA — Global Marine Tactical Command Center</title>
+  <title>Project ORCA — Ocean Intelligence & Tactical Copilot</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="./styles/variables.css">
   <link rel="stylesheet" href="./styles/main.css">
 </head>
 
-<body class="tab-map">
+<body class="layout-landing-mode">
 
-  <!-- Top Tactical HUD Header -->
+  <!-- Top Tactical Navigation Bar -->
   <header class="tactical-header">
-    <div class="hud-brand">
-      <span class="hud-badge">ORCA HUD</span>
-      <h1 class="hud-title">Global Marine Command Center</h1>
-    </div>
-
-    <div class="hud-center-telemetry">
-      <div class="hud-chip">
-        <span class="hud-chip-label">GPS:</span>
-        <span class="hud-chip-value" id="hud-gps">09°17'15"N 79°18'46"E</span>
+    <div class="hud-brand" id="brand-home-btn" title="Return to Landing Search">
+      <div class="hud-icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 3v9l6 3"></path>
+          <circle cx="12" cy="12" r="4" stroke-dasharray="2 2"></circle>
+        </svg>
       </div>
-      <div class="hud-chip">
-        <span class="hud-chip-label">INGEST:</span>
-        <span class="hud-chip-value">Sentinel-3 SLSTR + MODIS Aqua</span>
-      </div>
-      <div class="hud-chip">
-        <span class="hud-chip-label">UTC:</span>
-        <span class="hud-chip-value" id="hud-clock">--:--:-- UTC</span>
+      <div class="brand-text-col">
+        <span class="hud-brand-title">ORCA</span>
+        <span class="hud-brand-sub">Oceanic Intel System</span>
       </div>
     </div>
 
-    <div class="hud-status-live">
-      <span class="live-beacon"></span>
-      <span id="hud-status-label">Global Telemetry Active</span>
+    <!-- Workspace View Controls (Visible when in Workspace Mode) -->
+    <div class="workspace-header-controls" id="workspace-header-controls">
+      <button class="header-action-btn" id="btn-return-landing" title="Return to Search Screen">
+        New Query
+      </button>
+      <button class="header-action-btn" id="btn-toggle-tactical-drawer" title="Toggle Harbor & Layer Controls">
+        Tactical Controls
+      </button>
+      <button class="header-action-btn" id="btn-toggle-vessel" title="Ship Seaworthiness & Risk Matrix">
+        Vessel Matrix
+      </button>
+    </div>
+
+    <!-- Live Telemetry Status & Theme Switcher -->
+    <div class="hud-header-actions">
+      <div class="hud-status-live">
+        <span class="live-beacon"></span>
+        <span class="live-feed-text">LIVE TELEMETRY FEED</span>
+        <span class="live-feed-sep">|</span>
+        <span class="live-feed-sync">IN-SYNC</span>
+      </div>
+      <div class="hud-clock" id="hud-clock">14:28:49 UTC</div>
+      <button class="header-action-btn" id="btn-toggle-theme" title="Toggle Day / Night Mode">
+        <span id="theme-btn-label">Day Mode</span>
+      </button>
     </div>
   </header>
 
-  <!-- High-Density Oceanographic Telemetry Matrix Ribbon (6 Chips) -->
-  <section class="telemetry-matrix">
-    <div class="matrix-cell">
-      <span class="matrix-label">Mean SST</span>
-      <span class="matrix-value" id="val-sst">28.4 °C</span>
-      <span class="matrix-sub">S3 L2 Global Calibrated</span>
-    </div>
-    <div class="matrix-cell">
-      <span class="matrix-label">Thermal Gradient</span>
-      <span class="matrix-value" id="val-grad">1.40 °C/km</span>
-      <span class="matrix-sub">Front Strength: High</span>
-    </div>
-    <div class="matrix-cell">
-      <span class="matrix-label">Sig. Wave Height</span>
-      <span class="matrix-value" id="val-wave">1.20 m</span>
-      <span class="matrix-sub">Period: 6.4s (Safe)</span>
-    </div>
-    <div class="matrix-cell">
-      <span class="matrix-label">Wind Velocity</span>
-      <span class="matrix-value" id="val-wind">18.0 km/h</span>
-      <span class="matrix-sub">Direction: 045° NE</span>
-    </div>
-    <div class="matrix-cell">
-      <span class="matrix-label">Beaufort Scale</span>
-      <span class="matrix-value" id="val-beaufort">Force 3</span>
-      <span class="matrix-sub">Gentle Breeze</span>
-    </div>
-    <div class="matrix-cell">
-      <span class="matrix-label">Tidal Phase</span>
-      <span class="matrix-value" id="val-tide">+0.85 m</span>
-      <span class="matrix-sub">Flood Tide (Rising)</span>
-    </div>
-  </section>
+  <!-- =========================================================================
+       STAGE 1: MINIMALIST LANDING SCREEN (ChatGPT / Gemini Style)
+       Single, clean centered search capsule with speech mic & quick pills
+       ========================================================================= -->
+  <section class="landing-screen" id="landing-screen">
+    <div class="landing-content-box">
+      <div class="landing-badge">ORCA-INTELLIGENCE // V6.0</div>
+      <h1 class="landing-title">Project ORCA</h1>
+      <p class="landing-subtitle">
+        Ocean Remote-Sensing & Tactical Marine Intelligence Copilot
+      </p>
 
-  <!-- Mobile Viewport Navigation Tab Bar (Switches views on mobile & tablet) -->
-  <nav class="mobile-nav-tabs">
-    <button class="mobile-tab-btn active" id="tab-btn-map" onclick="switchMobileTab('tab-map')">📍 Ocean Map</button>
-    <button class="mobile-tab-btn" id="tab-btn-controls" onclick="switchMobileTab('tab-controls')">⚙️ Ports &
-      Vessel</button>
-    <button class="mobile-tab-btn" id="tab-btn-copilot" onclick="switchMobileTab('tab-copilot')">🤖 AI Copilot</button>
-  </nav>
+      <!-- Centered Prompt Capsule -->
+      <div class="landing-search-capsule" id="landing-search-capsule">
+        <button class="capsule-btn capsule-mic-btn" id="btn-landing-mic" title="Voice Input (Speech Recognition)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
 
-  <!-- Main Tactical Workspace -->
-  <main class="workspace">
-    <!-- Left Tactical Flight & Layer Sidebar -->
-    <aside class="tactical-sidebar">
-      <div class="tactical-panel">
-        <div class="panel-header">
-          <span>Global Coastal Ports (50+ Hubs)</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="harbor-select">Select Worldwide Port / Base</label>
-          <select id="harbor-select" class="form-select">
-            <optgroup label="📍 Custom Location">
-              <option value="custom">📍 Custom Waypoint (Click/Drag Map)</option>
-            </optgroup>
-            <optgroup label="🇮🇳 India & South Asia (Indian Ocean / Arabian Sea / Bay of Bengal)">
-              <option value="rameswaram" selected>Rameswaram Base [09°17'N 79°18'E]</option>
-              <option value="kochi">Kochi / Cochin Fishing Harbor [09°58'N 76°16'E]</option>
-              <option value="visakhapatnam">Visakhapatnam (Vizag) [17°41'N 83°17'E]</option>
-              <option value="tuticorin">Tuticorin (Thoothukudi) [08°45'N 78°09'E]</option>
-              <option value="chennai">Chennai Kasimedu [13°05'N 80°17'E]</option>
-              <option value="mumbai">Mumbai Sassoon Docks [18°56'N 72°50'E]</option>
-              <option value="mangalore">Old Port Mangalore [12°51'N 74°50'E]</option>
-              <option value="goa">Goa Mormugao [15°24'N 73°48'E]</option>
-              <option value="paradip">Paradip Port (Odisha) [20°19'N 86°37'E]</option>
-              <option value="veraval">Veraval Port Gujarat [20°54'N 70°22'E]</option>
-              <option value="port blair">Port Blair (Andaman) [11°37'N 92°43'E]</option>
-              <option value="colombo">Colombo (Sri Lanka) [06°57'N 79°50'E]</option>
-              <option value="karachi">Karachi Fish Harbour (Pakistan) [24°50'N 66°58'E]</option>
-              <option value="chittagong">Chattogram (Bangladesh) [22°19'N 91°48'E]</option>
-            </optgroup>
-            <optgroup label="🌏 East Asia & Southeast Asia (Pacific & Straits)">
-              <option value="tokyo">Tokyo Port (Japan) [35°39'N 139°50'E]</option>
-              <option value="singapore">Port of Singapore [01°17'N 103°51'E]</option>
-              <option value="shanghai">Shanghai Port (China) [31°13'N 121°28'E]</option>
-              <option value="busan">Busan Port (South Korea) [35°06'N 129°02'E]</option>
-              <option value="jakarta">Jakarta Tanjung Priok (Indonesia) [06°06'S 106°52'E]</option>
-              <option value="kaohsiung">Kaohsiung (Taiwan) [22°37'N 120°17'E]</option>
-            </optgroup>
-            <optgroup label="🌎 Americas (Pacific, Atlantic & Caribbean)">
-              <option value="san francisco">San Francisco Fisherman's Wharf (USA) [37°48'N 122°25'W]</option>
-              <option value="seattle">Seattle Port (USA) [47°36'N 122°20'W]</option>
-              <option value="new york">New York & New Jersey (USA) [40°41'N 74°02'W]</option>
-              <option value="miami">PortMiami (USA) [25°46'N 80°10'W]</option>
-              <option value="vancouver">Vancouver Port (Canada) [49°17'N 123°07'W]</option>
-              <option value="halifax">Halifax Port (Canada) [44°38'N 63°34'W]</option>
-              <option value="valparaiso">Valparaiso (Chile) [33°02'S 71°36'W]</option>
-              <option value="callao">Callao / Lima (Peru) [12°03'S 77°08'W]</option>
-              <option value="santos">Santos Port (Brazil) [23°57'S 46°18'W]</option>
-              <option value="buenos aires">Buenos Aires (Argentina) [34°35'S 58°22'W]</option>
-              <option value="ensenada">Ensenada (Mexico) [31°51'N 116°36'W]</option>
-            </optgroup>
-            <optgroup label="🌍 Europe & Mediterranean (North Sea, Atlantic, Baltic)">
-              <option value="rotterdam">Rotterdam Port (Netherlands) [51°55'N 04°28'E]</option>
-              <option value="marseille">Marseille Port (France) [43°17'N 05°22'E]</option>
-              <option value="genoa">Genoa Port (Italy) [44°24'N 08°56'E]</option>
-              <option value="piraeus">Piraeus / Athens (Greece) [37°56'N 23°38'E]</option>
-              <option value="bergen">Bergen Port (Norway) [60°23'N 05°19'E]</option>
-              <option value="hamburg">Hamburg Port (Germany) [53°32'N 09°58'E]</option>
-              <option value="barcelona">Barcelona (Spain) [41°21'N 02°10'E]</option>
-              <option value="southampton">Southampton (UK) [50°54'N 01°24'W]</option>
-              <option value="lisbon">Lisbon (Portugal) [38°43'N 09°08'W]</option>
-              <option value="gdansk">Gdansk (Poland) [54°22'N 18°38'E]</option>
-            </optgroup>
-            <optgroup label="🌍 Middle East & Africa">
-              <option value="dubai">Dubai Port Rashid (UAE) [25°16'N 55°18'E]</option>
-              <option value="cape town">Cape Town (South Africa) [33°55'S 18°25'E]</option>
-              <option value="alexandria">Alexandria (Egypt) [31°12'N 29°55'E]</option>
-              <option value="mombasa">Mombasa Port (Kenya) [04°02'S 39°40'E]</option>
-              <option value="casablanca">Casablanca (Morocco) [33°36'N 07°37'W]</option>
-              <option value="lagos">Lagos Port (Nigeria) [06°27'N 03°23'E]</option>
-              <option value="durban">Durban (South Africa) [29°51'S 31°01'E]</option>
-            </optgroup>
-            <optgroup label="🌏 Oceania & Pacific">
-              <option value="sydney">Sydney Harbour (Australia) [33°52'S 151°12'E]</option>
-              <option value="auckland">Auckland Port (New Zealand) [36°50'S 174°45'E]</option>
-              <option value="honolulu">Honolulu Harbor (Hawaii, USA) [21°18'N 157°51'W]</option>
-              <option value="suva">Suva Port (Fiji) [18°08'S 178°26'E]</option>
-            </optgroup>
-          </select>
-        </div>
-        <div style="font-size: 10px; color: var(--color-seafoam); margin-top: 4px;">
-          Tip: Click or tap anywhere across the globe to drop an interactive waypoint!
-        </div>
-      </div>
+        <input type="text" id="landing-chat-input" class="capsule-input"
+          placeholder="Ask about sea conditions, fish hotspots, or harbor safety in English, Hindi, Marathi, Tamil..."
+          autocomplete="off" />
 
-      <div class="tactical-panel">
-        <div class="panel-header">
-          <span>Vessel Risk Matrix</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="vessel-select">Vessel Profile</label>
-          <select id="vessel-select" class="form-select">
-            <option value="motorized_skiff" selected>Motorized Skiff (OBM)</option>
-            <option value="trawler">Mechanized Trawler</option>
-            <option value="artisanal_catamaran">Artisanal Catamaran</option>
-            <option value="deep_sea_liner">Deep Sea Longliner</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Wind Tolerance Limit (km/h)</label>
-          <input type="number" id="vessel-max-wind" class="form-input" value="25" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Wave Tolerance Limit (m)</label>
-          <input type="number" id="vessel-max-wave" class="form-input" value="1.5" step="0.1" />
-        </div>
-      </div>
-
-      <div class="tactical-panel">
-        <div class="panel-header">
-          <span>Tactical Map Layers</span>
-        </div>
-        <div class="layer-toggle-grid">
-          <label class="layer-toggle-item">
-            <span>PFZ Seafoam Front Polygons</span>
-            <input type="checkbox" id="chk-pfz" checked />
-          </label>
-          <label class="layer-toggle-item">
-            <span>SST Isotherm Contours</span>
-            <input type="checkbox" id="chk-sst" checked />
-          </label>
-          <label class="layer-toggle-item">
-            <span>Chlorophyll-a Bloom Plumes</span>
-            <input type="checkbox" id="chk-chl" checked />
-          </label>
-          <label class="layer-toggle-item">
-            <span>Bathymetric Depth Grid (30-100m)</span>
-            <input type="checkbox" id="chk-depth" checked />
-          </label>
-          <label class="layer-toggle-item" style="border-color: var(--color-seafoam);">
-            <span style="color: var(--color-seafoam); font-weight: 700;">Animated Thermal Wind (Scientific)</span>
-            <input type="checkbox" id="chk-wind" />
-          </label>
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-          <label class="form-label">Thermal Wind Streamline Velocity</label>
-          <select id="wind-speed-select" class="form-select">
-            <option value="0.35">Gentle Flow (0.35x)</option>
-            <option value="0.65" selected>Standard Ocean Flow (0.65x)</option>
-            <option value="1.20">High Velocity Drift (1.20x)</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin-top: 10px;">
-          <label class="form-label">Thermal Front Sensitivity</label>
-          <select id="gradient-sens" class="form-select">
-            <option value="0.5">High Sensitivity (0.5 °C/km)</option>
-            <option value="0.8" selected>Standard Operational (0.8 °C/km)</option>
-            <option value="1.2">Sharp Ocean Fronts (1.2 °C/km)</option>
-          </select>
-        </div>
-        <button id="btn-refresh-pfz" class="btn-action-primary">Recompute Local PFZ</button>
-        <button id="btn-show-provenance" class="btn-action-outline">Provenance Tree Inspector</button>
-      </div>
-
-      <div class="tactical-panel">
-        <div class="panel-header">
-          <span>Mission Dossier & Export</span>
-        </div>
-        <div style="font-size: 11px; line-height: 1.5; color: var(--color-sandy-shore); margin-bottom: 8px;">
-          Export official waypoint dossier, current wind & ocean state telemetry, vessel risk matrix, and cryptographic provenance as PDF.
-        </div>
-        <button id="btn-export-pdf" class="btn-action-primary" style="background-color: var(--color-seafoam); color: var(--color-deep-sea); font-weight: 800; border: none; cursor: pointer;">
-          📄 Export Mission Dossier (PDF)
+        <button class="capsule-btn capsule-send-btn" id="btn-landing-send" title="Launch Tactical Analysis">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </button>
       </div>
 
-      <div class="tactical-panel">
-        <div class="panel-header">
-          <span>Regional Target Species</span>
-        </div>
-        <div id="sidebar-species-list" style="font-size: 11px; line-height: 1.6; color: var(--color-sandy-shore);">
-          • <strong>Yellowfin Tuna</strong> (Thermal Front Boundary)<br>
-          • <strong>Indian Mackerel</strong> (Chlorophyll Co-location)<br>
-          • <strong>Skipjack & Sardines</strong> (Coastal Upwelling)
-        </div>
+      <!-- Quick Directive Suggestion Pills -->
+      <div class="landing-chips-row">
+        <button class="landing-chip" onclick="handleLandingChip('Where can I catch Bangda near Mumbai Sassoon Docks?')">
+          Bangda in Mumbai
+        </button>
+        <button class="landing-chip" onclick="handleLandingChip('Bay of Bengal ocean state and wave swell advisory')">
+          Bay of Bengal Status
+        </button>
+        <button class="landing-chip" onclick="handleLandingChip('Is it safe for motorized skiff to depart from Kochi harbor?')">
+          Kochi Harbor Safety
+        </button>
+        <button class="landing-chip" onclick="handleLandingChip('daryavar jaycha ka vatavaran kase ahe Dapoli la')">
+          Daryavar Jaycha Ka (Dapoli)
+        </button>
+        <button class="landing-chip" onclick="handleLandingChip('inniku kadal epdi irukku meen pidikka pogalama Chennai')">
+          Inniku Kadal Epdi (Chennai)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       STAGE 2: OPERATIONAL WORKSPACE (Google Stitch Layout)
+       Left side: Copilot Response Panel | Right side: Tactical Navigational Map
+       Bottom: Pinned Prompt Bar
+       ========================================================================= -->
+  <main class="workspace" id="workspace">
+
+    <!-- Left Side: Conversational Copilot Response Feed -->
+    <aside class="copilot-panel" id="copilot-panel">
+      <div class="copilot-panel-header">
+        <div class="copilot-header-title">Marine Intelligence Feed</div>
+        <div class="copilot-header-badge">Sentinel-3 + INCOIS RAG</div>
+      </div>
+
+      <div class="copilot-messages" id="chat-messages">
+        <!-- Messages appended dynamically -->
       </div>
     </aside>
 
-    <!-- Center Geospatial Canvas Map Viewport -->
-    <section class="map-viewport">
+    <!-- Center/Right Side: Tactical Geospatial Map Viewport -->
+    <section class="map-viewport" id="map-viewport">
       <div id="map"></div>
 
       <!-- Floating Scientific Wind Colormap Legend -->
       <div class="wind-legend-hud" id="wind-legend" style="display: none;">
         <div class="wind-legend-header">
           <span>Thermal Wind Velocity</span>
-          <span style="color: var(--color-seafoam); font-size: 9px;">NOAA / ECMWF</span>
+          <span style="color: var(--color-tide); font-size: 9px;">NOAA / ECMWF</span>
         </div>
         <div class="wind-legend-bar">
-          <div class="wind-legend-seg" style="background-color: #2B83BA;" title="< 10 km/h (Calm)"></div>
-          <div class="wind-legend-seg" style="background-color: #66C2A5;" title="10-25 km/h (Light)"></div>
-          <div class="wind-legend-seg" style="background-color: #FEE08B;" title="25-40 km/h (Fresh)"></div>
-          <div class="wind-legend-seg" style="background-color: #FDAE61;" title="40-60 km/h (Near Gale)"></div>
-          <div class="wind-legend-seg" style="background-color: #D53E4F;" title="> 60 km/h (Storm Force)"></div>
+          <div class="wind-legend-seg" style="background-color: #102A31;" title="&lt; 10 km/h (Calm)"></div>
+          <div class="wind-legend-seg" style="background-color: #0F6382;" title="10-25 km/h (Light)"></div>
+          <div class="wind-legend-seg" style="background-color: #2F4B9B;" title="25-40 km/h (Fresh)"></div>
+          <div class="wind-legend-seg" style="background-color: #A9D1CB;" title="40-60 km/h (Near Gale)"></div>
+          <div class="wind-legend-seg" style="background-color: #E1EEEA;" title="&gt; 60 km/h (Storm Force)"></div>
         </div>
         <div class="wind-legend-ticks">
           <span>0</span>
@@ -295,8 +167,30 @@
         </div>
         <div class="hud-stat-row">
           <span class="hud-stat-label">Active Zone:</span>
-          <span class="hud-stat-val" id="hud-zone-id">PFZ-MAN01</span>
+          <span class="hud-stat-val" id="hud-zone-id">PFZ-ALPHA (Thermal Front)</span>
         </div>
+
+        <div class="hud-divider"></div>
+
+        <div class="hud-stat-row">
+          <span class="hud-stat-label">Sea Surface Temp (SST):</span>
+          <span class="hud-stat-val" id="hud-sst">28.4 °C</span>
+        </div>
+        <div class="hud-stat-row">
+          <span class="hud-stat-label">Wave Height (SWH):</span>
+          <span class="hud-stat-val" id="hud-wave">1.1 m</span>
+        </div>
+        <div class="hud-stat-row">
+          <span class="hud-stat-label">Surface Wind Velocity:</span>
+          <span class="hud-stat-val" id="hud-wind">19.5 km/h (Force 3)</span>
+        </div>
+        <div class="hud-stat-row">
+          <span class="hud-stat-label">Swell Period & Tide:</span>
+          <span class="hud-stat-val" id="hud-tide">6.4s | +0.80 m</span>
+        </div>
+
+        <div class="hud-divider"></div>
+
         <div class="hud-stat-row">
           <span class="hud-stat-label">Thermal Gradient:</span>
           <span class="hud-stat-val" id="hud-gradient">1.40 °C/km</span>
@@ -313,29 +207,288 @@
           <span class="hud-stat-label">Bearing from Base:</span>
           <span class="hud-stat-val" id="hud-bearing-str">142° SE (14.2 nm)</span>
         </div>
+        <div class="hud-stat-row">
+          <span class="hud-stat-label">Severe Weather Risk:</span>
+          <span class="hud-stat-val" id="hud-alert-badge" style="color: var(--alert-clear-day); font-weight: 800;">NORMAL / CLEAR</span>
+        </div>
       </div>
+
+      <div style="display:none;" id="hud-gps">09°17'15"N 079°18'46"E</div>
     </section>
 
-    <!-- Right Autonomous Marine Reasoning & AI Copilot Panel -->
-    <aside class="copilot-panel">
-      <div class="copilot-header">
-        <span class="copilot-title">ORCA Marine AI Copilot</span>
-        <span
-          style="font-size: 10px; background-color: var(--color-seafoam); color: var(--color-deep-sea); padding: 2px 6px; border-radius: 3px; font-weight: 800;">AUTONOMOUS
-          AGENT</span>
-      </div>
-
-      <div class="copilot-messages" id="chat-messages">
-        <!-- Filled dynamically -->
-      </div>
-
-      <div class="copilot-input-bar">
+    <!-- Bottom Pinned Workspace Chat Bar -->
+    <div class="workspace-chat-bar" id="workspace-chat-bar">
+      <div class="chat-bar-inner">
+        <button id="btn-speech-mic" class="copilot-mic-btn" title="Voice Input (Speech Recognition)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
         <input type="text" id="chat-input" class="copilot-input"
-          placeholder="Query marine safety, bearings, or any port..." />
-        <button id="chat-send" class="copilot-send-btn">Send</button>
+          placeholder="Ask a maritime question, e.g. 'Where can I catch Bangda?' or 'Check wave conditions'..." />
+        <button id="chat-send" class="copilot-send-btn" title="Execute Query">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </button>
       </div>
-    </aside>
+    </div>
+
+    <!-- Bottom Dock / Harbor Direct Quick Selector Bar -->
+    <div class="workspace-dock-bar" id="workspace-dock-bar">
+      <div class="dock-bar-left">
+        <div class="dock-bar-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="5" r="3"></circle>
+            <line x1="12" y1="22" x2="12" y2="8"></line>
+            <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+          </svg>
+          <span>DOCK / HARBOR:</span>
+        </div>
+        <select id="dock-quick-select" class="dock-quick-select" aria-label="Select Worldwide Dock or Harbor">
+          <!-- Dynamically synced with all 50 global harbors -->
+        </select>
+      </div>
+
+      <div class="dock-bar-center" id="dock-bar-telemetry">
+        <span class="dock-pill" id="dock-telemetry-basin">Arabian Sea</span>
+        <span class="dock-pill" id="dock-telemetry-coords">09°55'N, 76°16'E</span>
+        <span class="dock-status-badge" id="dock-telemetry-status">CLEAR TO VENTURE</span>
+      </div>
+
+      <div class="dock-bar-right">
+        <button class="dock-action-btn" id="dock-btn-pfz" title="Query nearest PFZ for this dock">ANALYZE PFZ</button>
+        <button class="dock-action-btn" id="dock-btn-route" title="Query safest route for this dock">SAFE ROUTE</button>
+        <button class="dock-action-btn" id="dock-btn-weather" title="Query sea triad weather for this dock">WEATHER / TIDE</button>
+      </div>
+    </div>
   </main>
+
+  <!-- =========================================================================
+       SLIDE-OUT TACTICAL CONTROLS DRAWER
+       Contains Ports, Layer Checkboxes, Sensitivity, and Export Dossier
+       ========================================================================= -->
+  <div class="tactical-drawer-overlay" id="tactical-drawer-overlay">
+    <div class="tactical-drawer" id="tactical-drawer">
+      <div class="tactical-drawer-header">
+        <h3 class="drawer-title">Tactical Controls & Hydrography</h3>
+        <button class="drawer-close-btn" id="btn-close-tactical-drawer">&times;</button>
+      </div>
+
+      <div class="tactical-drawer-body">
+        <!-- Global Harbor Directory -->
+        <div class="tactical-panel">
+          <div class="panel-header">
+            <span>Global Coastal Ports (50+ Hubs)</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="harbor-select">Select Worldwide Port / Base</label>
+            <select id="harbor-select" class="form-select">
+              <optgroup label="Custom Location">
+                <option value="custom">Custom Waypoint (Click/Drag Map)</option>
+              </optgroup>
+              <optgroup label="India & South Asia (Indian Ocean / Arabian Sea / Bay of Bengal)">
+                <option value="rameswaram" selected>Rameswaram Base [09°17'N 79°18'E]</option>
+                <option value="kochi">Kochi Fishing Harbor (Kerala) [09°55'N 76°16'E]</option>
+                <option value="visakhapatnam">Visakhapatnam Harbor (Andhra) [17°41'N 83°13'E]</option>
+                <option value="tuticorin">Tuticorin (Thoothukudi, TN) [08°45'N 78°08'E]</option>
+                <option value="chennai">Chennai Kasimedu Harbor [13°04'N 80°16'E]</option>
+                <option value="mumbai">Mumbai Sassoon Docks [18°55'N 72°50'E]</option>
+                <option value="mangalore">Old Port Mangalore (Karnataka) [12°52'N 74°50'E]</option>
+                <option value="goa">Mormugao Harbor (Goa) [15°24'N 73°48'E]</option>
+                <option value="paradip">Paradip Port (Odisha) [20°19'N 86°37'E]</option>
+                <option value="veraval">Veraval Harbor (Gujarat) [20°54'N 70°22'E]</option>
+                <option value="port blair">Port Blair (Andaman Islands) [11°37'N 92°43'E]</option>
+                <option value="colombo">Colombo Port (Sri Lanka) [06°56'N 79°50'E]</option>
+                <option value="karachi">Karachi Fish Harbour (Pakistan) [24°50'N 66°58'E]</option>
+                <option value="chittagong">Chattogram Port (Bangladesh) [22°19'N 91°48'E]</option>
+              </optgroup>
+              <optgroup label="East Asia & SE Asia">
+                <option value="tokyo">Tokyo Bay (Japan) [35°39'N 139°50'E]</option>
+                <option value="singapore">Port of Singapore [01°17'N 103°51'E]</option>
+                <option value="shanghai">Shanghai Port (China) [31°13'N 121°28'E]</option>
+                <option value="busan">Busan Port (South Korea) [35°06'N 129°02'E]</option>
+                <option value="jakarta">Tanjung Priok Jakarta [06°06'S 106°53'E]</option>
+                <option value="kaohsiung">Kaohsiung Port (Taiwan) [22°37'N 120°17'E]</option>
+              </optgroup>
+              <optgroup label="Americas (Pacific & Atlantic)">
+                <option value="san francisco">Fisherman's Wharf (San Francisco) [37°48'N 122°25'W]</option>
+                <option value="seattle">Port of Seattle (USA) [47°36'N 122°19'W]</option>
+                <option value="new york">New York Harbor (USA) [40°41'N 74°02'W]</option>
+                <option value="miami">PortMiami (USA) [25°46'N 80°10'W]</option>
+                <option value="vancouver">Vancouver Harbor (Canada) [49°16'N 123°07'W]</option>
+                <option value="halifax">Halifax Port (Canada) [44°38'N 63°34'W]</option>
+                <option value="valparaiso">Valparaiso Port (Chile) [33°02'S 71°36'W]</option>
+                <option value="callao">Callao / Lima (Peru) [12°03'S 77°08'W]</option>
+                <option value="santos">Santos Port (Brazil) [23°57'S 46°18'W]</option>
+                <option value="buenos aires">Buenos Aires (Argentina) [34°35'S 58°22'W]</option>
+                <option value="ensenada">Ensenada (Mexico) [31°51'N 116°36'W]</option>
+              </optgroup>
+              <optgroup label="Europe & Mediterranean">
+                <option value="rotterdam">Port of Rotterdam (Netherlands) [51°55'N 04°28'E]</option>
+                <option value="marseille">Marseille Port (France) [43°17'N 05°22'E]</option>
+                <option value="genoa">Genoa Port (Italy) [44°24'N 08°56'E]</option>
+                <option value="piraeus">Piraeus / Athens (Greece) [37°56'N 23°38'E]</option>
+                <option value="bergen">Bergen Port (Norway) [60°23'N 05°19'E]</option>
+                <option value="hamburg">Hamburg Port (Germany) [53°32'N 09°58'E]</option>
+                <option value="barcelona">Barcelona Port (Spain) [41°21'N 02°10'E]</option>
+                <option value="southampton">Southampton (UK) [50°54'N 01°24'W]</option>
+                <option value="lisbon">Lisbon Port (Portugal) [38°43'N 09°08'W]</option>
+                <option value="gdansk">Gdansk Port (Poland) [54°22'N 18°38'E]</option>
+              </optgroup>
+              <optgroup label="Middle East & Africa">
+                <option value="dubai">Port Rashid / Dubai (UAE) [25°16'N 55°18'E]</option>
+                <option value="cape town">Cape Town (South Africa) [33°55'S 18°25'E]</option>
+                <option value="alexandria">Alexandria (Egypt) [31°12'N 29°55'E]</option>
+                <option value="mombasa">Mombasa Port (Kenya) [04°02'S 39°40'E]</option>
+                <option value="casablanca">Casablanca (Morocco) [33°36'N 07°37'W]</option>
+                <option value="lagos">Lagos Port (Nigeria) [06°27'N 03°23'E]</option>
+                <option value="durban">Durban (South Africa) [29°51'S 31°01'E]</option>
+              </optgroup>
+              <optgroup label="Oceania & Pacific">
+                <option value="sydney">Sydney Harbour (Australia) [33°52'S 151°12'E]</option>
+                <option value="auckland">Auckland Port (New Zealand) [36°50'S 174°45'E]</option>
+                <option value="honolulu">Honolulu Harbor (Hawaii, USA) [21°18'N 157°51'W]</option>
+                <option value="suva">Suva Port (Fiji) [18°08'S 178°26'E]</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tactical Map Layers -->
+        <div class="tactical-panel">
+          <div class="panel-header">
+            <span>Dynamic Oceanographic Layers</span>
+          </div>
+          <div class="layer-toggle-grid">
+            <label class="layer-toggle-item">
+              <span>PFZ Front Plumes (Multi-zone)</span>
+              <input type="checkbox" id="chk-pfz" checked />
+            </label>
+            <label class="layer-toggle-item">
+              <span>SST Isotherm Contours (5 bands)</span>
+              <input type="checkbox" id="chk-sst" />
+            </label>
+            <label class="layer-toggle-item">
+              <span>Chlorophyll Bloom Plumes</span>
+              <input type="checkbox" id="chk-chl" />
+            </label>
+            <label class="layer-toggle-item">
+              <span>Bathymetric Depth Grid (-10m to -100m)</span>
+              <input type="checkbox" id="chk-depth" />
+            </label>
+            <label class="layer-toggle-item" style="border-color: var(--color-tide);">
+              <span style="color: var(--color-tide); font-weight: 700;">Thermal Wind Streamlines</span>
+              <input type="checkbox" id="chk-wind" />
+            </label>
+          </div>
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label">Thermal Front Sensitivity</label>
+            <select id="gradient-sens" class="form-select">
+              <option value="0.5">High Sensitivity (0.5 °C/km)</option>
+              <option value="0.8" selected>Standard Operational (0.8 °C/km)</option>
+              <option value="1.2">Sharp Ocean Fronts (1.2 °C/km)</option>
+            </select>
+          </div>
+          <button id="btn-refresh-pfz" class="btn-action-primary">Recompute Local Layers</button>
+          <button id="btn-show-provenance" class="btn-action-outline">Provenance Tree Inspector</button>
+        </div>
+
+        <!-- Vessel Limits Settings in Drawer -->
+        <div class="tactical-panel">
+          <div class="panel-header">
+            <span>Vessel Profile & Risk Tolerances</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="vessel-select">Vessel Profile</label>
+            <select id="vessel-select" class="form-select">
+              <option value="motorized_skiff" selected>Motorized Skiff (OBM)</option>
+              <option value="trawler">Mechanized Trawler</option>
+              <option value="artisanal_catamaran">Artisanal Catamaran</option>
+              <option value="deep_sea_liner">Deep Sea Longliner</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wind Tolerance Limit (km/h)</label>
+            <input type="number" id="vessel-max-wind" class="form-input" value="25" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wave Tolerance Limit (m)</label>
+            <input type="number" id="vessel-max-wave" class="form-input" value="1.5" step="0.1" />
+          </div>
+        </div>
+
+        <!-- Mission Dossier PDF Export -->
+        <div class="tactical-panel">
+          <div class="panel-header">
+            <span>Mission Dossier Export</span>
+          </div>
+          <button id="btn-export-pdf" class="btn-action-primary" style="background-color: var(--color-neel-indigo); border: none; cursor: pointer;">
+            Export Mission Dossier (PDF)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-out Ship Risk Matrix Drawer -->
+  <div class="vessel-drawer-overlay" id="vessel-drawer-overlay">
+    <div class="vessel-drawer" id="vessel-drawer">
+      <div class="vessel-drawer-header">
+        <h3 class="vessel-drawer-title">Ship Seaworthiness & Risk Matrix</h3>
+        <button class="drawer-close-btn" id="btn-close-vessel-drawer">&times;</button>
+      </div>
+      <div class="vessel-drawer-body">
+        <div style="font-size: 11px; line-height: 1.5; color: var(--theme-text-secondary); margin-bottom: 12px;">
+          Configure your vessel operating limits or type them directly into the prompt. The matrix evaluates real-time significant wave height and wind velocity against your operating envelope.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="drawer-vessel-type">Vessel Configuration</label>
+          <select id="drawer-vessel-type" class="form-select">
+            <option value="motorized_skiff" selected>Motorized Skiff (OBM, &lt;12m)</option>
+            <option value="trawler">Mechanized Trawler (12-24m)</option>
+            <option value="artisanal_catamaran">Artisanal Catamaran / Craft (&lt;7m)</option>
+            <option value="deep_sea_liner">Deep Sea Longliner (&gt;24m)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label">Max Wave Tolerance Limit</label>
+            <span class="slider-val" id="val-disp-wave">1.5 m</span>
+          </div>
+          <input type="range" id="slider-max-wave" min="0.5" max="5.0" step="0.1" value="1.5" class="form-range" />
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label">Max Wind Tolerance Limit</label>
+            <span class="slider-val" id="val-disp-wind">25 km/h</span>
+          </div>
+          <input type="range" id="slider-max-wind" min="5" max="75" step="1" value="25" class="form-range" />
+        </div>
+
+        <div class="vessel-status-card" id="vessel-live-status-card">
+          <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--theme-text-secondary); margin-bottom: 6px;">
+            Real-Time Clearance Status
+          </div>
+          <div id="vessel-live-badge" class="badge-safe">[CLEAR] CLEAR TO SAIL — WITHIN SAFE LIMITS</div>
+          <div id="vessel-live-desc" style="font-size: 11px; line-height: 1.4; margin-top: 6px; color: var(--theme-text-primary);">
+            Wave and wind parameters are currently within safe operating thresholds.
+          </div>
+        </div>
+
+        <button id="btn-sync-vessel-to-chat" class="btn-action-primary" style="margin-top: 16px;">
+          Evaluate This Vessel in Chat
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Provenance Modal -->
   <div class="modal-overlay" id="provenance-modal">
@@ -349,6 +502,14 @@
       </div>
     </div>
   </div>
+
+  <!-- Hidden Telemetry Storage -->
+  <div style="display:none;" id="val-sst">28.4 °C</div>
+  <div style="display:none;" id="val-grad">1.40 °C/km</div>
+  <div style="display:none;" id="val-wave">1.20 m</div>
+  <div style="display:none;" id="val-wind">18.0 km/h</div>
+  <div style="display:none;" id="val-beaufort">Force 3</div>
+  <div style="display:none;" id="val-tide">+0.85 m</div>
 
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

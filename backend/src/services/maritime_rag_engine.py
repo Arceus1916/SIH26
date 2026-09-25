@@ -647,6 +647,22 @@ GLOBAL_MARITIME_RAG_CORPUS: Dict[str, Dict[str, Any]] = {
         "mrcc": "MPA Singapore POCC",
         "notes": "Automated mega container terminal equipped with deepwater berths for 24,000+ TEU vessels."
     },
+    "tokyo bay": {
+        "lat": 35.5300, "lon": 139.8000,
+        "name": "Tokyo Bay / 東京湾 (Japan)",
+        "cluster": "Tokyo Bay, Northwest Pacific, Japan",
+        "vhf": "VHF Ch 16 / 12 (Tokyo MARTIS)",
+        "mrcc": "Japan Coast Guard 3rd Regional HQ (Yokohama MRCC / 118)",
+        "notes": "Natural sheltered bay opening to Northwest Pacific; active pelagic fishing, container traffic, and coastal upwelling."
+    },
+    "東京湾": {
+        "lat": 35.5300, "lon": 139.8000,
+        "name": "Tokyo Bay / 東京湾 (Japan)",
+        "cluster": "Tokyo Bay, Northwest Pacific, Japan",
+        "vhf": "VHF Ch 16 / 12 (Tokyo MARTIS)",
+        "mrcc": "Japan Coast Guard 3rd Regional HQ (Yokohama MRCC / 118)",
+        "notes": "Natural sheltered bay opening to Northwest Pacific; active pelagic fishing, container traffic, and coastal upwelling."
+    },
     "tokyo": {
         "lat": 35.6528, "lon": 139.8394,
         "name": "Port of Tokyo (Tokyo Bay)",
@@ -654,6 +670,110 @@ GLOBAL_MARITIME_RAG_CORPUS: Dict[str, Dict[str, Any]] = {
         "vhf": "VHF Ch 16 / 12 (Tokyo MARTIS)",
         "mrcc": "Japan Coast Guard 3rd Regional HQ (Yokohama MRCC / 118)",
         "notes": "Handles consumer cargo for the 38-million Kanto metropolis; Uraga Suido Traffic Route."
+    },
+    "東京": {
+        "lat": 35.6528, "lon": 139.8394,
+        "name": "Port of Tokyo / 東京港 (Japan)",
+        "cluster": "Tokyo Bay, Northwest Pacific, Japan",
+        "vhf": "VHF Ch 16 / 12 (Tokyo MARTIS)",
+        "mrcc": "Japan Coast Guard 3rd Regional HQ (Yokohama MRCC / 118)",
+        "notes": "Handles consumer cargo for the 38-million Kanto metropolis; Uraga Suido Traffic Route."
+    },
+    "とうきょう": {
+        "lat": 35.6528, "lon": 139.8394,
+        "name": "Port of Tokyo (Japan)",
+        "cluster": "Tokyo Bay, Northwest Pacific, Japan",
+        "vhf": "VHF Ch 16 / 12",
+        "mrcc": "Yokohama MRCC (118)",
+        "notes": "Tokyo Bay commercial maritime gateway."
+    },
+    "横浜": {
+        "lat": 35.4437, "lon": 139.6380,
+        "name": "Port of Yokohama / 横浜港 (Japan)",
+        "cluster": "Tokyo Bay Cluster, Japan",
+        "vhf": "VHF Ch 16 / 12",
+        "mrcc": "Japan Coast Guard Yokohama MRCC (Emergency 118)",
+        "notes": "Major container and international passenger terminal on Tokyo Bay."
+    },
+    "上海": {
+        "lat": 31.2304, "lon": 121.4737,
+        "name": "Port of Shanghai / 上海港 (China)",
+        "cluster": "Yangtze River Estuary / East China Sea",
+        "vhf": "VHF Ch 16 / 08 / 09",
+        "mrcc": "Shanghai MSA / MRCC Beijing",
+        "notes": "World's busiest container port exceeding 49 million TEUs."
+    },
+    "上海港": {
+        "lat": 31.2304, "lon": 121.4737,
+        "name": "Port of Shanghai / 上海港 (China)",
+        "cluster": "Yangtze River Estuary / East China Sea",
+        "vhf": "VHF Ch 16 / 08 / 09",
+        "mrcc": "Shanghai MSA / MRCC Beijing",
+        "notes": "World's busiest container port exceeding 49 million TEUs."
+    },
+    "洋山": {
+        "lat": 30.6300, "lon": 122.0600,
+        "name": "Yangshan Deepwater Port / 洋山深水港 (Shanghai)",
+        "cluster": "East China Sea",
+        "vhf": "VHF Ch 16",
+        "mrcc": "Shanghai MSA",
+        "notes": "Deepwater island port connected via 32.5 km Donghai Bridge."
+    },
+    "宁波": {
+        "lat": 29.8683, "lon": 121.5440,
+        "name": "Port of Ningbo-Zhoushan / 宁波舟山港 (China)",
+        "cluster": "Zhejiang Coast, East China Sea",
+        "vhf": "VHF Ch 16 / 06",
+        "mrcc": "Ningbo MSA",
+        "notes": "World's largest port by cargo tonnage."
+    },
+    "高雄": {
+        "lat": 22.6167, "lon": 120.2833,
+        "name": "Port of Kaohsiung / 高雄港 (Taiwan)",
+        "cluster": "Taiwan Strait",
+        "vhf": "VHF Ch 14 / 16",
+        "mrcc": "Kaohsiung VTS",
+        "notes": "Major container shipping hub on Taiwan Strait."
+    },
+    "부산": {
+        "lat": 35.1028, "lon": 129.0403,
+        "name": "Port of Busan / 부산항 (South Korea)",
+        "cluster": "Korea Strait, South Korea",
+        "vhf": "VHF Ch 12 / 16 (Busan VTS)",
+        "mrcc": "Korea Coast Guard Busan Station (122 / 999)",
+        "notes": "Transshipment megahub connecting Northeast Asia."
+    },
+    "싱가포르": {
+        "lat": 1.290270, "lon": 103.851959,
+        "name": "Port of Singapore / 싱가포르",
+        "cluster": "Port of Singapore Cluster, Strait of Malacca",
+        "vhf": "VHF Ch 12 / 16",
+        "mrcc": "MPA Singapore POCC",
+        "notes": "Global transshipment and maritime bunkering capital."
+    },
+    "新加坡": {
+        "lat": 1.290270, "lon": 103.851959,
+        "name": "Port of Singapore / 新加坡港",
+        "cluster": "Port of Singapore Cluster, Strait of Malacca",
+        "vhf": "VHF Ch 12 / 16",
+        "mrcc": "MPA Singapore POCC",
+        "notes": "Global transshipment and maritime bunkering capital."
+    },
+    "دبي": {
+        "lat": 25.2697, "lon": 55.3095,
+        "name": "Port Rashid / ميناء راشد (Dubai, UAE)",
+        "cluster": "Persian Gulf",
+        "vhf": "VHF Ch 16 / 68",
+        "mrcc": "Dubai Ports Authority",
+        "notes": "Historic trading port and coastal vessel terminal."
+    },
+    "haven van rotterdam": {
+        "lat": 51.9244, "lon": 4.4777,
+        "name": "Port of Rotterdam / Haven van Rotterdam",
+        "cluster": "Port of Rotterdam, North Sea",
+        "vhf": "VHF Ch 11 / 14 / 16 / 19",
+        "mrcc": "Netherlands Coast Guard MRCC Den Helder",
+        "notes": "Largest seaport in Europe; deepwater entrance via Eurogeul."
     },
     "yokohama": {
         "lat": 35.4437, "lon": 139.6380,
@@ -856,15 +976,15 @@ PROJECT_ORCA_KNOWLEDGE_BASE: Dict[str, str] = {
 # 3. GREETINGS & SYSTEM HUD
 # ==============================================================================================
 ORCA_SYSTEM_WELCOME_HUD = (
-    "👋 **Welcome to Project ORCA — Maritime Copilot & Oceanic Intelligence Engine**\n\n"
+    "**Project ORCA — Maritime Copilot & Oceanic Intelligence Engine**\n\n"
     "I am your dedicated small language model (SLM) trained on global ocean state forecasting, "
     "satellite oceanography (Sentinel-3 / MODIS), and maritime navigational safety.\n\n"
     "**What you can ask me:**\n"
-    "- 📍 **Global & Local Ports:** e.g., *'Port of Vlaardingen'*, *'Rotterdam Maasvlakte'*, *'Dapoli Harnai'*, *'Kasimedu'*, *'Yokohama'*\n"
-    "- 🌊 **Sea Basin Snapshots:** e.g., *'Bay of Bengal details'*, *'Arabian Sea status'*, *'North Sea wave height'*\n"
-    "- 🧭 **Geographic Coordinates:** e.g., *'Is it safe to sail at 17.8°N, 84.2°E?'*\n"
-    "- 🐟 **PFZ & Species Advisory:** e.g., *'Where to fish yellowfin tuna from Rameswaram?'*\n"
-    "- 🛰️ **Project Architecture:** e.g., *'How does the satellite pipeline work?'*, *'Explain PFZ algorithm'*\n\n"
+    "- **Global & Local Ports:** e.g., *'Port of Vlaardingen'*, *'Rotterdam Maasvlakte'*, *'Dapoli Harnai'*, *'Kasimedu'*, *'Yokohama'*\n"
+    "- **Sea Basin Snapshots:** e.g., *'Bay of Bengal details'*, *'Arabian Sea status'*, *'North Sea wave height'*\n"
+    "- **Geographic Coordinates:** e.g., *'Is it safe to sail at 17.8°N, 84.2°E?'*\n"
+    "- **PFZ & Species Advisory:** e.g., *'Where to fish yellowfin tuna from Rameswaram?'*\n"
+    "- **Project Architecture:** e.g., *'How does the satellite pipeline work?'*, *'Explain PFZ algorithm'*\n\n"
     "*(Select a quick action below or type any maritime query)*"
 )
 
@@ -900,9 +1020,9 @@ class MaritimeRAGEngine:
             return PROJECT_ORCA_KNOWLEDGE_BASE["about"]
         if any(kw in text_lower for kw in ["satellite pipeline", "satellite ingest", "sentinel", "modis", "eumetsat", "how does satellite work"]):
             return PROJECT_ORCA_KNOWLEDGE_BASE["satellite"]
-        if any(kw in text_lower for kw in ["pfz algorithm", "potential fishing zone", "how pfz works", "thermal front detection", "chlorophyll bloom"]):
+        if any(kw in text_lower for kw in ["pfz algorithm", "explain pfz", "how pfz works", "how does pfz work", "architecture of pfz", "pfz detection algorithm"]):
             return PROJECT_ORCA_KNOWLEDGE_BASE["pfz"]
-        if any(kw in text_lower for kw in ["vessel safety", "vessel limits", "safety classification", "max wave", "max wind"]):
+        if any(kw in text_lower for kw in ["vessel safety classification", "explain vessel safety", "what are the vessel limits", "vessel limits architecture", "safety classification"]):
             return PROJECT_ORCA_KNOWLEDGE_BASE["safety"]
         if any(kw in text_lower for kw in ["provenance", "cryptographic", "sha256", "explainable ai", "trace id"]):
             return PROJECT_ORCA_KNOWLEDGE_BASE["provenance"]
@@ -920,22 +1040,27 @@ class MaritimeRAGEngine:
         # 1. Exact match on normalized full string
         clean_no_punct = re.sub(r'[^\w\s]', ' ', clean_text).strip()
         for key, port in GLOBAL_MARITIME_RAG_CORPUS.items():
-            if clean_text == key or clean_no_punct == key:
+            if clean_text == key or clean_no_punct == key or text == key:
                 return port
 
-        # 2. Multi-word phrase search in text (e.g. 'port of vlaardingen', 'hook of holland', 'nhava sheva')
-        # Sort keys by length descending to match longest specific sub-ports first
+        # 2. Non-ASCII native script matches (Japanese, Chinese, Korean, Arabic, etc.)
         sorted_keys = sorted(GLOBAL_MARITIME_RAG_CORPUS.keys(), key=lambda k: len(k), reverse=True)
+        for key in sorted_keys:
+            if not key.isascii() and (key in clean_text or key in text):
+                return GLOBAL_MARITIME_RAG_CORPUS[key]
+
+        # 3. Multi-word phrase search in text (e.g. 'port of vlaardingen', 'hook of holland', 'nhava sheva')
+        # Sort keys by length descending to match longest specific sub-ports first
         for key in sorted_keys:
             if " " in key and key in clean_text:
                 return GLOBAL_MARITIME_RAG_CORPUS[key]
 
-        # 3. Single-word token search (e.g. 'vlaardingen', 'schiedam', 'dapoli', 'maasvlakte')
+        # 4. Single-word token search (e.g. 'vlaardingen', 'schiedam', 'dapoli', 'maasvlakte')
         for key in sorted_keys:
-            if " " not in key and key in tokens:
+            if " " not in key and (key in tokens or f" {key} " in f" {clean_text} "):
                 return GLOBAL_MARITIME_RAG_CORPUS[key]
 
-        # 4. Fuzzy ratio match for slight typos in port names (cutoff 0.85)
+        # 5. Fuzzy ratio match for slight typos in port names (cutoff 0.85)
         for token in tokens:
             if len(token) >= 5:
                 matches = difflib.get_close_matches(token, list(GLOBAL_MARITIME_RAG_CORPUS.keys()), n=1, cutoff=0.85)

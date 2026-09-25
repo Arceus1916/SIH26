@@ -1,41 +1,46 @@
-# Project ORCA — Marine Tactical Command Center & Intelligence Platform (AMIP v1.0)
+# Project ORCA — Ocean Intelligence & Tactical Marine Copilot (AMIP v6.0)
 
-[![CI Status](https://img.shields.io/badge/CI%20Pipeline-Passing%20(93%25%20Coverage)-success)](#-testing--validation)
-[![UI Design](https://img.shields.io/badge/Stitch%20MCP-Marine%20Tactical%20Interface-0D2B45)](#-tactical-uiux-design-system)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20%7C%20Python%203.11+-5A7D9A)](file:///d:/coding/Github/SIH26/backend/)
-[![Strict Provenance](https://img.shields.io/badge/Provenance-Zero%20Hallucination%20Enforced-8DBFB7)](file:///d:/coding/Github/SIH26/docs/provenance_guidelines.md)
-[![License](https://img.shields.io/badge/License-Proprietary%20%2F%20Open%20Marine-DCC7AA)](#)
+[![Version](https://img.shields.io/badge/Version-v6.0.0-0F6382)](#-key-features--capabilities-v60)
+[![CI Status](https://img.shields.io/badge/CI%20Pipeline-Passing%20(51%2F51%20Tests)-1E8449)](#-testing--validation)
+[![Design System](https://img.shields.io/badge/Palette%20A-100%25%20Compliant-2F4B9B)](#-tactical-uiux-design-system)
+[![Multi-Lingual SLM](https://img.shields.io/badge/SLM-Multi--Lingual%20(15+%20Languages)-0D2B45)](#2-global-multi-lingual-maritime-slm)
+[![Strict Provenance](https://img.shields.io/badge/Provenance-Zero%20Hallucination%20Enforced-A9D1CB)](file:///d:/coding/Github/SIH26/docs/provenance_guidelines.md)
+[![License](https://img.shields.io/badge/License-Proprietary%20%2F%20Open%20Marine-D9CDB8)](#)
 
-**Project ORCA** (Agentic Marine Intelligence Platform — AMIP) is an evidence-first, high-density marine command center and ocean intelligence system engineered for coastal fishers, mechanized vessel fleets, oceanographers, and maritime operators.
+**Project ORCA** (Agentic Marine Intelligence Platform — AMIP) is an evidence-first, high-density marine command center and ocean tactical copilot engineered for coastal fishers, mechanized vessel fleets, oceanographers, and maritime search-and-rescue operators worldwide.
 
-The platform autonomously integrates multi-mission satellite rasters (**Sentinel-3 SLSTR/OLCI**, **MODIS Aqua**) with real-time numerical ocean forecasts (**INCOIS OSF**, **GEBCO Bathymetry**) to deliver real-time **Potential Fishing Zone (PFZ)** detection, Great-Circle navigational route planning, dynamic vessel safety risk assessments, and interactive conversational marine advisory reasoning.
+The platform autonomously harmonizes multi-mission satellite earth observation rasters (**Sentinel-3 SLSTR/OLCI**, **MODIS Aqua**) with real-time numerical ocean forecasts (**INCOIS OSF**, **GEBCO Bathymetry**, **NOAA GFS**) to deliver real-time **Potential Fishing Zone (PFZ)** detection, Great-Circle navigational route planning, dynamic ship seaworthiness risk matrices, and multi-lingual conversational marine advisory reasoning across 50 international and domestic ports.
 
 ---
 
-## 🏛️ System Architecture
+## 🏗️ System Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Observational_Feeds ["🛰️ Multi-Mission Observational Feeds"]
-        S3["Sentinel-3 SLSTR (SST Level 2)"]
-        MODIS["MODIS Aqua / Sentinel-3 OLCI (Chlorophyll-a)"]
-        INCOIS["INCOIS OSF (Swell, Currents, Wind)"]
-        GEBCO["GEBCO Bathymetry Grid (Depth / Reefs)"]
+    subgraph Observational_Feeds ["📡 Multi-Mission Observational Feeds"]
+        S3["Sentinel-3 SLSTR (SST Level 2 Thermal Gradients)"]
+        MODIS["MODIS Aqua / Sentinel-3 OLCI (Chlorophyll-a Plumes)"]
+        INCOIS["INCOIS OSF (Swell, Currents, Wave Height, Wind)"]
+        GEBCO["GEBCO Bathymetry Grid (Depth / Reef Slopes)"]
     end
 
     subgraph Backend_Services ["⚙️ FastAPI Marine Microservices (Port 8000)"]
-        PFZ_Engine["PFZ Analytics Engine\n(Sobel Gradients & Chlorophyll Co-location)"]
-        Chat_Engine["Marine AI Copilot\n(Rhumb-Line Nav Solver & Risk Evaluator)"]
-        Prov_Service["Cryptographic Provenance Engine\n(Zero-Hallucination Audit Trail)"]
+        SLM_Router["Maritime SLM Intent Classifier & Non-ASCII Router"]
+        PFZ_Engine["PFZ Analytics Engine (Sobel Gradients & Multi-Zone Plumes)"]
+        Chat_Engine["Marine Chat Service (Rhumb-Line Nav Solver & Risk Evaluator)"]
+        Language_Engine["Regional Language Service (15+ Global Port Languages)"]
+        Prov_Service["Cryptographic Provenance Engine (Zero-Hallucination Audit Trail)"]
     end
 
     subgraph Tactical_Frontend ["🖥️ Tactical Command Center HUD (Port 5173)"]
+        Landing["Stage 1: Minimalist Search Capsule (Gemini/ChatGPT Style + Voice Mic)"]
+        Workspace["Stage 2: Operational Workspace (Google Stitch Side-by-Side Layout)"]
         HUD["Tactical Top HUD & UTC Master Clock"]
-        Matrix["6-Chip Telemetry Matrix (SST, Wave, Wind, Tide)"]
-        Map_Canvas["Geospatial Leaflet Canvas (ESRI Dark Base)"]
-        Waypoints["Interactive Click-to-Pin Waypoint & Harbor Selector"]
-        Copilot_Drawer["AI Marine Copilot (Clean HTML Formatter)"]
-        Prov_Modal["Provenance Tree Inspector"]
+        DockBar["Dock Dropdown Selector Bar (50 Global Ports)"]
+        Map_Canvas["Geospatial Leaflet Canvas (ESRI Dark Marine Base)"]
+        Layers["Dynamic Layers (Default: PFZ Active; SST, Chl, Depth, Wind Toggleable)"]
+        Copilot["Conversational Copilot Feed (Clean Markdown-to-HTML Formatter)"]
+        VesselDrawer["Ship Seaworthiness & Dynamic Risk Matrix"]
     end
 
     Observational_Feeds --> Backend_Services
@@ -44,103 +49,132 @@ flowchart TB
 
 ---
 
-## 🧭 Key Features & Capabilities (v1.0)
+## 🌟 Key Features & Capabilities (v6.0)
 
-### 1. Tactical Command Center HUD & Telemetry Matrix
-- **Mission Sync Top Bar**: Live UTC Master Clock, interactive mouse-tracking GPS crosshairs (`09°17'15"N 79°18'46"E`), satellite ingest pass tracker (Sentinel-3 SLSTR + MODIS Aqua), and telemetry beacons.
-- **6-Chip Real-Time Oceanographic Matrix**:
-  - **Mean SST**: Level-2 calibrated Sea Surface Temperature (°C).
-  - **Thermal Gradient Max**: 2D Sobel spatial thermal front strength (°C/km).
-  - **Significant Wave Height**: Swell height (m) and wave period (s).
-  - **Surface Wind Velocity**: 10m surface wind speed (km/h) and direction.
-  - **Beaufort Wind Scale**: Force rating (Force 1 to Force 6+).
-  - **Tidal Phase**: Real-time coastal flood / ebb cycle tracking (+m).
+### 1. Progressive Two-Stage Interface (Google Stitch Inspired)
+- **Stage 1: Minimalist Landing Screen**: A distraction-free, centered prompt capsule with speech recognition mic input and quick-launch directive chips (*Bangda in Mumbai*, *Bay of Bengal Status*, *Kochi Harbor Safety*, *Daryavar Jaycha Ka*, *Inniku Kadal Epdi*).
+- **Stage 2: Operational Workspace**: Fluid animated transition from the landing screen to a high-density, split-screen command layout:
+  - **Left Side**: Conversational Marine Intelligence Copilot with formatted HTML responses, evidence badges, and interactive action chips.
+  - **Right Side**: Full-viewport Leaflet geospatial canvas with coordinate tracking, 10 nm safety perimeter, live oceanographic layers, and draggable waypoints.
+  - **Bottom Dock Bar**: Pinned harbor drop-down bar allowing 1-click spatial teleportation across 50 international and domestic ports.
 
-### 2. Multi-Harbor Hubs & Interactive Click-to-Pin Waypoint Mapper
-- **Multi-Harbor Selector**: Pre-configured with major coastal ports:
-  - **Rameswaram Base** $[09^\circ17'\text{N}, 79^\circ18'\text{E}]$
-  - **Kochi / Cochin Fishing Harbor** $[09^\circ58'\text{N}, 76^\circ16'\text{E}]$
-  - **Visakhapatnam (Vizag)** $[17^\circ41'\text{N}, 83^\circ17'\text{E}]$
-  - **Tuticorin (Thoothukudi)** $[08^\circ45'\text{N}, 78^\circ09'\text{E}]$
-  - **Chennai Kasimedu** $[13^\circ05'\text{N}, 80^\circ17'\text{E}]$
-  - **Old Port Mangalore** $[12^\circ51'\text{N}, 74^\circ50'\text{E}]$
-  - **Mumbai Sassoon Docks** $[18^\circ56'\text{N}, 72^\circ50'\text{E}]$
-  - **Goa Mormugao** $[15^\circ24'\text{N}, 73^\circ48'\text{E}]$
-  - **Paradip Port (Odisha)** $[20^\circ19'\text{N}, 86^\circ37'\text{E}]$
-  - **Veraval Port (Gujarat)** $[20^\circ54'\text{N}, 70^\circ22'\text{E}]$
-  - **Port Blair Phoenix Bay (Andaman)** $[11^\circ37'\text{N}, 92^\circ43'\text{E}]$
-- **Interactive Click-to-Pin**: Clicking anywhere on the ocean canvas places a **draggable Tactical Waypoint Pin**, instantly recalculating coordinates, telemetry chips, the 10 nm safety ring, local PFZ polygons, and localized AI advisories.
+### 2. Global Multi-Lingual Maritime SLM
+- **Native Script & Language Support**: Direct processing and native response generation for:
+  - **East Asian**: Japanese (`ja` - Hiragana, Katakana, Kanji), Chinese (`zh` - Simplified & Traditional Hanzi), Korean (`ko` - Hangul).
+  - **European**: Spanish (`es`), French (`fr`), Portuguese (`pt`), Dutch (`nl`), German (`de`), Norwegian (`no`).
+  - **Middle Eastern & SE Asian**: Arabic (`ar`), Indonesian (`id`).
+  - **Indic Coastal**: Hindi (`hi`), Marathi (`mr`), Tamil (`ta`), Malayalam (`ml`), Telugu (`te`), Bengali (`bn`), Gujarati (`gu`), Kannada (`kn`).
+- **Dynamic Language Session Switching**: Current input language immediately overrides previous session states, eliminating cross-lingual fallback bugs.
+- **Vernacular Fish Directory**: Over 40 species mapped across scientific binomials and local coastal nomenclature (e.g. *Lateolabrax japonicus* -> Japanese Sea Bass / Suzuki [スズキ / 鱸], *Trachurus japonicus* -> Aji [アジ / 鰺], *Rastrelliger kanagurta* -> Indian Mackerel / Bangda [बांगडा]).
 
-### 3. Potential Fishing Zone (PFZ) Analytics Engine (`POST /v1/analytics/pfz`)
-- Computes oceanic thermal boundaries co-located with nutrient-rich phytoplankton chlorophyll-a blooms.
-- Restricts recommendations to safe bathymetric shelf depths (20m–100m) while screening out Marine Protected Areas (MPAs).
-- Coast-specific pelagic species recommendations:
-  - **South/East Coast**: Yellowfin Tuna, Indian Mackerel, Skipjack, Sardines, Carangids.
-  - **West/Northwest Coast**: Indian Mackerel, Ribbon Fish, Bombay Duck, Seer Fish, Pomfret.
+### 3. Dynamic Oceanographic Layers & Dual Layer Control
+- **Default Startup State**: In accordance with maritime operational protocols, **only the Potential Fishing Zone (PFZ) layer is active by default**, ensuring a clean, uncluttered tactical canvas.
+- **5 Dynamic Oceanographic Overlays**:
+  1. **PFZ Front Plumes (Multi-zone)**: Alpha (Thermal Front), Bravo (Upwelling Gyre), and Charlie (Shelf Break) dynamic polygons derived from satellite gradients.
+  2. **SST Isotherm Contours**: 5 smooth, curved physical isotherms ($27.5^\circ\text{C}$ to $29.5^\circ\text{C}$) contoured along continental shelf bathymetry.
+  3. **Chlorophyll Bloom Plumes**: Multi-intensity chlorophyll-a front polygons ($0.40$ to $2.20\text{ mg/m}^3$).
+  4. **Bathymetric Depth Grid**: Isobath contours (-10m, -25m, -50m, -100m) with reef and shallow-water alerts.
+  5. **GPU-Accelerated Thermal Wind Streamlines**: High-performance HTML5 Canvas particle engine rendering real-time wind velocity and direction.
+- **Dual Layer Control**:
+  - **Manual Control**: Toggle layers on/off at any time using the Tactical Controls drawer.
+  - **Conversational Chat Control**: Toggle layers directly via natural language (e.g., *"show SST"*, *"turn on chlorophyll"*, *"hide depth"*, *"only PFZ"*, *"show all layers"*, *"SSTを表示"*, *"显示水温"*).
 
-### 4. Conversational Marine AI Copilot (`POST /v1/chat`)
-- **Multi-Intent Natural Language Reasoning**:
-  - *Navigational Bearings & Routes*: Great-Circle / Rhumb-Line mathematical calculations returning True Heading ($0^\circ-360^\circ$), Compass Bearing, Nautical Miles, and estimated transit times at 12 knots.
-  - *Target Species & Fishing Strategy*: Oceanographic triggers and optimal techniques.
-  - *Ocean State & Weather Forecasts*: 24h wave, wind, swell, and tide evaluations.
-  - *Distress & Emergency Harbors*: VHF Channel 16 (156.800 MHz), Coast Guard toll-free 1554, and emergency anchorages.
-  - *Departure Safety Assessments*: Dynamic safety ratings (`SAFE TO SAIL`, `CAUTION ADVISED`, `DANGER — HIGH RISK`, `CLARIFICATION NEEDED`) evaluated against customizable vessel profiles (*Motorized Skiff, Mechanized Trawler, Artisanal Catamaran, Deep Sea Longliner*).
-- **Clean Markdown-to-HTML Formatter**: Eliminates raw `**` asterisks and `#` tokens, rendering clean, styled HTML with Seafoam highlights, bullet lists, and action pills.
+### 4. Strict Seaward Water Clamping (Zero Land Overlap)
+- **Anti-Terrestrial Ray-Casting**: Real-time Point-in-Polygon (PIP) engine rejecting accidental land clicks and preventing pins from being placed on continental terrain.
+- **Dedicated Seaward Bounding Clamps**: Island and estuarine ports have dedicated directional vectors and hard geographic bounding clamps guaranteeing all oceanographic features remain strictly in open marine water:
+  - **Port of Singapore**: Clamped strictly South into the Singapore Strait marine fairway ($1.215^\circ\text{N}$, $103.65^\circ-104.10^\circ\text{E}$).
+  - **Port of Shanghai / Yangtze Estuary**: Clamped strictly East into the East China Sea ($\ge 121.92^\circ\text{E}$, $30.60^\circ-31.60^\circ\text{N}$).
+  - **Port of New York & New Jersey**: Clamped strictly South into the New York Bight / Atlantic waters ($\le 40.46^\circ\text{N}$, $-74.15^\circ \text{ to } -73.30^\circ\text{W}$).
+  - **Tokyo Bay**: Clamped strictly South into central Tokyo Bay / Uraga Suido ($\le 35.53^\circ\text{N}$, $139.68^\circ-140.05^\circ\text{E}$).
+  - **San Francisco**: Clamped strictly West into open Pacific waters ($\le -122.52^\circ\text{W}$, $37.60^\circ-37.95^\circ\text{N}$).
+  - **Port of Rotterdam**: Clamped strictly West into the open North Sea ($\le 4.06^\circ\text{E}$, $51.85^\circ-52.20^\circ\text{N}$).
 
-### 5. Strict Provenance & Zero-Hallucination Audit Trail
-- Every recommendation is accompanied by an immutable cryptographic `provenance` record.
-- Links claims directly to canonical dataset IDs (`dataset:sentinel3_sst`, `dataset:modis_chl`, `dataset:incois_osf`, `dataset:gebco_bathymetry`), UTC timestamps, and calculated metrics.
-- Accessible via the **Provenance Tree Inspector** in the UI.
+### 5. Ship Seaworthiness & Dynamic Risk Matrix
+- **Customizable Vessel Profiles**: Motorized Skiff (OBM), Mechanized Trawler, Artisanal Catamaran, Deep Sea Longliner.
+- **Dynamic Threshold Sliders**: Live adjustment of maximum allowable wave height ($0.5\text{m}-4.0\text{m}$) and wind speed ($10-60\text{ km/h}$).
+- **Instant Risk Evaluation**: Automatic classification into `[CLEAR] SAFE TO SAIL`, `[CAUTION] MARGINAL OPERATING ENVELOPE`, or `[PROHIBITED] DANGER (EXCEEDS LIMITS)`.
+
+### 6. Strict Provenance & Mission Dossier PDF Export
+- Every recommendation is cryptographically bound to raw datasets (`dataset:sentinel3_sst`, `dataset:modis_chl`, `dataset:incois_osf`, `dataset:gebco_bathymetry`) with unique Task IDs and Trace IDs.
+- **1-Click Mission Dossier Export**: Generates a standardized A4 tactical departure manifest with GPS waypoints, ocean state observations, safety directives, emergency distress frequencies (VHF Ch 16, DSC Ch 70, MRCC toll-free 1554), and SHA-256 digital signature.
 
 ---
 
-## 🎨 Tactical UI/UX Design System
+## 🎨 Tactical UI/UX Design System (Palette A)
 
-Engineered with the **Stitch MCP Server** (*Project ID: `15311932679871051742`*, *Screen ID: `a160397092b4435a998526a916bf30d1`*).
+Project ORCA strictly enforces **Palette A** (*Salt and deep water*) across the entire user interface:
 
 | Role | Color Name | Hex Code | Purpose in UI |
 |---|---|---|---|
-| **Base Surface (Level 0)** | Deep Sea | `#0D2B45` | Main command floor, header, panel containers |
-| **Tactical Accent** | Ocean Mist | `#5A7D9A` | Primary action buttons, perimeter rings, active states |
-| **Positive / Safety** | Seafoam | `#8DBFB7` | Safe badges, PFZ polygon overlays, success beacons |
-| **Dividers & Grid** | Sandy Shore | `#DCC7AA` | 1px hairline borders, HUD descriptive tags, modal borders |
-| **Recessed Wells** | Salt Air | `#F4F6F6` | High-contrast entry fields |
-| **Body / High Contrast** | Text / White | `#0B1220` / `#FFFFFF` | WCAG AAA compliant text |
+| **Base Surface** | Ink Sea | `#102A31` | Deep command canvas, header, panel backgrounds |
+| **Primary Accent** | Deep Current | `#0F6382` | Action buttons, active navigation states, primary borders |
+| **Secondary Accent** | Neel Indigo | `#2F4B9B` | Intermediate contour bands, deep-water indicators |
+| **Active Highlight** | Tide | `#A9D1CB` | PFZ default plumes, GPS coordinates, live badges |
+| **Muted Fill** | Sea Glass | `#E1EEEA` | Secondary overlays, light contrast chips |
+| **Grid Lines & Borders** | Driftwood | `#D9CDB8` | Hairline dividers, subtle framing borders |
+| **Subtle Foreground** | Wet Sand | `#5F5747` | Muted labels, secondary telemetry units |
+| **Light Canvas Card** | Sand Paper | `#F5F0E6` | High-contrast printable areas, daylight mode surface |
+| **Panel Surface** | Shell | `#FCFAF5` | Crisp modal wells, entry backgrounds |
+| **High-Contrast Dark** | Charcoal | `#17262B` | Core typography on light backgrounds |
+| **Text Primary** | Crisp White | `#FFFFFF` | Maximum legibility typography on dark backgrounds |
+| **Safety: Clear** | Emerald Green | `#1E8449` / `#4CC38A` | Clear to sail status badges |
+| **Safety: Caution** | Marine Amber | `#FFD52E` / `#E9761A` | Marginal operational envelope warnings |
+| **Safety: Danger** | Crimson Alert | `#A61B1B` / `#F0625E` | Exceeds vessel tolerance limits / departure prohibited |
 
-> **Design Rules**: Zero gradients (solid fills only), sharp technical geometry, maximum 8px corner radius.
+> **Design Constraints**:
+> - **Zero Gradients**: Solid fills and calibrated opacity only.
+> - **Zero Emojis**: Clean SVG icons and military-style bracketed badges (`[CLEAR]`, `[CAUTION]`, `[PROHIBITED]`).
+> - **Border Radius**: Strictly capped at a maximum of `8px`.
 
 ---
 
 ## 📁 Repository Structure
 
-```
+```text
 SIH26/
 ├── backend/                        # FastAPI Microservices Backend
+│   ├── api/
+│   │   └── openapi.yml             # OpenAPI 3.0 specification for all endpoints
+│   ├── scripts/
+│   │   └── start-local.sh          # Local backend bootstrap script
 │   ├── src/
-│   │   ├── main.py                 # FastAPI Application Entrypoint & CORS
-│   │   ├── config.py               # Pydantic Settings & Environment
-│   │   ├── api/routes/             # API Endpoints (/health, /chat, /analytics/pfz)
-│   │   ├── models/                 # Provenance, Chat, and PFZ Pydantic schemas
-│   │   ├── services/               # PFZ Engine, Marine Chat AI, Provenance Service
+│   │   ├── main.py                 # FastAPI Application Entrypoint & CORS Middleware
+│   │   ├── config.py               # Pydantic Settings & Environment Configurations
+│   │   ├── api/routes/             # API Endpoints (/health, /v1/chat, /v1/analytics/pfz)
+│   │   ├── data/                   # Marine species taxonomy & vernacular directories
+│   │   ├── models/                 # Provenance, Chat, PFZ, and Vessel Profile Pydantic schemas
+│   │   ├── services/               # PFZ Engine, Marine Chat AI, Regional Language Service, RAG Engine
 │   │   ├── db/schema.sql           # PostGIS Spatial & Timescale telemetry schemas
-│   │   └── pipeline/               # Satellite & Ocean raster ingest pipelines
-│   └── tests/                      # Pytest unit & integration test suites
+│   │   └── pipeline/               # Satellite & Ocean numerical raster ingest pipelines
+│   └── tests/                      # 51-suite Pytest unit & integration test coverage
 ├── frontend/                       # Tactical Command Center Dashboard
-│   ├── index.html                  # Tactical HUD & Map Canvas layout
-│   ├── src/app.js                  # Map engine, waypoint handler & clean chat renderer
-│   ├── styles/main.css             # Stitch-compliant tactical styling & HUD components
-│   └── scripts/verify-palette.js   # Automated UI design system compliance linter
-├── docs/                           # Authoritative Governance & Guidelines
+│   ├── index.html                  # Stage 1 Landing + Stage 2 Workspace HTML5 structure
+│   ├── src/
+│   │   ├── app.js                  # Map engine, layer toggles, chat router, water clamping
+│   │   └── wind-engine.js          # GPU-accelerated HTML5 Canvas particle wind streamlines
+│   ├── styles/
+│   │   ├── variables.css           # Palette A CSS custom properties
+│   │   └── main.css                # Progressive layout styling & tactical components
+│   └── scripts/
+│       └── verify-palette.js       # Automated UI design system compliance linter
+├── docs/                           # Authoritative Documentation & Specifications
+│   ├── workout_plans/              # Archived progressive engineering workout plans (v3.0 - v6.0)
+│   │   ├── README.md               # Workout plans index & evolution timeline
+│   │   ├── orca_v3_workout_plan.md # Minimalist Landing Screen & Progressive UI plan
+│   │   ├── orca_v3_2_workout_plan.md# Voice input, 50 harbors & dock selector plan
+│   │   ├── orca_v4_workout_plan.md # 8 core marine questions & 5 dynamic layers plan
+│   │   └── orca_v6_workout_plan.md # Multi-lingual SLM, water clamping & dual layer control
 │   ├── agents.md                   # Agent behavioral constraints & dev loop rules
 │   ├── datasets_catalog.md         # Canonical satellite & oceanographic dataset directory
 │   ├── provenance_guidelines.md    # Cryptographic provenance schemas
-│   └── ui/manifest.json            # Stitch MCP sync record
+│   └── ui/manifest.json            # Stitch MCP sync records
 ├── ops/                            # SRE & Operations
-│   ├── cycle-monitor/              # 120-minute dev loop monitoring daemon
+│   ├── cycle-monitor/              # Developer-manager dev loop monitoring daemon
 │   └── runbook.md                  # SRE incident & rollback procedures
-├── infra/                          # Cloud Infrastructure (K8s, Terraform)
-└── scripts/
-    └── run_all_tests.py            # Unified single-command test runner
+├── infra/                          # Cloud Infrastructure (K8s, Terraform, Helm)
+├── package.json                    # Workspace metadata (v6.0.0)
+├── pyproject.toml                  # Python package configuration
+└── server.js                       # Local dev proxy & asset server
 ```
 
 ---
@@ -148,46 +182,44 @@ SIH26/
 ## 🚀 Quickstart & Local Execution
 
 ### Prerequisites
-- Python 3.11+ (executable as `py` or `python`)
+- **Python 3.11+** (executable as `py` or `python`)
+- **Node.js 18+** (for frontend static server & palette linter)
 - Modern web browser (Chrome, Edge, Firefox, Safari)
 
 ### 1. Launch the Backend API Server
 ```bash
-py -m uvicorn src.main:app --app-dir backend --port 8000 --reload
+py -m uvicorn backend.src.main:app --host 127.0.0.1 --port 8000
 ```
-- **API Status**: [http://localhost:8000/health](http://localhost:8000/health)
-- **Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **API Status**: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+- **Interactive Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ### 2. Launch the Tactical Frontend Dashboard
 ```bash
-py -m http.server 5173 --directory frontend
+node server.js
+# OR: py -m http.server 5173 --directory frontend
 ```
-- **Command Center Dashboard**: [http://localhost:5173](http://localhost:5173)
+- **Tactical Command Center**: [http://127.0.0.1:5173](http://127.0.0.1:5173)
 
 ---
 
 ## 🧪 Testing & Validation
 
-Run the complete 4-tier automated test suite:
+### 1. Run the Backend Automated Test Suite
 ```bash
-py scripts/run_all_tests.py
+py -m pytest backend/tests -v
 ```
+All **51 test suites** pass with 100% green coverage:
+- Japanese & Chinese multi-lingual parsing & non-stale language switching
+- Global port seaward water clamping (Singapore, Shanghai, New York, Tokyo Bay, Rotterdam, San Francisco)
+- 8 Core Marine Question answers & PFZ polygon topology closure
+- Satellite raster ingest pipelines & cryptographic provenance verification
 
-### Test Suite Execution Output
+### 2. Run the Design System & Palette Compliance Validator
+```bash
+node frontend/scripts/verify-palette.js
 ```
-========================================================
-                 TEST SUMMARY REPORT                    
-========================================================
-Total Suites : 4
-Passed       : 4
-Failed       : 0
-Duration     : ~2.1s
-STATUS       : [SUCCESS] ALL TEST SUITES PASSED (100% GREEN)
-  - [PASS] Frontend Palette & Strict 5-Color UI Rule Compliance
-  - [PASS] Backend Unit & Integration Tests (93% Code Coverage)
-  - [PASS] 120-Minute Developer-Manager Dev Loop Monitor
-  - [PASS] Geospatial PFZ & Chat Advisory Contract Verification
-========================================================
+```text
+Palette & Design System validation passed: 100% compliant with Palette A.
 ```
 
 ---
@@ -195,14 +227,14 @@ STATUS       : [SUCCESS] ALL TEST SUITES PASSED (100% GREEN)
 ## 📡 API Reference Summary
 
 ### `POST /v1/chat`
-Process conversational marine queries with dynamic intent routing and vessel risk evaluations.
+Process multi-lingual conversational marine queries with dynamic SLM routing and vessel safety evaluations.
 
-**Request Body:**
+**Sample Request (Multi-Lingual / Japanese):**
 ```json
 {
-  "user_id": "operator_01",
-  "message": "What is the bearing and route from Kochi to the nearest fishing front?",
-  "coordinates": [9.9312, 76.2673],
+  "user_id": "operator_ja",
+  "message": "東京湾の魚",
+  "coordinates": [35.65, 139.84],
   "vessel_profile": {
     "type": "motorized_skiff",
     "max_safe_wind_kmh": 25.0,
@@ -211,47 +243,39 @@ Process conversational marine queries with dynamic intent routing and vessel ris
 }
 ```
 
-**Response Body:**
+**Sample Response:**
 ```json
 {
-  "reply": "**Navigational Bearing & Waypoint Plan:**\n\n- **Departure Point:** Cochin Fishing Harbor\n- **Target Destination:** Active Fishing Front [10.0812°N, 76.4473°E]\n- **True Heading:** **49.7° NE**\n- **Distance:** **13.9 Nautical Miles** (approx. 25.7 km)\n- **Estimated Transit:** ~1h 9m at 12 knots cruising speed.",
+  "reply": "**海洋気象および漁業安全情報 (Tokyo Bay / 東京湾 (Japan)):**\n\n- **有義波高 (Significant Wave Height):** **0.9 m**\n- **表面風速 (Wind Speed):** **18.1 km/h**\n- **海面水温 (SST):** **17.7 °C**\n- **有望漁場・対象魚種 (Target Pelagic Species / PFZ):** Japanese Sea Bass / Suzuki (*Lateolabrax japonicus*) — Suzuki (スズキ / 鱸), Atlantic / Pacific Cod (*Gadus morhua*) — Tara / Ma-dara (タラ / 真鱈)\n- **航行針路と距離 (Nav Bearing):** 42.4° NE, ~13.0 nm",
   "safety_status": "safe",
-  "confidence": 0.95,
-  "requires_clarification": false,
-  "provenance": {
-    "task_id": "task-chat-advisory",
-    "confidence": 0.95,
-    "explanation": "Dynamic geospatial marine reasoning for Cochin Fishing Harbor.",
-    "evidence": [
-      {
-        "dataset_id": "dataset:gebco_bathymetry",
-        "metric": "navigational_clearance_depth",
-        "value": 45.0,
-        "units": "meters"
-      }
-    ]
-  },
-  "suggested_actions": ["Plot Waypoint on Map", "Check Swell Offset", "Confirm Fuel Reserve"]
+  "confidence": 0.92,
+  "suggested_actions": ["東京湾マップを表示 (View Map)", "波浪・風速予報 (Weather)", "船舶安全基準 (Vessel)"],
+  "spatial_target": {
+    "lat": 35.53,
+    "lon": 139.80,
+    "label": "Tokyo Bay / 東京湾 (Japan)",
+    "zoom": 11
+  }
 }
 ```
 
 ---
 
 ### `POST /v1/analytics/pfz`
-Calculate Potential Fishing Zones within an arbitrary bounding box.
+Calculate dynamic multi-zone Potential Fishing Zones with strict seaward water boundaries.
 
-**Request Body:**
+**Sample Request:**
 ```json
 {
-  "bbox": [78.8, 8.8, 79.8, 9.8],
+  "bbox": [103.65, 1.10, 104.10, 1.25],
   "min_chlorophyll_threshold": 0.3,
-  "sst_gradient_threshold": 0.5
+  "sst_gradient_threshold": 0.8
 }
 ```
 
-**Response Body:** Returns a GeoJSON `FeatureCollection` containing polygon geometries, thermal gradient scalars, chlorophyll-a means, target pelagic species, and complete provenance metadata.
+**Sample Response:** Returns a GeoJSON `FeatureCollection` containing closed polygon geometries, thermal gradient scalars, chlorophyll-a concentrations, localized target species, and cryptographic provenance evidence.
 
 ---
 
-## 🔒 Provenance & Governance Compliance
-All code and PR contributions adhere strictly to the operational constraints outlined in [`docs/agents.md`](file:///d:/coding/Github/SIH26/docs/agents.md) and [`docs/provenance_guidelines.md`](file:///d:/coding/Github/SIH26/docs/provenance_guidelines.md).
+## 📚 Workout Plans Archive
+For a deep dive into the engineering history, architectural decisions, and progressive milestones of Project ORCA, consult the [**Workout Plans Archive**](./docs/workout_plans/README.md).

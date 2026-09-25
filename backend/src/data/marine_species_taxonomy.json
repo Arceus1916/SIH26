@@ -1,0 +1,536 @@
+{
+  "species": [
+    {
+      "id": "indian_mackerel",
+      "en": "Indian Mackerel",
+      "scientific": "Rastrelliger kanagurta",
+      "family": "Scombridae",
+      "vernacular": {
+        "hi": "Bangda (बांगडा)",
+        "mr": "Bangda (बांगडा)",
+        "ml": "Ayala (അയല)",
+        "ta": "Kumla / Kanangeluthi (கானாங்கெளுத்தி)",
+        "te": "Kanagurtalu (కానగూర్త)",
+        "bn": "Champa / Mackerel (ম্যাকেরেল)",
+        "gu": "Bangdi (બાંગડી)",
+        "kn": "Bangude (ಬಾಂಗುಡೆ)",
+        "or": "Kanagurta (କାନାଗୁର୍ତ୍ତା)"
+      },
+      "habitat": "Pelagic-neritic, coastal surface waters 20-90m depth",
+      "primary_coasts": ["West Coast (Maharashtra, Goa, Karnataka, Kerala)", "East Coast (Tamil Nadu, Andhra Pradesh)"]
+    },
+    {
+      "id": "oil_sardine",
+      "en": "Indian Oil Sardine",
+      "scientific": "Sardinella longiceps",
+      "family": "Clupeidae",
+      "vernacular": {
+        "hi": "Tarli (तारली)",
+        "mr": "Tarli / Padwa (तारली)",
+        "ml": "Mathi / Chala (മത്തി)",
+        "ta": "Kavalai / Mathi (மத்தி)",
+        "te": "Kavallu / Noone Kavallu (కవళ్ళు)",
+        "bn": "Khoyra (খয়রা)",
+        "gu": "Tarli (તારલી)",
+        "kn": "Bhutai (ಭೂತಾಯಿ)",
+        "or": "Kokali (କୋକଲି)"
+      },
+      "habitat": "Coastal pelagic, highly migratory in upwelling coastal zones 10-50m",
+      "primary_coasts": ["Southwest Coast (Kerala, Karnataka, Goa)", "Southeast Coast (Tamil Nadu)"]
+    },
+    {
+      "id": "silver_pomfret",
+      "en": "Silver Pomfret",
+      "scientific": "Pampus argenteus",
+      "family": "Stromateidae",
+      "vernacular": {
+        "hi": "Safed Paplet (सफेद पापलेट)",
+        "mr": "Saranga / Paplet (पापलेट)",
+        "ml": "Vella Avoli (വെള്ള ആവോലി)",
+        "ta": "Vavval / Vella Vavval (வெள்ள வவ்வால்)",
+        "te": "Tellachandi (తెల్లచంది)",
+        "bn": "Rupchanda (রূপচাঁদা)",
+        "gu": "Vichuda / Paplet (પાપલેટ)",
+        "kn": "Bili Manji (ಬಿಳಿ ಮಾಂಜಿ)",
+        "or": "Dhalachandi (ଧଳାଚାନ୍ଦି)"
+      },
+      "habitat": "Benthopelagic coastal waters over muddy shelf 15-100m",
+      "primary_coasts": ["Northwest Coast (Gujarat, Maharashtra)", "Northeast Coast (West Bengal, Odisha)"]
+    },
+    {
+      "id": "black_pomfret",
+      "en": "Black Pomfret",
+      "scientific": "Parastromateus niger",
+      "family": "Carangidae",
+      "vernacular": {
+        "hi": "Kala Paplet (काला पापलेट)",
+        "mr": "Halwa (हलवा)",
+        "ml": "Karutha Avoli (കറുത്ത ആവോലി)",
+        "ta": "Karuppu Vavval (கருப்பு வவ்வால்)",
+        "te": "Nallachandi (నల్లచంది)",
+        "bn": "Kalo Chanda (কালো চাঁদা)",
+        "gu": "Halwa (હલવા)",
+        "kn": "Kappu Manji (ಕಪ್ಪು ಮಾಂಜಿ)",
+        "or": "Kala Chandi (କଳା ଚାନ୍ଦି)"
+      },
+      "habitat": "Pelagic coastal reefs and shelf edge 15-105m",
+      "primary_coasts": ["All Indian Coasts (Maharashtra, Kerala, Tamil Nadu, Andhra)"]
+    },
+    {
+      "id": "kingfish_seer",
+      "en": "Kingfish / Seer Fish",
+      "scientific": "Scomberomorus commerson",
+      "family": "Scombridae",
+      "vernacular": {
+        "hi": "Surmai (सुरमई)",
+        "mr": "Surmai / Iswan (सुरमई)",
+        "ml": "Neymeen / Ayakoora (നെയ്മീൻ)",
+        "ta": "Vanjaram / Seela (வஞ்சிரம்)",
+        "te": "Vanjaram / Konema (వంజరం)",
+        "bn": "Gurmah / Seer (সুরমাই)",
+        "gu": "Surmai (સુરમઈ)",
+        "kn": "Anjal (ಅಂಜಲ್)",
+        "or": "Koni (କୋଣି)"
+      },
+      "habitat": "Pelagic predator along continental shelf and reef drop-offs 10-90m",
+      "primary_coasts": ["All Indian Coasts (West & East coasts)"]
+    },
+    {
+      "id": "streaked_seer",
+      "en": "Indo-Pacific Seer Fish",
+      "scientific": "Scomberomorus guttatus",
+      "family": "Scombridae",
+      "vernacular": {
+        "hi": "Choti Surmai (छोटी सुरमई)",
+        "mr": "Tondli Surmai (तोंडली सुरमई)",
+        "ml": "Varimeen (വരിമീൻ)",
+        "ta": "Kattayan Seela (கட்டையன் சீலா)",
+        "te": "Wanjiram",
+        "bn": "Chapa Maachh",
+        "gu": "Chitro Surmai",
+        "kn": "Pulli Anjal",
+        "or": "Chitra Koni"
+      },
+      "habitat": "Coastal pelagic schooling predator 15-50m",
+      "primary_coasts": ["Bay of Bengal & Arabian Sea"]
+    },
+    {
+      "id": "bombay_duck",
+      "en": "Bombay Duck",
+      "scientific": "Harpadon nehereus",
+      "family": "Synodontidae",
+      "vernacular": {
+        "hi": "Bombil (बोंबील)",
+        "mr": "Bombil (बोंबील)",
+        "ml": "Bombil (ബോംബിൽ)",
+        "ta": "Vangavasi (வங்கவாசி)",
+        "te": "Vangamatta (వంగమట్ట)",
+        "bn": "Nihari / Loytta (লইট্যা)",
+        "gu": "Bumla (બુમલા)",
+        "kn": "Bombil",
+        "or": "Bombalo"
+      },
+      "habitat": "Estuarine and shallow coastal benthic shelf 10-50m, mud substrates",
+      "primary_coasts": ["Northwest Coast (Maharashtra, Gujarat)", "Northern Bay of Bengal (West Bengal)"]
+    },
+    {
+      "id": "yellowfin_tuna",
+      "en": "Yellowfin Tuna",
+      "scientific": "Thunnus albacares",
+      "family": "Scombridae",
+      "vernacular": {
+        "hi": "Peeli Tuna (पीली टूना)",
+        "mr": "Kedar / Tuna (ट्यूना)",
+        "ml": "Choora / Kera (ചൂര)",
+        "ta": "Keerai / Soorai (சூரை)",
+        "te": "Soora / Tuna (సూరా)",
+        "bn": "Tuna (টুনা)",
+        "gu": "Tuna",
+        "kn": "Gedaso / Tuna (ಗೆಡಸೋ)",
+        "or": "Tuna Maacha"
+      },
+      "habitat": "Oceanic epipelagic, offshore convergence zones and shelf breaks 50-250m",
+      "primary_coasts": ["Oceanic waters, Lakshadweep, Andaman Sea, South Indian Ocean"]
+    },
+    {
+      "id": "skipjack_tuna",
+      "en": "Skipjack Tuna",
+      "scientific": "Katsuwonus pelamis",
+      "family": "Scombridae",
+      "vernacular": {
+        "hi": "Kuppa Tuna",
+        "mr": "Kuppa (कुप्पा)",
+        "ml": "Choora / Chunda Choora (ചൂര)",
+        "ta": "Choorai / Vari Soorai (வரி சூரை)",
+        "te": "Vari Soora",
+        "bn": "Kalo Tuna",
+        "gu": "Kuppa",
+        "kn": "Kuppa Gedaso",
+        "or": "Tuna"
+      },
+      "habitat": "Pelagic oceanic schooling predator around thermal fronts",
+      "primary_coasts": ["Lakshadweep, Andaman Sea, Southern Tamil Nadu, Kerala"]
+    },
+    {
+      "id": "hilsa_shad",
+      "en": "Hilsa / River Shad",
+      "scientific": "Tenualosa ilisha",
+      "family": "Clupeidae",
+      "vernacular": {
+        "hi": "Hilsa (हिल्सा)",
+        "mr": "Palla / Palva (पालवा)",
+        "ml": "Hilsa / Palva",
+        "ta": "Ullam / Sevva (உள்ளம்)",
+        "te": "Polasa (పులస)",
+        "bn": "Ilish (ইলিশ)",
+        "gu": "Palva (પાલવા)",
+        "kn": "Palla",
+        "or": "Ilisi (ଇଲିଶି)"
+      },
+      "habitat": "Anadromous coastal marine and estuarine rivers",
+      "primary_coasts": ["Northern Bay of Bengal (West Bengal, Odisha)", "Gujarat (Narmada estuary)"]
+    },
+    {
+      "id": "barramundi_seabass",
+      "en": "Barramundi / Asian Sea Bass",
+      "scientific": "Lates calcarifer",
+      "family": "Latidae",
+      "vernacular": {
+        "hi": "Bhetki (भेटकी)",
+        "mr": "Jitada / Chonak (जिताडा)",
+        "ml": "Kalanji / Narimeen (കാളാഞ്ചി)",
+        "ta": "Koduva (கொடுவா)",
+        "te": "Pandugappa (పండుగప్ప)",
+        "bn": "Bhetki (ভেটকি)",
+        "gu": "Dangara (ડાંગરા)",
+        "kn": "Golu / Kurudi (ಗೋಳು)",
+        "or": "Bhekti (ଭେକଟି)"
+      },
+      "habitat": "Estuaries, coastal lagoons, mangrove bays, and shallow sea",
+      "primary_coasts": ["All Indian Coasts, Sundarbans, Chilika, Pulicat, Backwaters"]
+    },
+    {
+      "id": "tiger_prawn",
+      "en": "Giant Tiger Prawn",
+      "scientific": "Penaeus monodon",
+      "family": "Penaeidae",
+      "vernacular": {
+        "hi": "Bada Jhinga (बड़ा झींगा)",
+        "mr": "Waghya Kolambi (वाघ्या कोळंबी)",
+        "ml": "Kara Chemmeen (കാര ചെമ്മീൻ)",
+        "ta": "Karuppu Eral (கருப்பு இறால்)",
+        "te": "Pedda Royya (పెద్ద రొయ్య)",
+        "bn": "Bagda Chingri (বাগদা চিংড়ি)",
+        "gu": "Vaghia Zinga",
+        "kn": "Kari Yetti (ಕರಿ ಎಟ್ಟಿ)",
+        "or": "Bagda Bagda Chingudi"
+      },
+      "habitat": "Benthic coastal mud and sand, estuarine nursery grounds 10-60m",
+      "primary_coasts": ["East Coast (Andhra, Bengal, Odisha, Tamil Nadu)", "West Coast"]
+    },
+    {
+      "id": "white_prawn",
+      "en": "Indian White Prawn",
+      "scientific": "Penaeus indicus",
+      "family": "Penaeidae",
+      "vernacular": {
+        "hi": "Safed Jhinga (सफेद झींगा)",
+        "mr": "Safed Kolambi (पांढरी कोळंबी)",
+        "ml": "Vella Chemmeen / Naran Chemmeen (വെള്ള ചെമ്മീൻ)",
+        "ta": "Vella Eral (வெள்ளை இறால்)",
+        "te": "Tella Royya (తెల్ల రొయ్య)",
+        "bn": "Chapra Chingri (চাপড়া চিংড়ি)",
+        "gu": "Safed Zinga",
+        "kn": "Bili Yetti (ಬಿಳಿ ಎಟ್ಟಿ)",
+        "or": "Dhalachandi Chingudi"
+      },
+      "habitat": "Coastal marine bottoms down to 90m",
+      "primary_coasts": ["All Indian Coasts (Kerala, Tamil Nadu, Maharashtra, Karnataka)"]
+    },
+    {
+      "id": "mud_crab",
+      "en": "Giant Mud Crab / Green Crab",
+      "scientific": "Scylla serrata",
+      "family": "Portunidae",
+      "vernacular": {
+        "hi": "Khekra (केकड़ा)",
+        "mr": "Chimbori / Khekda (खेकडा)",
+        "ml": "Njandu / Kazhanthan Njandu (ഞണ്ട്)",
+        "ta": "Nandu / Kattu Nandu (நண்டு)",
+        "te": "Peetha (పీత)",
+        "bn": "Kankra / Shila Kankra (কাঁকড়া)",
+        "gu": "Karachla (કરચલા)",
+        "kn": "Denji (ದೆಂಜಿ)",
+        "or": "Kanka (କଙ୍କଡ଼ା)"
+      },
+      "habitat": "Estuarine mudflats, mangrove channels, and shallow inshore bays",
+      "primary_coasts": ["Sundarbans, Coromandel, Kerala Backwaters, Konkan"]
+    },
+    {
+      "id": "blue_swimmer_crab",
+      "en": "Blue Swimmer Crab",
+      "scientific": "Portunus pelagicus",
+      "family": "Portunidae",
+      "vernacular": {
+        "hi": "Neela Khekra (नीला केकड़ा)",
+        "mr": "Neela Khekda (निळा खेकडा)",
+        "ml": "Kavalai Njandu (കവല ഞണ്ട്)",
+        "ta": "Neela Nandu (நீல நண்டு)",
+        "te": "Neeli Peetha",
+        "bn": "Neel Kankra",
+        "gu": "Neelo Karachlo",
+        "kn": "Bili Denji",
+        "or": "Nila Kanka"
+      },
+      "habitat": "Sandy and muddy coastal bays and seagrass meadows 5-40m",
+      "primary_coasts": ["Gulf of Mannar, Palk Bay, Ratnagiri, Saurashtra"]
+    },
+    {
+      "id": "indian_squid",
+      "en": "Indian Squid",
+      "scientific": "Uroteuthis duvaucelii",
+      "family": "Loliginidae",
+      "vernacular": {
+        "hi": "Makul / Cuttlefish (माकूल)",
+        "mr": "Makul (माकुळ)",
+        "ml": "Koonthal / Kanava (കൂന്തൽ)",
+        "ta": "Oosi Kanawa (கணவா)",
+        "te": "Kalava / Meenam",
+        "bn": "Calmari / Squid (স্কুইড)",
+        "gu": "Narsinga (નરસિંગા)",
+        "kn": "Bondaas (ಬೊಂಡಾಸ್)",
+        "or": "Kalamari"
+      },
+      "habitat": "Neritic demersal coastal shelf 10-120m",
+      "primary_coasts": ["Malabar Coast, Konkan Coast, Coromandel, Gulf of Mannar"]
+    },
+    {
+      "id": "pharaoh_cuttlefish",
+      "en": "Pharaoh Cuttlefish",
+      "scientific": "Sepia pharaonis",
+      "family": "Sepiidae",
+      "vernacular": {
+        "hi": "Samundari Kutta",
+        "mr": "Ghol Makul",
+        "ml": "Kalla Kanava / Pothan Kanava (കണവ)",
+        "ta": "Otta Kanawa (ஒட்ட கணவா)",
+        "te": "Pedda Kalava",
+        "bn": "Cuttlefish",
+        "gu": "Narsinga",
+        "kn": "Kappe Bondaas",
+        "or": "Cuttlefish"
+      },
+      "habitat": "Reef margins and sand-mud seabed 10-110m",
+      "primary_coasts": ["Kerala, Tamil Nadu, Gujarat, Maharashtra"]
+    },
+    {
+      "id": "ribbonfish",
+      "en": "Largehead Ribbonfish / Hairtail",
+      "scientific": "Trichiurus lepturus",
+      "family": "Trichiuridae",
+      "vernacular": {
+        "hi": "Champa / Bala (बाळा)",
+        "mr": "Bala / Piti / Rupa (बाळा)",
+        "ml": "Vaala (വാള)",
+        "ta": "Savala (சவாலா)",
+        "te": "Savalalu (సవలాలు)",
+        "bn": "Churi (ছুরি মাছ)",
+        "gu": "Piti / Bala",
+        "kn": "Haalu Meenu (ಹಾಲು ಮೀನು)",
+        "or": "Pata Maacha"
+      },
+      "habitat": "Benthopelagic coastal shelf 15-150m, schools near mud bottoms",
+      "primary_coasts": ["Northwest Coast (Gujarat, Maharashtra), Andhra Pradesh, Odisha"]
+    },
+    {
+      "id": "blackspotted_croaker",
+      "en": "Blackspotted Croaker / Golden Jewfish",
+      "scientific": "Protonibea diacanthus",
+      "family": "Sciaenidae",
+      "vernacular": {
+        "hi": "Ghol (घोल)",
+        "mr": "Ghol (घोल)",
+        "ml": "Kora (കോര)",
+        "ta": "Kathalai (கத்தலை)",
+        "te": "Gorasa (గోరస)",
+        "bn": "Ghol Maachh",
+        "gu": "Ghol (ઘોલ)",
+        "kn": "Goli (ಗೋಲಿ)",
+        "or": "Gholo Maacha"
+      },
+      "habitat": "Muddy coastal waters and river estuaries 15-60m; prized commercial fish",
+      "primary_coasts": ["Northwest Coast (Maharashtra, Gujarat), Bay of Bengal"]
+    },
+    {
+      "id": "red_snapper",
+      "en": "Red Snapper",
+      "scientific": "Lutjanus campechanus",
+      "family": "Lutjanidae",
+      "vernacular": {
+        "hi": "Lal Pari (लाल परी)",
+        "mr": "Rane / Tambusa (तांबुसा)",
+        "ml": "Chembally (ചെമ്പല്ലി)",
+        "ta": "Sankara / Seppili (சங்கரா)",
+        "te": "Thundava / Yerra Racha",
+        "bn": "Ranga Chanda",
+        "gu": "Tamb (તાંબ)",
+        "kn": "Agavu (ಅಗವು)",
+        "or": "Rangabati"
+      },
+      "habitat": "Rocky reefs, hard bottoms and shelf edge drop-offs 20-100m",
+      "primary_coasts": ["All Indian Coasts, Gulf of Mannar, Wadge Bank, Arabian Sea"]
+    },
+    {
+      "id": "mangrove_snapper",
+      "en": "Mangrove Red Snapper",
+      "scientific": "Lutjanus argentimaculatus",
+      "family": "Lutjanidae",
+      "vernacular": {
+        "hi": "Lal Machli",
+        "mr": "Tambusa (तांबुसा)",
+        "ml": "Chembally / Kalava",
+        "ta": "Kandhai / Seppili",
+        "te": "Racha Thundava",
+        "bn": "Ranga Bhetki",
+        "gu": "Tamb",
+        "kn": "Chembally",
+        "or": "Ranga Maacha"
+      },
+      "habitat": "Mangrove creeks, coral reefs, and offshore reefs down to 120m",
+      "primary_coasts": ["Malabar, Coromandel, Konkan, Andaman"]
+    },
+    {
+      "id": "orange_spotted_grouper",
+      "en": "Reef Cod / Orange-spotted Grouper",
+      "scientific": "Epinephelus coioides",
+      "family": "Serranidae",
+      "vernacular": {
+        "hi": "Samundari Kod",
+        "mr": "Hekaru / Gobro (गोब्रो)",
+        "ml": "Kalava (കളവ)",
+        "ta": "Kalava / Killi (களவா)",
+        "te": "Bontoo / Bontha",
+        "bn": "Bhetki / Koral",
+        "gu": "Gova",
+        "kn": "Murumeenu (ಮುರುಮೀನು)",
+        "or": "Balu Bhekti"
+      },
+      "habitat": "Turbid coastal reefs and rocky pinnacles 10-100m",
+      "primary_coasts": ["Wadge Bank, Palk Bay, Gulf of Kutch, Andaman"]
+    },
+    {
+      "id": "indian_anchovy",
+      "en": "Indian Anchovy",
+      "scientific": "Stolephorus indicus",
+      "family": "Engraulidae",
+      "vernacular": {
+        "hi": "Nethili (नेथिली)",
+        "mr": "Mandeli / Kati (मांदेली)",
+        "ml": "Netholi / Kozhuva (നെത്തോലി)",
+        "ta": "Nethili (நெத்திலி)",
+        "te": "Netthallu (నెత్తళ్ళు)",
+        "bn": "Mourola / Anchovy (মৌরলা)",
+        "gu": "Kati / Mandeli",
+        "kn": "Kallu Bolingir (ಕಲ್ಲು ಬೋಲಿಂಗಿರ್)",
+        "or": "Kandari"
+      },
+      "habitat": "Schooling coastal pelagic near river mouths 5-45m",
+      "primary_coasts": ["Kerala, Tamil Nadu, Maharashtra, Andhra Pradesh"]
+    },
+    {
+      "id": "mahi_mahi",
+      "en": "Mahi Mahi / Common Dolphinfish",
+      "scientific": "Coryphaena hippurus",
+      "family": "Coryphaenidae",
+      "vernacular": {
+        "hi": "Dorado (डोराडो)",
+        "mr": "Amsuk (आमसूक)",
+        "ml": "Pandomin (പാണ്ടോമിൻ)",
+        "ta": "Kopparai Kula / Ayirai (கோப்பறை குலா)",
+        "te": "Badahalu",
+        "bn": "Dorado",
+        "gu": "Amsuk",
+        "kn": "Kari Bondaas",
+        "or": "Dorado"
+      },
+      "habitat": "Epipelagic open ocean, attracts around floating flotsam and thermal fronts",
+      "primary_coasts": ["Offshore Arabian Sea, Bay of Bengal, Lakshadweep"]
+    },
+    {
+      "id": "cobia",
+      "en": "Cobia / Black Kingfish",
+      "scientific": "Rachycentron canadum",
+      "family": "Rachycentridae",
+      "vernacular": {
+        "hi": "Kala Seer",
+        "mr": "Sakla / Modha (मोढा)",
+        "ml": "Mothavally / Neenmeen (മോദ)",
+        "ta": "Kadal Viral (கடல் விரால்)",
+        "te": "Channalu",
+        "bn": "Kala Machh",
+        "gu": "Sakla",
+        "kn": "Motta (ಮೊಟ್ಟ)",
+        "or": "Motha"
+      },
+      "habitat": "Pelagic offshore structures, reefs, and buoys 10-70m",
+      "primary_coasts": ["Gulf of Mannar, Ratnagiri, Visakhapatnam"]
+    },
+    {
+      "id": "pearlspot",
+      "en": "Pearlspot / Green Chromide",
+      "scientific": "Etroplus suratensis",
+      "family": "Cichlidae",
+      "vernacular": {
+        "hi": "Kundal",
+        "mr": "Kalundar (कालुंदर)",
+        "ml": "Karimeen (കരിമീൻ)",
+        "ta": "Sethakendai / Pila (சேத்துக்கெண்டை)",
+        "te": "Duvvena Chepa",
+        "bn": "Chitala",
+        "gu": "Kalundar",
+        "kn": "Kalundar",
+        "or": "Kundal"
+      },
+      "habitat": "Brackish backwaters, lagoons, and shallow coastal estuaries",
+      "primary_coasts": ["Kerala Backwaters, Goa, Chilika Lake, Pulicat Lake"]
+    },
+    {
+      "id": "fourfinger_threadfin",
+      "en": "Fourfinger Threadfin",
+      "scientific": "Eleutheronema tetradactylum",
+      "family": "Polynemidae",
+      "vernacular": {
+        "hi": "Ravas (रावस)",
+        "mr": "Ravas (रावस)",
+        "ml": "Yeta / Vameen (വാമീൻ)",
+        "ta": "Kala / Pozhakkala (காலா)",
+        "te": "Maga Chepa (మగ చేప)",
+        "bn": "Gurjali / Sahal (সহাল)",
+        "gu": "Ravas (રાવસ)",
+        "kn": "Ravas",
+        "or": "Sahala"
+      },
+      "habitat": "Coastal waters over muddy bottoms and river mouths 10-50m",
+      "primary_coasts": ["Northwest Coast (Mumbai, Gujarat), Northern Bay of Bengal"]
+    },
+    {
+      "id": "giant_trevally",
+      "en": "Giant Trevally / Jack",
+      "scientific": "Caranx ignobilis",
+      "family": "Carangidae",
+      "vernacular": {
+        "hi": "Bada Bangda",
+        "mr": "Bangada Parai (पाराई)",
+        "ml": "Vatta (വറ്റ)",
+        "ta": "Paarai (பாறை)",
+        "te": "Paralu",
+        "bn": "Trevally",
+        "gu": "Parai",
+        "kn": "Vatta",
+        "or": "Parai"
+      },
+      "habitat": "Reef drop-offs, coastal headlands, and shelf breaks 10-80m",
+      "primary_coasts": ["Wadge Bank, Andaman Islands, Lakshadweep, Konkan"]
+    }
+  ]
+}

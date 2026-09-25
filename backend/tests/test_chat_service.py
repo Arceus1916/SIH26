@@ -281,7 +281,7 @@ def test_chat_single_word_greeting_hi():
         response = marine_chat_service.process_message(request)
         assert response.requires_clarification is False
         assert response.safety_status == SafetyStatus.SAFE
-        assert "Welcome to Project ORCA" in response.reply
+        assert "Project ORCA" in response.reply and "Maritime Copilot" in response.reply
         assert "Port of Vlaardingen" in response.suggested_actions or "Bay of Bengal Details" in response.suggested_actions
 
 def test_chat_project_orca_architecture():
@@ -354,7 +354,7 @@ def test_chat_ship_seaworthiness_risk_matrix():
     )
     req_safe = ChatRequest(
         user_id="user_vessel_safe",
-        message="What is the bearing to the nearest PFZ from Bombay?",
+        message="What is the bearing and vessel safety risk clearance to the nearest PFZ from Bombay?",
         vessel_profile=robust_vessel
     )
     resp_safe = marine_chat_service.process_message(req_safe)

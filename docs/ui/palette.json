@@ -1,48 +1,82 @@
 {
   "project": "Project ORCA",
-  "version": "1.0.0",
-  "palette_name": "Marine Intelligence Strict Palette",
+  "version": "3.0.0",
+  "palette_name": "Palette A: Salt and deep water",
   "rules": {
     "no_gradients": true,
     "solid_fills_only": true,
     "max_border_radius_px": 8,
-    "prohibited": ["gradients", "neon_glow", "ai_illustrations", "programmatic_tints"]
+    "prohibited": ["gradients", "neon_glow", "emojis"]
   },
   "colors": {
-    "deep_sea": {
-      "hex": "#0D2B45",
+    "ink_sea": {
+      "hex": "#102A31",
       "role": "primary_dark",
-      "usage": "Headers, primary dark cards, dark buttons, high-contrast outlines"
+      "usage": "Headers, primary dark cards, command frames, dark surfaces"
     },
-    "ocean_mist": {
-      "hex": "#5A7D9A",
-      "role": "primary_mid",
-      "usage": "Secondary buttons, section headers, active highlights"
+    "deep_current": {
+      "hex": "#0F6382",
+      "role": "primary_accent",
+      "usage": "Primary action buttons, user chat bubbles, active navigation indicators"
     },
-    "seafoam": {
-      "hex": "#8DBFB7",
+    "neel_indigo": {
+      "hex": "#2F4B9B",
+      "role": "secondary_accent",
+      "usage": "Feature buttons, telemetry callouts, cold thermal front boundary"
+    },
+    "tide": {
+      "hex": "#A9D1CB",
       "role": "accent_positive",
-      "usage": "Positive status, PFZ polygon overlays, success indicators, key action accents"
+      "usage": "PFZ seafoam polygons, positive status, night mode accents"
     },
-    "sandy_shore": {
-      "hex": "#DCC7AA",
-      "role": "neutral_panel",
-      "usage": "Neutral container borders, sidebars, panel backgrounds, callouts"
+    "sea_glass": {
+      "hex": "#E1EEEA",
+      "role": "surface_tint",
+      "usage": "Evidence card fills, telemetry chips, subtle borders"
     },
-    "salt_air": {
-      "hex": "#F4F6F6",
+    "driftwood": {
+      "hex": "#D9CDB8",
+      "role": "neutral_border",
+      "usage": "Structural borders, panel dividers, card outlines"
+    },
+    "wet_sand": {
+      "hex": "#5F5747",
+      "role": "neutral_dark",
+      "usage": "Secondary borders, muted text labels"
+    },
+    "sand_paper": {
+      "hex": "#F5F0E6",
+      "role": "surface_container",
+      "usage": "Light mode card containers, input wells"
+    },
+    "shell": {
+      "hex": "#FCFAF5",
       "role": "surface_background",
-      "usage": "Primary app background, surface cards, clean light containers"
+      "usage": "Light mode primary app canvas background"
     },
-    "text_default": {
-      "hex": "#0B1220",
-      "role": "body_text",
-      "usage": "Standard typography on light surfaces (WCAG AA compliant)"
+    "charcoal": {
+      "hex": "#17262B",
+      "role": "body_text_dark",
+      "usage": "Dark mode surface containers, day mode primary body text"
     },
-    "text_inverse": {
+    "white": {
       "hex": "#FFFFFF",
       "role": "inverse_text",
-      "usage": "Typography on deep_sea dark surfaces"
+      "usage": "Typography on dark surfaces and primary buttons"
     }
+  },
+  "alerts": {
+    "clear_day": "#1E8449",
+    "clear_night": "#4CC38A",
+    "be_aware": "#FFD52E",
+    "be_prepared_day": "#E9761A",
+    "be_prepared_night": "#F28A3A",
+    "take_action_day": "#A61B1B",
+    "take_action_night": "#F0625E"
+  },
+  "oceanographic_ramps": {
+    "sst": ["#102A31", "#2F4B9B", "#8A4B82", "#D96B74", "#F28A3A", "#FFD52E"],
+    "chlorophyll": ["#E1EEEA", "#A9D1CB", "#5BB682", "#1E8449", "#104C2E"],
+    "wave_height": ["#F5F0E6", "#D9CDB8", "#D48B68", "#B84333", "#661824"]
   }
 }

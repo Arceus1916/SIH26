@@ -137,11 +137,72 @@ COASTAL_GAZETTEER: Dict[str, Tuple[float, float, str, str]] = {
     "kavaratti": (10.5667, 72.6417, "Kavaratti Harbor (Lakshadweep)", "Arabian Sea"),
     "minicoy": (8.2833, 73.0500, "Minicoy Port (Lakshadweep)", "Arabian Sea / Indian Ocean"),
     "colombo": (6.9497, 79.8428, "Port of Colombo (Sri Lanka)", "Indian Ocean"),
-    "tokyo": (35.6528, 139.8394, "Port of Tokyo (Japan)", "Northwest Pacific Ocean"),
-    "rotterdam": (51.9244, 4.4777, "Port of Rotterdam (Netherlands)", "North Sea"),
+
+    # East Asia & Japan
+    "tokyo bay": (35.5300, 139.8000, "Tokyo Bay (Japan)", "Tokyo Bay / Northwest Pacific"),
+    "tokyo": (35.6528, 139.8394, "Port of Tokyo (Japan)", "Tokyo Bay / Northwest Pacific"),
+    "東京湾": (35.5300, 139.8000, "Tokyo Bay / 東京湾 (Japan)", "Tokyo Bay / Northwest Pacific"),
+    "東京": (35.6528, 139.8394, "Port of Tokyo / 東京港 (Japan)", "Tokyo Bay / Northwest Pacific"),
+    "とうきょう": (35.6528, 139.8394, "Port of Tokyo (Japan)", "Tokyo Bay / Northwest Pacific"),
+    "yokohama": (35.4437, 139.6380, "Port of Yokohama (Japan)", "Tokyo Bay"),
+    "横浜": (35.4437, 139.6380, "Port of Yokohama / 横浜港 (Japan)", "Tokyo Bay"),
+    "osaka": (34.6500, 135.4333, "Port of Osaka (Japan)", "Osaka Bay"),
+    "大阪": (34.6500, 135.4333, "Port of Osaka / 大阪港 (Japan)", "Osaka Bay"),
+    "kobe": (34.6833, 135.2000, "Port of Kobe (Japan)", "Osaka Bay"),
+    "神戸": (34.6833, 135.2000, "Port of Kobe / 神戸港 (Japan)", "Osaka Bay"),
+    "nagoya": (35.0833, 136.8833, "Port of Nagoya (Japan)", "Ise Bay"),
+    "名古屋": (35.0833, 136.8833, "Port of Nagoya / 名古屋港 (Japan)", "Ise Bay"),
+
+    # China & Taiwan
+    "shanghai": (31.2304, 121.4737, "Port of Shanghai (China)", "East China Sea / Yangtze Delta"),
+    "上海": (31.2304, 121.4737, "Port of Shanghai / 上海港 (China)", "East China Sea / Yangtze Delta"),
+    "上海港": (31.2304, 121.4737, "Port of Shanghai / 上海港 (China)", "East China Sea / Yangtze Delta"),
+    "yangshan": (30.6300, 122.0600, "Yangshan Deepwater Port (Shanghai)", "East China Sea"),
+    "洋山": (30.6300, 122.0600, "Yangshan Deepwater Port / 洋山深水港 (Shanghai)", "East China Sea"),
+    "ningbo": (29.8683, 121.5440, "Port of Ningbo-Zhoushan (China)", "East China Sea"),
+    "宁波": (29.8683, 121.5440, "Port of Ningbo / 宁波舟山港 (China)", "East China Sea"),
+    "shenzhen": (22.5000, 113.8833, "Port of Shenzhen (China)", "South China Sea"),
+    "深圳": (22.5000, 113.8833, "Port of Shenzhen / 深圳港 (China)", "South China Sea"),
+    "guangzhou": (23.0833, 113.4333, "Port of Guangzhou (China)", "Pearl River Delta"),
+    "广州": (23.0833, 113.4333, "Port of Guangzhou / 广州港 (China)", "Pearl River Delta"),
+    "qingdao": (36.0833, 120.3167, "Port of Qingdao (China)", "Yellow Sea"),
+    "青岛": (36.0833, 120.3167, "Port of Qingdao / 青岛港 (China)", "Yellow Sea"),
+    "hong kong": (22.3000, 114.1667, "Port of Hong Kong", "South China Sea"),
+    "香港": (22.3000, 114.1667, "Port of Hong Kong / 香港港", "South China Sea"),
+    "kaohsiung": (22.6167, 120.2833, "Port of Kaohsiung (Taiwan)", "Taiwan Strait"),
+    "高雄": (22.6167, 120.2833, "Port of Kaohsiung / 高雄港 (Taiwan)", "Taiwan Strait"),
+
+    # Korea
+    "busan": (35.1028, 129.0403, "Port of Busan (South Korea)", "Korea Strait"),
+    "부산": (35.1028, 129.0403, "Port of Busan / 부산항 (South Korea)", "Korea Strait"),
+    "incheon": (37.4500, 126.6000, "Port of Incheon (South Korea)", "Yellow Sea"),
+    "인천": (37.4500, 126.6000, "Port of Incheon / 인천항 (South Korea)", "Yellow Sea"),
+
+    # Southeast Asia
+    "singapore": (1.290270, 103.851959, "Port of Singapore", "Singapore Strait / Malacca"),
+    "싱가포르": (1.290270, 103.851959, "Port of Singapore / 싱가포르", "Singapore Strait"),
+    "新加坡": (1.290270, 103.851959, "Port of Singapore / 新加坡港", "Singapore Strait"),
+    "tanjung priok": (-6.1000, 106.8833, "Port of Tanjung Priok (Jakarta, Indonesia)", "Java Sea"),
+    "jakarta": (-6.1000, 106.8833, "Port of Tanjung Priok (Jakarta, Indonesia)", "Java Sea"),
+
+    # Middle East
+    "dubai": (25.2697, 55.3095, "Port Rashid (Dubai, UAE)", "Persian Gulf"),
+    "دبي": (25.2697, 55.3095, "Port Rashid / ميناء راشد (Dubai, UAE)", "Persian Gulf"),
+    "jebel ali": (25.0100, 55.0600, "Port of Jebel Ali (Dubai, UAE)", "Persian Gulf"),
+    "جبل علي": (25.0100, 55.0600, "Port of Jebel Ali / ميناء جبل علي (Dubai, UAE)", "Persian Gulf"),
+
+    # Americas
+    "new york": (40.6900, -74.0400, "New York Harbor (USA)", "New York Bight / Atlantic Ocean"),
     "san francisco": (37.8080, -122.4177, "Fisherman's Wharf (San Francisco, USA)", "Northeast Pacific"),
-    "singapore": (1.290270, 103.851959, "Port of Singapore", "Strait of Malacca"),
-    "dubai": (25.2697, 55.3095, "Port Rashid (Dubai, UAE)", "Persian Gulf")
+    "santos": (-23.9535, -46.3008, "Port of Santos (Brazil)", "South Atlantic Ocean"),
+
+    # Europe
+    "rotterdam": (51.9244, 4.4777, "Port of Rotterdam (Netherlands)", "North Sea"),
+    "haven van rotterdam": (51.9244, 4.4777, "Port of Rotterdam (Netherlands)", "North Sea"),
+    "barcelona": (41.3500, 2.1667, "Port of Barcelona (Spain)", "Balearic Sea / Mediterranean"),
+    "marseille": (43.3000, 5.3500, "Grand Port Maritime de Marseille (France)", "Gulf of Lion / Mediterranean"),
+    "hamburg": (53.5333, 9.9667, "Port of Hamburg (Germany)", "Elbe / North Sea"),
+    "bergen": (60.3950, 5.3200, "Port of Bergen (Norway)", "North Sea / Norwegian Sea")
 }
 
 # Troll & Sarcastic Tone Vocabulary Patterns
@@ -178,6 +239,7 @@ class SLMIntentClassifier:
         """
         detected = []
         cleaned = text
+
         for pat in TROLL_TONE_PATTERNS:
             matches = re.findall(pat, cleaned, re.IGNORECASE)
             if matches:
@@ -191,18 +253,21 @@ class SLMIntentClassifier:
     def resolve_coastal_entity(cls, text: str) -> Optional[Tuple[float, float, str, str]]:
         """
         Resolves coastal city, port, or landmark in text against the Coastal Gazetteer.
+        Supports multi-word, native non-ASCII scripts (Japanese, Chinese, Korean, Arabic), and token-based lookups.
         """
         text_lower = text.lower()
         tokens = set(re.findall(r'[a-zA-Z0-9]+', text_lower))
 
-        # Check multi-word locations first (e.g. 'port blair', 'sagar island', 'nhava sheva')
+        # Check multi-word and non-ASCII locations first (longest key first)
         for loc_name, data in sorted(COASTAL_GAZETTEER.items(), key=lambda x: len(x[0]), reverse=True):
-            if " " in loc_name and loc_name in text_lower:
-                return data
-
-        # Check single-word locations by token
-        for loc_name, data in COASTAL_GAZETTEER.items():
-            if " " not in loc_name and loc_name in tokens:
-                return data
+            if not loc_name.isascii():
+                if loc_name in text_lower or loc_name in text:
+                    return data
+            elif " " in loc_name:
+                if loc_name in text_lower:
+                    return data
+            else:
+                if loc_name in tokens or f" {loc_name} " in f" {text_lower} ":
+                    return data
 
         return None

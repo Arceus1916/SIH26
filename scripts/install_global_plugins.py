@@ -66,7 +66,7 @@ When presenting a review:
    - Performance & Readability Optimizations
 2. **Actionable Findings by File**:
    - **Location**: `path/to/file.ext:L123-L135`
-   - **Severity**: 🔴 Critical | 🟡 Warning | 🔵 Optimization
+   - **Severity**: [CRITICAL] Critical | [WARNING] Warning | [OPTIMIZATION] Optimization
    - **Issue Summary**: Clear explanation of the flaw and impact.
    - **Suggested Fix**: Drop-in replacement diff snippet.
 3. **Verification Checklist**:
@@ -78,10 +78,10 @@ When presenting a review:
 
 When performing code reviews or evaluating pull requests:
 1. **Severity Hierarchy**: Categorize all findings into:
-   - 🔴 **Critical**: Logic bugs, security exploits, memory/resource leaks, data loss hazards, breaking API contract changes.
-   - 🟡 **Warning**: Missing error handling, unhandled edge cases, performance bottlenecks (O(N^2) in hot paths), type inconsistencies.
-   - 🔵 **Optimization**: Readability, idiomatic refactoring, code deduplication, documentation clarity.
-   - ⚪ **Positive**: Commend well-structured code, solid unit tests, or elegant abstractions.
+   - [CRITICAL] **Critical**: Logic bugs, security exploits, memory/resource leaks, data loss hazards, breaking API contract changes.
+   - [WARNING] **Warning**: Missing error handling, unhandled edge cases, performance bottlenecks (O(N^2) in hot paths), type inconsistencies.
+   - [OPTIMIZATION] **Optimization**: Readability, idiomatic refactoring, code deduplication, documentation clarity.
+   - [POSITIVE] **Positive**: Commend well-structured code, solid unit tests, or elegant abstractions.
 2. **Actionable Suggestions**: Every criticism must include an exact suggested code fix or diff snippet.
 3. **Verification Focus**: Check that new features have corresponding unit or integration tests.
 4. **Preserve Comments & Rationale**: Do not strip existing architectural comments during refactoring suggestions.

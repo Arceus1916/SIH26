@@ -1,19 +1,44 @@
 /* 
-  Project ORCA — Design Tokens & CSS Variables
-  Reference mapping only. Build pipeline pulls canonical values from docs/ui/palette.json & docs/ui/tokens.json.
-  DO NOT introduce custom hex codes or gradients.
+  Project ORCA — Design Tokens & CSS Variables (Palette A: Salt and deep water)
+  Strict Palette: #102A31, #0F6382, #2F4B9B, #A9D1CB, #E1EEEA, #D9CDB8, #5F5747, #F5F0E6, #FCFAF5, #17262B, #FFFFFF
+  Alerts: #1E8449, #4CC38A, #FFD52E, #E9761A, #F28A3A, #A61B1B, #F0625E
+  Ramps: #8A4B82, #D96B74, #5BB682, #104C2E, #D48B68, #B84333, #661824
+  DO NOT introduce custom hex codes or gradients. Max border-radius: 8px. Zero emojis permitted.
 */
 
 :root {
-  /* Strict Palette Tokens (from docs/ui/palette.json) */
-  --color-deep-sea: #0D2B45;
-  --color-ocean-mist: #5A7D9A;
-  --color-seafoam: #8DBFB7;
-  --color-sandy-shore: #DCC7AA;
-  --color-salt-air: #F4F6F6;
+  /* Canonical Palette A Base Tokens */
+  --color-ink-sea: #102A31;
+  --color-deep-current: #0F6382;
+  --color-neel-indigo: #2F4B9B;
+  --color-tide: #A9D1CB;
+  --color-sea-glass: #E1EEEA;
+  --color-driftwood: #D9CDB8;
+  --color-wet-sand: #5F5747;
+  --color-sand-paper: #F5F0E6;
+  --color-shell: #FCFAF5;
+  --color-charcoal: #17262B;
+  --color-white: #FFFFFF;
+
+  /* Alert Tokens */
+  --alert-clear-day: #1E8449;
+  --alert-clear-night: #4CC38A;
+  --alert-be-aware: #FFD52E;
+  --alert-be-prepared-day: #E9761A;
+  --alert-be-prepared-night: #F28A3A;
+  --alert-take-action-day: #A61B1B;
+  --alert-take-action-night: #F0625E;
+
+  /* Backward Compatibility Aliases */
+  --color-deep-sea: #102A31;
+  --color-ocean-mist: #0F6382;
+  --color-seafoam: #A9D1CB;
+  --color-sandy-shore: #D9CDB8;
+  --color-salt-air: #FCFAF5;
+  --color-midnight: #17262B;
 
   /* Typography Colors */
-  --color-text-default: #0B1220;
+  --color-text-default: #17262B;
   --color-text-inverse: #FFFFFF;
 
   /* Boundaries & Radii (Max 8px, No Gradients) */
@@ -22,10 +47,50 @@
   --radius-md: 8px;
   --radius-max: 8px;
 
-  --border-subtle: 1px solid rgba(13, 43, 69, 0.08);
-  --border-panel: 1px solid #DCC7AA;
-  --border-contrast: 1px solid #0D2B45;
-
   /* Typography */
   --font-family: Inter, Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Semantic Theme Tokens: Night Mode (Default) */
+  --theme-bg-floor: #102A31;
+  --theme-bg-panel: #17262B;
+  --theme-bg-card: #17262B;
+  --theme-bg-input: #102A31;
+  --theme-border: #102A31;
+  --theme-border-accent: #0F6382;
+  --theme-text-primary: #FCFAF5;
+  --theme-text-secondary: #A9D1CB;
+  --theme-text-muted: #D9CDB8;
+  --theme-accent: #A9D1CB;
+  --theme-chat-agent-bg: #17262B;
+  --theme-chat-user-bg: #0F6382;
+  --theme-chat-agent-text: #E1EEEA;
+  --theme-chat-user-text: #FFFFFF;
+  --theme-evidence-bg: #102A31;
+  --theme-evidence-border: #A9D1CB;
+  --theme-alert-clear: #4CC38A;
+  --theme-alert-caution: #F28A3A;
+  --theme-alert-danger: #F0625E;
+}
+
+/* Day Mode (Sunlight Deck Mode) */
+[data-theme="light"] {
+  --theme-bg-floor: #FCFAF5;
+  --theme-bg-panel: #F5F0E6;
+  --theme-bg-card: #F5F0E6;
+  --theme-bg-input: #FCFAF5;
+  --theme-border: #D9CDB8;
+  --theme-border-accent: #0F6382;
+  --theme-text-primary: #17262B;
+  --theme-text-secondary: #5F5747;
+  --theme-text-muted: #0F6382;
+  --theme-accent: #0F6382;
+  --theme-chat-agent-bg: #F5F0E6;
+  --theme-chat-user-bg: #0F6382;
+  --theme-chat-agent-text: #17262B;
+  --theme-chat-user-text: #FFFFFF;
+  --theme-evidence-bg: #E1EEEA;
+  --theme-evidence-border: #0F6382;
+  --theme-alert-clear: #1E8449;
+  --theme-alert-caution: #E9761A;
+  --theme-alert-danger: #A61B1B;
 }
