@@ -1,47 +1,77 @@
 /* 
-  Project ORCA — Design Tokens & CSS Variables (Palette A: Salt and deep water)
-  Strict Palette: #102A31, #0F6382, #2F4B9B, #A9D1CB, #E1EEEA, #D9CDB8, #5F5747, #F5F0E6, #FCFAF5, #17262B, #FFFFFF
-  Alerts: #1E8449, #4CC38A, #FFD52E, #E9761A, #F28A3A, #A61B1B, #F0625E
-  Ramps: #8A4B82, #D96B74, #5BB682, #104C2E, #D48B68, #B84333, #661824
-  DO NOT introduce custom hex codes or gradients. Max border-radius: 8px. Zero emojis permitted.
+  Project ORCA — Design Tokens & CSS Variables (v6.1: Chart Paper & Night Bridge)
+  Light ("chart paper"): #EDE7D8, #E3DCC8, rgba(29,43,38,0.16), #1D2B26, #55645C, #8B7F63, #8A6F45, #2B6F7A, #F4F1E6, #B5651D
+  Dark ("night bridge"): #0A1520, #101E29, rgba(233,228,214,0.14), #E9E4D6, #9FB0AC, #6E8480, #3E6672, #7FC4D2, #06232A, #E2A23D
+  Zero gradients. Max border-radius: 8px. Zero emojis permitted.
 */
 
 :root {
-  /* Canonical Palette A Base Tokens */
-  --color-ink-sea: #102A31;
-  --color-deep-current: #0F6382;
-  --color-neel-indigo: #2F4B9B;
-  --color-tide: #A9D1CB;
-  --color-sea-glass: #E1EEEA;
-  --color-driftwood: #D9CDB8;
-  --color-wet-sand: #5F5747;
-  --color-sand-paper: #F5F0E6;
-  --color-shell: #FCFAF5;
-  --color-charcoal: #17262B;
+  /* =========================================================================
+     Dark Theme Tokens: "night bridge" (Default)
+     ========================================================================= */
+  --bg: #0A1520;
+  --bg-2: #101E29;
+  --panel-border: rgba(233, 228, 214, 0.14);
+  --ink: #E9E4D6;
+  --ink-secondary: #9FB0AC;
+  --ink-muted: #6E8480;
+  --contour: #3E6672;
+  --signal: #7FC4D2;
+  --signal-ink: #06232A;
+  --hazard: #E2A23D;
+  --hazard-bg: rgba(226, 162, 61, 0.14);
+  --hazard-ink: #2B1B04;
+
+  /* Semantic Theme Mappings */
+  --theme-bg-floor: var(--bg);
+  --theme-bg-panel: var(--bg-2);
+  --theme-bg-card: var(--bg-2);
+  --theme-bg-input: var(--bg-2);
+  --theme-border: var(--panel-border);
+  --theme-border-accent: var(--signal);
+  --theme-text-primary: var(--ink);
+  --theme-text-secondary: var(--ink-secondary);
+  --theme-text-muted: var(--ink-muted);
+  --theme-accent: var(--signal);
+  --theme-chat-agent-bg: var(--bg-2);
+  --theme-chat-user-bg: var(--signal);
+  --theme-chat-agent-text: var(--ink);
+  --theme-chat-user-text: var(--signal-ink);
+  --theme-evidence-bg: var(--bg);
+  --theme-evidence-border: var(--signal);
+  --theme-alert-clear: var(--signal);
+  --theme-alert-caution: var(--hazard);
+  --theme-alert-danger: #F0625E;
+
+  /* Canonical & Backward Compatibility Aliases */
+  --color-ink-sea: var(--bg);
+  --color-deep-current: var(--signal);
+  --color-neel-indigo: var(--contour);
+  --color-tide: var(--signal);
+  --color-sea-glass: var(--ink-secondary);
+  --color-driftwood: var(--ink-muted);
+  --color-wet-sand: var(--ink-muted);
+  --color-sand-paper: var(--ink);
+  --color-shell: var(--bg-2);
+  --color-charcoal: var(--bg);
   --color-white: #FFFFFF;
 
-  /* Alert Tokens */
+  --color-deep-sea: var(--bg);
+  --color-ocean-mist: var(--signal);
+  --color-seafoam: var(--signal);
+  --color-sandy-shore: var(--ink-muted);
+  --color-salt-air: var(--bg-2);
+  --color-midnight: var(--bg);
+
   --alert-clear-day: #1E8449;
-  --alert-clear-night: #4CC38A;
-  --alert-be-aware: #FFD52E;
-  --alert-be-prepared-day: #E9761A;
-  --alert-be-prepared-night: #F28A3A;
+  --alert-clear-night: var(--signal);
+  --alert-be-aware: var(--hazard);
+  --alert-be-prepared-day: var(--hazard);
+  --alert-be-prepared-night: var(--hazard);
   --alert-take-action-day: #A61B1B;
   --alert-take-action-night: #F0625E;
 
-  /* Backward Compatibility Aliases */
-  --color-deep-sea: #102A31;
-  --color-ocean-mist: #0F6382;
-  --color-seafoam: #A9D1CB;
-  --color-sandy-shore: #D9CDB8;
-  --color-salt-air: #FCFAF5;
-  --color-midnight: #17262B;
-
-  /* Typography Colors */
-  --color-text-default: #17262B;
-  --color-text-inverse: #FFFFFF;
-
-  /* Boundaries & Radii (Max 8px, No Gradients) */
+  /* Boundaries & Radii (Max 8px, Zero Gradients) */
   --radius-none: 0px;
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -49,48 +79,71 @@
 
   /* Typography */
   --font-family: Inter, Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-
-  /* Semantic Theme Tokens: Night Mode (Default) */
-  --theme-bg-floor: #102A31;
-  --theme-bg-panel: #17262B;
-  --theme-bg-card: #17262B;
-  --theme-bg-input: #102A31;
-  --theme-border: #102A31;
-  --theme-border-accent: #0F6382;
-  --theme-text-primary: #FCFAF5;
-  --theme-text-secondary: #A9D1CB;
-  --theme-text-muted: #D9CDB8;
-  --theme-accent: #A9D1CB;
-  --theme-chat-agent-bg: #17262B;
-  --theme-chat-user-bg: #0F6382;
-  --theme-chat-agent-text: #E1EEEA;
-  --theme-chat-user-text: #FFFFFF;
-  --theme-evidence-bg: #102A31;
-  --theme-evidence-border: #A9D1CB;
-  --theme-alert-clear: #4CC38A;
-  --theme-alert-caution: #F28A3A;
-  --theme-alert-danger: #F0625E;
+  --font-mono: 'SF Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 
-/* Day Mode (Sunlight Deck Mode) */
+/* =========================================================================
+   Light Theme Tokens: "chart paper"
+   ========================================================================= */
 [data-theme="light"] {
-  --theme-bg-floor: #FCFAF5;
-  --theme-bg-panel: #F5F0E6;
-  --theme-bg-card: #F5F0E6;
-  --theme-bg-input: #FCFAF5;
-  --theme-border: #D9CDB8;
-  --theme-border-accent: #0F6382;
-  --theme-text-primary: #17262B;
-  --theme-text-secondary: #5F5747;
-  --theme-text-muted: #0F6382;
-  --theme-accent: #0F6382;
-  --theme-chat-agent-bg: #F5F0E6;
-  --theme-chat-user-bg: #0F6382;
-  --theme-chat-agent-text: #17262B;
-  --theme-chat-user-text: #FFFFFF;
-  --theme-evidence-bg: #E1EEEA;
-  --theme-evidence-border: #0F6382;
-  --theme-alert-clear: #1E8449;
-  --theme-alert-caution: #E9761A;
+  --bg: #EDE7D8;
+  --bg-2: #E3DCC8;
+  --panel-border: rgba(29, 43, 38, 0.16);
+  --ink: #1D2B26;
+  --ink-secondary: #55645C;
+  --ink-muted: #8B7F63;
+  --contour: #8A6F45;
+  --signal: #2B6F7A;
+  --signal-ink: #F4F1E6;
+  --hazard: #B5651D;
+  --hazard-bg: rgba(181, 101, 29, 0.12);
+  --hazard-ink: #3A2408;
+
+  /* Semantic Theme Mappings */
+  --theme-bg-floor: var(--bg);
+  --theme-bg-panel: var(--bg-2);
+  --theme-bg-card: var(--bg-2);
+  --theme-bg-input: var(--bg-2);
+  --theme-border: var(--panel-border);
+  --theme-border-accent: var(--signal);
+  --theme-text-primary: var(--ink);
+  --theme-text-secondary: var(--ink-secondary);
+  --theme-text-muted: var(--ink-muted);
+  --theme-accent: var(--signal);
+  --theme-chat-agent-bg: var(--bg-2);
+  --theme-chat-user-bg: var(--signal);
+  --theme-chat-agent-text: var(--ink);
+  --theme-chat-user-text: var(--signal-ink);
+  --theme-evidence-bg: var(--bg);
+  --theme-evidence-border: var(--signal);
+  --theme-alert-clear: var(--signal);
+  --theme-alert-caution: var(--hazard);
   --theme-alert-danger: #A61B1B;
+
+  /* Canonical & Backward Compatibility Aliases */
+  --color-ink-sea: var(--ink);
+  --color-deep-current: var(--signal);
+  --color-neel-indigo: var(--contour);
+  --color-tide: var(--signal);
+  --color-sea-glass: var(--ink-secondary);
+  --color-driftwood: var(--ink-muted);
+  --color-wet-sand: var(--ink-muted);
+  --color-sand-paper: var(--bg);
+  --color-shell: var(--bg-2);
+  --color-charcoal: var(--ink);
+
+  --color-deep-sea: var(--bg);
+  --color-ocean-mist: var(--signal);
+  --color-seafoam: var(--signal);
+  --color-sandy-shore: var(--ink-muted);
+  --color-salt-air: var(--bg-2);
+  --color-midnight: var(--bg);
+
+  --alert-clear-day: var(--signal);
+  --alert-clear-night: #4CC38A;
+  --alert-be-aware: var(--hazard);
+  --alert-be-prepared-day: var(--hazard);
+  --alert-be-prepared-night: var(--hazard);
+  --alert-take-action-day: #A61B1B;
+  --alert-take-action-night: #F0625E;
 }

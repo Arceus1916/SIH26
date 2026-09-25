@@ -378,7 +378,7 @@ OPERATIONAL_GREETINGS = {
 
 class MarineChatService:
     def __init__(self):
-        self.version = "marine_chat_v6.0_rag_slm"
+        self.version = "marine_chat_v6.2_rag_slm"
 
     def process_message(self, request: ChatRequest, task_id: str = "task-chat-advisory") -> ChatResponse:
         """

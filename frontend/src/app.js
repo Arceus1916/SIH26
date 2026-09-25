@@ -1,10 +1,11 @@
 /**
- * Project ORCA — Global Marine Tactical Command Center Engine (v2.0)
+ * Project ORCA — Global Marine Tactical Command Center Engine (v6.2.0 - Finalized)
  * 50+ Worldwide Ports, Mobile Responsive Switching, Interactive Waypoint Placement & Clean Markdown Formatter
  */
 
 import { ThermalWindParticleCanvas } from './wind-engine.js';
 
+window.__ORCA_VERSION__ = "6.2.0";
 const API_BASE_URL = window.__ORCA_API_URL__ || '/v1';
 
 // Strict Palette A Constants (docs/ui/palette.json)
@@ -134,13 +135,95 @@ document.addEventListener('DOMContentLoaded', () => {
   loadInitialHarbor('rameswaram');
   applyTheme(currentTheme);
   setViewMode('landing'); // Start in ChatGPT-style Minimalist Landing Screen
+  drawChart();
+  window.addEventListener('resize', debounceChart(drawChart, 150));
 });
+
+/**
+ * Renders the responsive organic contour lines (9 rings) & coordinate ticks
+ * on the #chart-bg canvas behind the landing hero screen.
+ */
+function drawChart() {
+  const canvas = document.getElementById('chart-bg');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  if (!w || !h) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.max(1, Math.round(w * dpr));
+  canvas.height = Math.max(1, Math.round(h * dpr));
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+
+  const styles = getComputedStyle(document.documentElement);
+  const contourColor = styles.getPropertyValue('--contour').trim() || '#3E6672';
+  const tickColor = styles.getPropertyValue('--ink-muted').trim() || '#6E8480';
+
+  const cx = w * 0.70;
+  const cy = h * 0.50;
+  const rings = 9;
+  const baseR = Math.min(w, h) * 0.05;
+  const gap = Math.min(w, h) * 0.052;
+
+  for (let i = 0; i < rings; i++) {
+    const r = baseR + i * gap;
+    ctx.beginPath();
+    const pts = 110;
+    for (let p = 0; p <= pts; p++) {
+      const a = (p / pts) * Math.PI * 2;
+      const noise = Math.sin(a * 3 + i * 0.7) * r * 0.06
+                  + Math.sin(a * 7 + i * 1.3) * r * 0.025
+                  + Math.sin(a * 2 - i * 0.5) * r * 0.03;
+      const rr = r + noise;
+      const x = cx + Math.cos(a) * rr;
+      const y = cy + Math.sin(a) * rr * 0.70;
+      if (p === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = contourColor;
+    ctx.globalAlpha = Math.max(0.06, 0.50 - i * 0.045);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle = tickColor;
+  ctx.font = '11px "IBM Plex Mono", "SF Mono", monospace';
+
+  const latLabels = ['16°N', '15°N', '14°N', '13°N', '12°N'];
+  for (let li = 0; li < latLabels.length; li++) {
+    const ly = h * 0.14 + li * (h * 0.68 / (latLabels.length - 1));
+    ctx.fillText(latLabels[li], 12, ly);
+    ctx.fillRect(0, ly - 4, 5, 1);
+  }
+
+  const lonLabels = ['78°E', '80°E', '82°E', '84°E', '86°E'];
+  for (let lo = 0; lo < lonLabels.length; lo++) {
+    const lx = w * 0.14 + lo * (w * 0.75 / (lonLabels.length - 1));
+    ctx.fillText(lonLabels[lo], lx - 14, h - 10);
+    ctx.fillRect(lx, h - 5, 1, 5);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function debounceChart(fn, wait) {
+  let t;
+  return function() {
+    clearTimeout(t);
+    t = setTimeout(fn, wait);
+  };
+}
 
 function setViewMode(mode) {
   currentViewMode = mode;
   if (mode === 'landing') {
     document.body.classList.remove('layout-workspace-mode');
     document.body.classList.add('layout-landing-mode');
+    setTimeout(drawChart, 30);
   } else {
     document.body.classList.remove('layout-landing-mode');
     document.body.classList.add('layout-workspace-mode');
@@ -178,6 +261,7 @@ function returnToLanding() {
     landingInput.value = '';
     landingInput.focus();
   }
+  setTimeout(drawChart, 30);
 }
 
 function handleLandingChip(query) {
@@ -189,6 +273,7 @@ function handleLandingChip(query) {
 window.transitionToWorkspace = transitionToWorkspace;
 window.returnToLanding = returnToLanding;
 window.handleLandingChip = handleLandingChip;
+window.drawChart = drawChart;
 
 function setBasemapTheme(isLight) {
   if (!map) return;
@@ -209,10 +294,28 @@ function setBasemapTheme(isLight) {
   }).addTo(map);
 }
 
+function updateTelemetryClock() {
+  const telemetryEl = document.getElementById('live-telemetry-text');
+  if (!telemetryEl) return;
+  const now = new Date();
+  const hh = String(now.getUTCHours()).padStart(2, '0');
+  const mm = String(now.getUTCMinutes()).padStart(2, '0');
+  telemetryEl.textContent = `Live telemetry · synced ${hh}:${mm}`;
+}
+
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('orca_theme', theme);
+
+  const themeBtn = document.getElementById('btn-toggle-theme');
+  if (themeBtn) {
+    themeBtn.setAttribute('title', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+    themeBtn.setAttribute('aria-label', theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+    themeBtn.innerHTML = theme === 'light'
+      ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`
+      : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+  }
 
   const themeLabel = document.getElementById('theme-btn-label');
   if (themeLabel) {
@@ -220,12 +323,17 @@ function applyTheme(theme) {
   }
 
   setBasemapTheme(theme === 'light');
+  drawChart();
 }
 
 function toggleTheme() {
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   applyTheme(newTheme);
 }
+
+// Start live telemetry sync clock
+updateTelemetryClock();
+setInterval(updateTelemetryClock, 30000);
 
 function switchMobileTab(tabClass) {
   document.body.className = tabClass;
@@ -642,104 +750,98 @@ function updateSpeciesSidebar(lat) {
   }
 }
 
+const HARBOR_WATER_ANCHORS = {
+  rameswaram: { lat: 9.18, lon: 79.35, dx: 0.2, dy: -1.0, scale: 0.12, bounds: [8.80, 9.25, 78.80, 79.60] },
+  kochi: { lat: 9.92, lon: 76.05, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [9.60, 10.20, 75.60, 76.20] },
+  visakhapatnam: { lat: 17.65, lon: 83.45, dx: 1.0, dy: 0.0, scale: 0.22, bounds: [17.30, 18.00, 83.28, 83.80] },
+  tuticorin: { lat: 8.72, lon: 78.30, dx: 1.0, dy: -0.2, scale: 0.15, bounds: [8.40, 8.95, 78.18, 78.60] },
+  chennai: { lat: 13.08, lon: 80.48, dx: 1.0, dy: 0.0, scale: 0.24, bounds: [12.75, 13.45, 80.30, 80.85] },
+  mumbai: { lat: 18.88, lon: 72.58, dx: -1.0, dy: 0.0, scale: 0.22, bounds: [18.55, 19.25, 72.25, 72.76] },
+  mangalore: { lat: 12.85, lon: 74.65, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [12.55, 13.15, 74.25, 74.80] },
+  goa: { lat: 15.38, lon: 73.62, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [15.10, 15.65, 73.30, 73.76] },
+  paradip: { lat: 20.25, lon: 86.82, dx: 1.0, dy: -0.3, scale: 0.22, bounds: [19.95, 20.55, 86.68, 87.20] },
+  veraval: { lat: 20.75, lon: 70.37, dx: 0.0, dy: -1.0, scale: 0.18, bounds: [20.45, 20.86, 70.05, 70.70] },
+  "port blair": { lat: 11.60, lon: 92.88, dx: 1.0, dy: 0.0, scale: 0.16, bounds: [11.35, 11.85, 92.78, 93.15] },
+  colombo: { lat: 6.95, lon: 79.68, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [6.70, 7.20, 79.35, 79.82] },
+  karachi: { lat: 24.68, lon: 66.92, dx: 0.0, dy: -1.0, scale: 0.20, bounds: [24.35, 24.78, 66.60, 67.25] },
+  chittagong: { lat: 22.15, lon: 91.60, dx: -0.8, dy: -0.6, scale: 0.18, bounds: [21.80, 22.25, 91.30, 91.75] },
+  tokyo: { lat: 35.35, lon: 139.80, dx: 0.0, dy: -1.0, scale: 0.09, bounds: [35.15, 35.48, 139.70, 139.95] },
+  singapore: { lat: 1.185, lon: 103.85, dx: 0.0, dy: -1.0, scale: 0.055, bounds: [1.130, 1.215, 103.65, 104.10] },
+  shanghai: { lat: 31.15, lon: 122.35, dx: 1.0, dy: 0.0, scale: 0.22, bounds: [30.60, 31.60, 121.92, 122.75] },
+  busan: { lat: 34.98, lon: 129.15, dx: 0.6, dy: -0.8, scale: 0.16, bounds: [34.75, 35.05, 129.08, 129.45] },
+  jakarta: { lat: -5.92, lon: 106.88, dx: 0.0, dy: 1.0, scale: 0.18, bounds: [-6.04, -5.60, 106.55, 107.20] },
+  kaohsiung: { lat: 22.58, lon: 120.12, dx: -1.0, dy: -0.3, scale: 0.16, bounds: [22.35, 22.80, 119.85, 120.22] },
+  "san francisco": { lat: 37.75, lon: -122.68, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [37.50, 38.00, -123.00, -122.54] },
+  seattle: { lat: 47.60, lon: -122.48, dx: -0.5, dy: -0.8, scale: 0.06, bounds: [47.45, 47.75, -122.56, -122.40] },
+  "new york": { lat: 40.35, lon: -73.80, dx: 0.3, dy: -1.0, scale: 0.18, bounds: [40.10, 40.46, -74.15, -73.30] },
+  miami: { lat: 25.76, lon: -80.02, dx: 1.0, dy: 0.0, scale: 0.16, bounds: [25.50, 26.05, -80.11, -79.75] },
+  vancouver: { lat: 49.32, lon: -123.38, dx: -1.0, dy: 0.2, scale: 0.15, bounds: [49.15, 49.50, -123.65, -123.22] },
+  halifax: { lat: 44.52, lon: -63.45, dx: 0.5, dy: -1.0, scale: 0.16, bounds: [44.30, 44.60, -63.75, -63.20] },
+  valparaiso: { lat: -33.02, lon: -71.75, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [-33.25, -32.80, -72.05, -71.66] },
+  callao: { lat: -12.06, lon: -77.30, dx: -1.0, dy: 0.0, scale: 0.18, bounds: [-12.30, -11.80, -77.60, -77.18] },
+  santos: { lat: -24.12, lon: -46.30, dx: 0.0, dy: -1.0, scale: 0.18, bounds: [-24.40, -24.02, -46.60, -46.00] },
+  "buenos aires": { lat: -34.80, lon: -57.75, dx: 1.0, dy: -0.5, scale: 0.22, bounds: [-35.10, -34.62, -58.15, -57.30] },
+  ensenada: { lat: 31.82, lon: -116.75, dx: -1.0, dy: -0.2, scale: 0.16, bounds: [31.60, 32.05, -117.05, -116.65] },
+  rotterdam: { lat: 52.05, lon: 3.80, dx: -1.0, dy: 0.1, scale: 0.20, bounds: [51.85, 52.20, 3.45, 4.06] },
+  marseille: { lat: 43.18, lon: 5.32, dx: -0.2, dy: -1.0, scale: 0.16, bounds: [42.95, 43.25, 5.05, 5.55] },
+  genoa: { lat: 44.32, lon: 8.92, dx: 0.0, dy: -1.0, scale: 0.16, bounds: [44.10, 44.37, 8.65, 9.20] },
+  piraeus: { lat: 37.85, lon: 23.58, dx: -0.3, dy: -1.0, scale: 0.14, bounds: [37.65, 37.91, 23.35, 23.75] },
+  bergen: { lat: 60.42, lon: 5.08, dx: -1.0, dy: 0.1, scale: 0.14, bounds: [60.25, 60.55, 4.80, 5.22] },
+  hamburg: { lat: 53.95, lon: 8.45, dx: -1.0, dy: 0.2, scale: 0.22, bounds: [53.80, 54.20, 8.00, 8.65] },
+  barcelona: { lat: 41.30, lon: 2.25, dx: 0.8, dy: -0.6, scale: 0.16, bounds: [41.10, 41.36, 2.19, 2.55] },
+  southampton: { lat: 50.68, lon: -1.30, dx: 0.0, dy: -1.0, scale: 0.15, bounds: [50.50, 50.76, -1.60, -1.00] },
+  lisbon: { lat: 38.65, lon: -9.42, dx: -1.0, dy: -0.2, scale: 0.18, bounds: [38.45, 38.85, -9.75, -9.30] },
+  gdansk: { lat: 54.48, lon: 18.75, dx: 0.2, dy: 1.0, scale: 0.16, bounds: [54.42, 54.70, 18.45, 19.10] },
+  dubai: { lat: 25.38, lon: 55.18, dx: -0.7, dy: 0.7, scale: 0.16, bounds: [25.30, 25.60, 54.95, 55.26] },
+  "cape town": { lat: -33.85, lon: 18.30, dx: -0.8, dy: -0.6, scale: 0.18, bounds: [-34.10, -33.65, 18.00, 18.38] },
+  alexandria: { lat: 31.30, lon: 29.92, dx: 0.0, dy: 1.0, scale: 0.18, bounds: [31.23, 31.55, 29.60, 30.25] },
+  mombasa: { lat: -4.08, lon: 39.80, dx: 1.0, dy: 0.0, scale: 0.18, bounds: [-4.30, -3.85, 39.72, 40.10] },
+  casablanca: { lat: 33.70, lon: -7.72, dx: -0.9, dy: 0.4, scale: 0.18, bounds: [33.63, 33.95, -8.00, -7.65] },
+  lagos: { lat: 6.32, lon: 3.40, dx: 0.0, dy: -1.0, scale: 0.16, bounds: [6.05, 6.40, 3.15, 3.65] },
+  durban: { lat: -29.88, lon: 31.15, dx: 0.9, dy: -0.4, scale: 0.18, bounds: [-30.15, -29.65, 31.06, 31.45] },
+  sydney: { lat: -33.84, lon: 151.35, dx: 1.0, dy: 0.0, scale: 0.18, bounds: [-34.10, -33.60, 151.28, 151.65] },
+  auckland: { lat: -36.75, lon: 174.92, dx: 0.8, dy: 0.6, scale: 0.16, bounds: [-36.80, -36.50, 174.82, 175.25] },
+  honolulu: { lat: 21.24, lon: -157.88, dx: -0.2, dy: -1.0, scale: 0.14, bounds: [21.05, 21.28, -158.10, -157.65] },
+  suva: { lat: -18.22, lon: 178.42, dx: 0.0, dy: -1.0, scale: 0.14, bounds: [-18.40, -18.18, 178.20, 178.65] }
+};
+
+function findNearestHarborAnchor(lat, lon, maxDist = 1.25) {
+  let best = null;
+  let bestDist = 999.0;
+  for (const key in HARBOR_WATER_ANCHORS) {
+    const data = HARBOR_WATER_ANCHORS[key];
+    const dLat = lat - data.lat;
+    const dLon = lon - data.lon;
+    const dist = Math.sqrt(dLat * dLat + dLon * dLon);
+    if (dist < bestDist && dist <= maxDist) {
+      bestDist = dist;
+      best = data;
+    }
+  }
+  return best;
+}
+
 function getSeawardVector(lat, lon) {
-  // Specific Port Overrides with Complex Geography / Estuaries
-  if (lat >= 1.0 && lat <= 1.5 && lon >= 103.5 && lon <= 104.2) return { dx: 0.3, dy: -1.0 };   // Singapore: strictly South into Singapore Strait
-  if (lat >= 30.8 && lat <= 32.2 && lon >= 121.0 && lon <= 122.5) return { dx: 1.0, dy: -0.1 }; // Shanghai: strictly East into East China Sea
-  if (lat >= 40.2 && lat <= 41.2 && lon >= -74.5 && lon <= -73.6) return { dx: 0.3, dy: -1.0 }; // New York: strictly South into New York Bight
-  if (lat >= 35.2 && lat <= 35.8 && lon >= 139.5 && lon <= 140.2) return { dx: 0.1, dy: -1.0 }; // Tokyo Bay: strictly South into central bay
-  if (lat >= 37.5 && lat <= 38.0 && lon >= -122.6 && lon <= -122.3) return { dx: -1.0, dy: 0.0 }; // San Francisco: strictly West into Pacific
-  if (lat >= 51.7 && lat <= 52.1 && lon >= 3.8 && lon <= 4.6) return { dx: -1.0, dy: 0.2 };     // Rotterdam: strictly West into North Sea
+  const anchor = findNearestHarborAnchor(lat, lon);
+  if (anchor) return { dx: anchor.dx, dy: anchor.dy };
 
-  // 1. Indian Subcontinent & Arabian Sea / Bay of Bengal
-  // West Coast India & Pakistan (Gujarat, Mumbai, Goa, Karnataka, Kerala, Kochi, Karachi): Arabian Sea is strictly West
   if (lat >= 7.0 && lat <= 26.0 && lon >= 65.0 && lon <= 77.6) return { dx: -1.0, dy: -0.15 };
-
-  // East Coast India & Bangladesh (Coromandel, Chennai, Vizag, Odisha, Bengal, Chittagong): Bay of Bengal is strictly East
   if (lat >= 10.2 && lat <= 24.5 && lon >= 79.7 && lon <= 93.5) return { dx: 1.0, dy: -0.10 };
-
-  // Gulf of Mannar, Palk Strait, Southern Sri Lanka
   if (lat >= 5.5 && lat < 10.2 && lon >= 77.0 && lon <= 82.0) return { dx: 0.5, dy: -0.85 };
-
-  // 2. East Asia & Southeast Asia
-  if (lat >= 33.0 && lat <= 42.0 && lon >= 130.0 && lon <= 145.0) return { dx: 0.4, dy: -0.9 }; // Japan
-  if (lat >= 28.0 && lat <= 36.0 && lon >= 118.0 && lon <= 126.0) return { dx: 1.0, dy: 0.0 };  // China East
-  if (lat >= 33.0 && lat <= 38.0 && lon >= 126.0 && lon <= 130.0) return { dx: 0.6, dy: -0.8 }; // Korea
-  if (lat >= -8.0 && lat <= 8.0 && lon >= 98.0 && lon <= 118.0) return { dx: 0.0, dy: lat < 0 ? 1.0 : -1.0 }; // SE Asia
-  if (lat >= 20.0 && lat <= 26.0 && lon >= 119.0 && lon <= 123.0) return { dx: -1.0, dy: -0.3 }; // Taiwan
-
-  // 3. Europe & Mediterranean
-  if (lat >= 50.0 && lat <= 56.0 && lon >= 2.0 && lon <= 12.0) return { dx: -0.9, dy: 0.4 };   // North Sea
-  if (lat >= 58.0 && lat <= 68.0 && lon >= 3.0 && lon <= 15.0) return { dx: -1.0, dy: 0.0 };   // Norway
-  if (lat >= 48.0 && lat <= 54.0 && lon >= -6.0 && lon <= 2.0) return { dx: 0.0, dy: -1.0 };   // UK / Channel
-  if (lat >= 36.0 && lat <= 45.0 && lon >= -10.5 && lon <= -6.0) return { dx: -1.0, dy: 0.0 }; // Portugal
-  if (lat >= 52.0 && lat <= 60.0 && lon >= 14.0 && lon <= 25.0) return { dx: 0.0, dy: 1.0 };   // Baltic
-  if (lat >= 40.0 && lat <= 45.0 && lon >= 3.0 && lon <= 18.0) return { dx: 0.0, dy: -1.0 };   // NW Med
-  if (lat >= 36.0 && lat <= 42.0 && lon >= -1.0 && lon <= 5.0) return { dx: 0.8, dy: -0.6 };   // Spain Med
-  if (lat >= 34.0 && lat <= 40.0 && lon >= 19.0 && lon <= 28.0) return { dx: 0.0, dy: -1.0 };  // Greece Med
-  if (lat >= 29.0 && lat <= 33.0 && lon >= 24.0 && lon <= 34.0) return { dx: 0.0, dy: 1.0 };   // Egypt Med
-
-  // 4. Middle East & Africa
-  if (lat >= 23.0 && lat <= 28.0 && lon >= 50.0 && lon <= 58.0) return { dx: -0.7, dy: 0.7 };   // Persian Gulf
-  if (lat >= -6.0 && lat <= 4.0 && lon >= 38.0 && lon <= 45.0) return { dx: 1.0, dy: 0.0 };    // East Africa
-  if (lat >= -36.0 && lat <= -28.0 && lon >= 15.0 && lon <= 25.0) return { dx: -0.8, dy: -0.6 }; // Cape Town
-  if (lat >= -32.0 && lat <= -25.0 && lon >= 28.0 && lon <= 35.0) return { dx: 0.9, dy: -0.4 };  // Durban
-  if (lat >= 30.0 && lat <= 36.0 && lon >= -12.0 && lon <= -4.0) return { dx: -0.9, dy: 0.4 };  // Morocco
-  if (lat >= 3.0 && lat <= 8.0 && lon >= 1.0 && lon <= 9.0) return { dx: 0.0, dy: -1.0 };       // Gulf of Guinea
-
-  // 5. Americas & Pacific
-  if (lat >= 18.0 && lat <= 55.0 && lon >= -130.0 && lon <= -115.0) return { dx: -1.0, dy: 0.0 }; // US West
-  if (lat >= -55.0 && lat <= 5.0 && lon >= -85.0 && lon <= -70.0) return { dx: -1.0, dy: 0.0 };  // South America West
-  if (lat >= 24.0 && lat <= 50.0 && lon >= -82.0 && lon <= -60.0) return { dx: 1.0, dy: -0.1 };  // US East
-  if (lat >= -38.0 && lat <= 0.0 && lon >= -55.0 && lon <= -34.0) return { dx: 0.9, dy: -0.4 };  // South America East
-  if (lat >= -40.0 && lat <= -20.0 && lon >= 140.0 && lon <= 160.0) return { dx: 1.0, dy: 0.0 }; // Australia East
-
+  if (lat >= 33.0 && lat <= 42.0 && lon >= 130.0 && lon <= 145.0) return { dx: 0.4, dy: -0.9 };
+  if (lat >= 28.0 && lat <= 36.0 && lon >= 118.0 && lon <= 126.0) return { dx: 1.0, dy: 0.0 };
   return { dx: lon > 0 ? -1.0 : 1.0, dy: -0.2 };
 }
 
 function clampToSeawardWater(lat, lon, cLat, cLon, dx, dy, minOffset = 0.035) {
+  const anchor = findNearestHarborAnchor(cLat, cLon);
   let outLat = lat;
   let outLon = lon;
 
-  // 1. Singapore Island (Must stay strictly South in Singapore Strait water)
-  if (cLat >= 1.0 && cLat <= 1.5 && cLon >= 103.5 && cLon <= 104.2) {
-    outLat = Math.min(outLat, 1.215);
-    outLon = Math.max(103.65, Math.min(104.10, outLon));
-    return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
-  }
-
-  // 2. Shanghai / Yangtze Delta (Must stay East in open East China Sea marine waters)
-  if (cLat >= 30.8 && cLat <= 32.2 && cLon >= 121.0 && cLon <= 122.5) {
-    outLon = Math.max(outLon, 121.92);
-    outLat = Math.max(30.60, Math.min(31.60, outLat));
-    return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
-  }
-
-  // 3. New York Harbor (Must stay South in New York Bight / Atlantic waters)
-  if (cLat >= 40.2 && cLat <= 41.2 && cLon >= -74.5 && cLon <= -73.6) {
-    outLat = Math.min(outLat, 40.46);
-    outLon = Math.max(-74.15, Math.min(-73.30, outLon));
-    return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
-  }
-
-  // 4. Tokyo Bay (Must stay South in central Tokyo Bay / Uraga Suido)
-  if (cLat >= 35.2 && cLat <= 35.8 && cLon >= 139.5 && cLon <= 140.2) {
-    outLat = Math.min(outLat, 35.53);
-    outLon = Math.max(139.68, Math.min(140.05, outLon));
-    return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
-  }
-
-  // 5. San Francisco (Must stay West in Pacific Ocean past the Golden Gate)
-  if (cLat >= 37.5 && cLat <= 38.0 && cLon >= -122.6 && cLon <= -122.3) {
-    outLon = Math.min(outLon, -122.52);
-    outLat = Math.max(37.60, Math.min(37.95, outLat));
-    return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
-  }
-
-  // 6. Rotterdam (Must stay West in open North Sea marine waters)
-  if (cLat >= 51.7 && cLat <= 52.1 && cLon >= 3.8 && cLon <= 4.6) {
-    outLon = Math.min(outLon, 4.06);
-    outLat = Math.max(51.85, Math.min(52.20, outLat));
+  if (anchor) {
+    const [minLat, maxLat, minLon, maxLon] = anchor.bounds;
+    outLat = Math.max(minLat, Math.min(maxLat, outLat));
+    outLon = Math.max(minLon, Math.min(maxLon, outLon));
     return [parseFloat(outLat.toFixed(4)), parseFloat(outLon.toFixed(4))];
   }
 
@@ -875,13 +977,20 @@ function renderTacticalPfz(geoJsonData) {
  */
 function getContinentalShelfProfile(cLat, cLon) {
   const portSeed = Math.abs(Math.sin(cLat * 12.9898 + cLon * 78.233) * 43758.5453);
-  const { dx, dy } = getSeawardVector(cLat, cLon);
+  const anchor = findNearestHarborAnchor(cLat, cLon);
+  const { dx, dy } = anchor ? { dx: anchor.dx, dy: anchor.dy } : getSeawardVector(cLat, cLon);
+  const waterLat = anchor ? anchor.lat : cLat;
+  const waterLon = anchor ? anchor.lon : cLon;
+  const baseScale = anchor ? anchor.scale : 0.25;
 
   // Region 1: West Coast North (Mumbai / Gujarat / Konkan)
   // Broad, shallow shelf (120-180 km wide), NNW-SSE strike, widely spaced contours
   if (cLon < 74.0 && cLat > 15.0) {
     return {
       region: "West Coast North (Konkan-Saurashtra Broad Shelf)",
+      waterLat,
+      waterLon,
+      baseScale,
       shelfSpanLon: 0.42,
       shelfSpanLat: 0.48,
       aspectRatio: 1.5,
@@ -907,6 +1016,9 @@ function getContinentalShelfProfile(cLat, cLon) {
   if (cLon < 77.0 && cLat <= 15.0) {
     return {
       region: "West Coast South (Malabar Upwelling & Steep Slope)",
+      waterLat,
+      waterLon,
+      baseScale,
       shelfSpanLon: 0.20,
       shelfSpanLat: 0.28,
       aspectRatio: 1.1,
@@ -932,6 +1044,9 @@ function getContinentalShelfProfile(cLat, cLon) {
   if (cLon > 79.5 && cLat > 11.0) {
     return {
       region: "East Coast (Bay of Bengal Deltaic Plumes & Eddy Meanders)",
+      waterLat,
+      waterLon,
+      baseScale,
       shelfSpanLon: 0.28,
       shelfSpanLat: 0.38,
       aspectRatio: 1.3,
@@ -957,6 +1072,9 @@ function getContinentalShelfProfile(cLat, cLon) {
   if (cLat <= 10.5 && cLon > 78.0) {
     return {
       region: "Palk Bay & Gulf of Mannar (Coral Reef & Barrier Shoals)",
+      waterLat,
+      waterLon,
+      baseScale,
       shelfSpanLon: 0.16,
       shelfSpanLat: 0.20,
       aspectRatio: 0.9,
@@ -981,6 +1099,9 @@ function getContinentalShelfProfile(cLat, cLon) {
   const scale = 0.25 + ((portSeed % 10) * 0.015);
   return {
     region: "Global Oceanic Margin",
+    waterLat,
+    waterLon,
+    baseScale,
     shelfSpanLon: scale,
     shelfSpanLat: scale * 1.2,
     aspectRatio: 1.2,
@@ -1006,7 +1127,9 @@ function renderDynamicLocalPfz(bbox) {
   const cLat = (min_lat + max_lat) / 2.0;
   const cLon = (min_lon + max_lon) / 2.0;
   const profile = getContinentalShelfProfile(cLat, cLon);
-  const { dx, dy, shelfSpanLon, shelfSpanLat, aspectRatio, portSeed } = profile;
+  const { dx, dy, shelfSpanLon, shelfSpanLat, aspectRatio, portSeed, waterLat, waterLon } = profile;
+  const originLat = waterLat || cLat;
+  const originLon = waterLon || cLon;
 
   // Build 3 physically grounded polygons with harmonic multi-vertex boundaries
   const zone1Ring = [];
@@ -1018,8 +1141,8 @@ function renderDynamicLocalPfz(bbox) {
       0.015 * Math.sin(5.0 * rad);
     const rLon = (shelfSpanLon * 0.45) * (1.0 + harmonic);
     const rLat = (shelfSpanLat * 0.35 / aspectRatio) * (1.0 + harmonic);
-    const rawLon = cLon + dx * (shelfSpanLon * 0.65) + rLon * Math.cos(rad);
-    const rawLat = cLat + dy * (shelfSpanLat * 0.45) + rLat * Math.sin(rad);
+    const rawLon = originLon + dx * (shelfSpanLon * 0.65) + rLon * Math.cos(rad);
+    const rawLat = originLat + dy * (shelfSpanLat * 0.45) + rLat * Math.sin(rad);
     const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
     zone1Ring.push([clLon, clLat]);
   }
@@ -1033,8 +1156,8 @@ function renderDynamicLocalPfz(bbox) {
       0.025 * Math.sin(4.0 * rad);
     const rLon = (shelfSpanLon * 0.32) * (1.0 + harmonic);
     const rLat = (shelfSpanLat * 0.28 / aspectRatio) * (1.0 + harmonic);
-    const rawLon = cLon + dx * (shelfSpanLon * 1.10) + rLon * Math.cos(rad);
-    const rawLat = cLat + dy * (shelfSpanLat * 0.85) + rLat * Math.sin(rad);
+    const rawLon = originLon + dx * (shelfSpanLon * 1.10) + rLon * Math.cos(rad);
+    const rawLat = originLat + dy * (shelfSpanLat * 0.85) + rLat * Math.sin(rad);
     const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
     zone2Ring.push([clLon, clLat]);
   }
@@ -1048,8 +1171,8 @@ function renderDynamicLocalPfz(bbox) {
       0.018 * Math.cos(2.0 * rad);
     const rLon = (shelfSpanLon * 0.38) * (1.0 + harmonic);
     const rLat = (shelfSpanLat * 0.25 / aspectRatio) * (1.0 + harmonic);
-    const rawLon = cLon + dx * (shelfSpanLon * 0.40) - dy * (shelfSpanLon * 0.50) + rLon * Math.cos(rad);
-    const rawLat = cLat + dy * (shelfSpanLat * 0.40) + dx * (shelfSpanLat * 0.50) + rLat * Math.sin(rad);
+    const rawLon = originLon + dx * (shelfSpanLon * 0.40) - dy * (shelfSpanLon * 0.50) + rLon * Math.cos(rad);
+    const rawLat = originLat + dy * (shelfSpanLat * 0.40) + dx * (shelfSpanLat * 0.50) + rLat * Math.sin(rad);
     const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
     zone3Ring.push([clLon, clLat]);
   }
@@ -1116,7 +1239,9 @@ function renderSstIsotherms(cLat, cLon) {
   if (!sstLayerGroup) return;
   sstLayerGroup.clearLayers();
   const profile = getContinentalShelfProfile(cLat, cLon);
-  const { dx, dy, isothermOffsets, portSeed } = profile;
+  const { dx, dy, isothermOffsets, portSeed, waterLat, waterLon } = profile;
+  const originLat = waterLat || cLat;
+  const originLon = waterLon || cLon;
 
   const isothermConfigs = [
     { temp: 27.5, color: '#0F6382', weight: 2.2, dash: '4, 6', mult: isothermOffsets[0] },
@@ -1133,8 +1258,8 @@ function renderSstIsotherms(cLat, cLon) {
       const perpY = dx * t;
       const wave = Math.sin((t + 0.3) * (5.5 + (portSeed % 3))) * (0.015 + ((portSeed % 3) * 0.005)) +
         Math.cos(t * (3.5 + (portSeed % 2))) * 0.010;
-      const rawLat = cLat + dy * cfg.mult + perpY + wave;
-      const rawLon = cLon + dx * cfg.mult + perpX + wave;
+      const rawLat = originLat + dy * cfg.mult + perpY + wave;
+      const rawLon = originLon + dx * cfg.mult + perpX + wave;
       const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
       latlngs.push([clLat, clLon]);
     }
@@ -1165,7 +1290,9 @@ function renderChlorophyllPlumes(cLat, cLon) {
   if (!chlLayerGroup) return;
   chlLayerGroup.clearLayers();
   const profile = getContinentalShelfProfile(cLat, cLon);
-  const { dx, dy, chlPlumes, portSeed } = profile;
+  const { dx, dy, chlPlumes, portSeed, waterLat, waterLon } = profile;
+  const originLat = waterLat || cLat;
+  const originLon = waterLon || cLon;
 
   chlPlumes.forEach(p => {
     const ring = [];
@@ -1173,8 +1300,8 @@ function renderChlorophyllPlumes(cLat, cLon) {
     for (let i = 0; i < n; i++) {
       const rad = (i * 2 * Math.PI) / n;
       const r = 1.0 + 0.28 * Math.sin(2.5 * rad + (portSeed % 5)) + 0.18 * Math.cos(3.2 * rad + (portSeed % 7));
-      const rawLat = cLat + dy * p.dist + p.ry * r * Math.sin(rad);
-      const rawLon = cLon + dx * p.dist + p.rx * r * Math.cos(rad);
+      const rawLat = originLat + dy * p.dist + p.ry * r * Math.sin(rad);
+      const rawLon = originLon + dx * p.dist + p.rx * r * Math.cos(rad);
       const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
       ring.push([clLat, clLon]);
     }
@@ -1208,7 +1335,9 @@ function renderDepthContours(cLat, cLon) {
   if (!depthLayerGroup) return;
   depthLayerGroup.clearLayers();
   const profile = getContinentalShelfProfile(cLat, cLon);
-  const { dx, dy, depthDepths, depthDists, portSeed } = profile;
+  const { dx, dy, depthDepths, depthDists, portSeed, waterLat, waterLon } = profile;
+  const originLat = waterLat || cLat;
+  const originLon = waterLon || cLon;
 
   const depthConfigs = [
     { depth: depthDepths[0], label: `-${depthDepths[0]}m Coastal Shallows`, color: PALETTE.tide, weight: 1.8, dash: '3, 4', dist: depthDists[0] },
@@ -1223,8 +1352,8 @@ function renderDepthContours(cLat, cLon) {
       const perpX = -dy * t;
       const perpY = dx * t;
       const winding = Math.sin((t + 0.3) * (5.0 + (portSeed % 3))) * 0.018 + Math.cos(t * 3.5) * 0.010;
-      const rawLat = cLat + dy * d.dist + perpY + winding;
-      const rawLon = cLon + dx * d.dist + perpX + winding;
+      const rawLat = originLat + dy * d.dist + perpY + winding;
+      const rawLon = originLon + dx * d.dist + perpX + winding;
       const [clLat, clLon] = clampToSeawardWater(rawLat, rawLon, cLat, cLon, dx, dy);
       latlngs.push([clLat, clLon]);
     }

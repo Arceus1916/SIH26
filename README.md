@@ -1,6 +1,6 @@
-# Project ORCA — Ocean Intelligence & Tactical Marine Copilot (AMIP v6.0)
+# Project ORCA — Ocean Intelligence & Tactical Marine Copilot (AMIP v6.2)
 
-[![Version](https://img.shields.io/badge/Version-v6.0.0-0F6382)](#-key-features--capabilities-v60)
+[![Version](https://img.shields.io/badge/Version-v6.2.0-0F6382)](#-key-features--capabilities-v62)
 [![CI Status](https://img.shields.io/badge/CI%20Pipeline-Passing%20(51%2F51%20Tests)-1E8449)](#-testing--validation)
 [![Design System](https://img.shields.io/badge/Palette%20A-100%25%20Compliant-2F4B9B)](#-tactical-uiux-design-system)
 [![Multi-Lingual SLM](https://img.shields.io/badge/SLM-Multi--Lingual%20(15+%20Languages)-0D2B45)](#2-global-multi-lingual-maritime-slm)
@@ -49,7 +49,7 @@ flowchart TB
 
 ---
 
-## 🌟 Key Features & Capabilities (v6.0)
+## 🌟 Key Features & Capabilities (v6.2 - Finalized)
 
 ### 1. Progressive Two-Stage Interface (Google Stitch Inspired)
 - **Stage 1: Minimalist Landing Screen**: A distraction-free, centered prompt capsule with speech recognition mic input and quick-launch directive chips (*Bangda in Mumbai*, *Bay of Bengal Status*, *Kochi Harbor Safety*, *Daryavar Jaycha Ka*, *Inniku Kadal Epdi*).

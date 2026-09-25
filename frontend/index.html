@@ -4,7 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Project ORCA — Ocean Intelligence & Tactical Copilot</title>
+  <title>Project ORCA v6.2 — Ocean Intelligence & Tactical Copilot</title>
+  <link rel="icon" type="image/png" sizes="128x128" href="./favicon.png">
+  <link rel="shortcut icon" href="./favicon.ico">
+  <link rel="apple-touch-icon" href="./favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="./styles/variables.css">
@@ -17,15 +23,14 @@
   <header class="tactical-header">
     <div class="hud-brand" id="brand-home-btn" title="Return to Landing Search">
       <div class="hud-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="9"></circle>
-          <path d="M12 3v9l6 3"></path>
-          <circle cx="12" cy="12" r="4" stroke-dasharray="2 2"></circle>
-        </svg>
+        <img src="./logo-icon.png" alt="Project ORCA Logo" class="hud-brand-logo-img" />
       </div>
       <div class="brand-text-col">
-        <span class="hud-brand-title">ORCA</span>
-        <span class="hud-brand-sub">Oceanic Intel System</span>
+        <div class="brand-title-row">
+          <span class="hud-brand-title">ORCA</span>
+          <span class="brand-version-pill">v6.2</span>
+        </div>
+        <span class="hud-brand-sub">Marine data system</span>
       </div>
     </div>
 
@@ -46,68 +51,80 @@
     <div class="hud-header-actions">
       <div class="hud-status-live">
         <span class="live-beacon"></span>
-        <span class="live-feed-text">LIVE TELEMETRY FEED</span>
-        <span class="live-feed-sep">|</span>
-        <span class="live-feed-sync">IN-SYNC</span>
+        <span class="live-feed-text" id="live-telemetry-text">Live telemetry · synced 04:03</span>
       </div>
-      <div class="hud-clock" id="hud-clock">14:28:49 UTC</div>
-      <button class="header-action-btn" id="btn-toggle-theme" title="Toggle Day / Night Mode">
-        <span id="theme-btn-label">Day Mode</span>
+      <div class="hud-clock" id="hud-clock" style="display: none;">14:28:49 UTC</div>
+      <button class="header-action-btn theme-icon-btn" id="btn-toggle-theme" title="Toggle Light / Dark Mode">
+        <svg id="theme-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
       </button>
     </div>
   </header>
 
   <!-- =========================================================================
-       STAGE 1: MINIMALIST LANDING SCREEN (ChatGPT / Gemini Style)
-       Single, clean centered search capsule with speech mic & quick pills
+       STAGE 1: MINIMALIST LANDING SCREEN (Stitch ORCA Intelligence Console)
+       Light: "chart paper" / Dark: "night bridge"
+       Left hero content, coordinate ticks & sector tag, right bathymetric contours
        ========================================================================= -->
   <section class="landing-screen" id="landing-screen">
+    <!-- Dynamic Bathymetric Contours & Coordinate Chart Canvas -->
+    <canvas id="chart-bg" aria-hidden="true"></canvas>
+
+    <!-- Left Content Box -->
     <div class="landing-content-box">
-      <div class="landing-badge">ORCA-INTELLIGENCE // V6.0</div>
-      <h1 class="landing-title">Project ORCA</h1>
-      <p class="landing-subtitle">
+      <div class="landing-hero-brand-row">
+        <img src="./logo-icon.png" alt="Project ORCA Logo" class="landing-hero-logo-img" />
+        <h1 class="landing-hero-title">Project ORCA</h1>
+      </div>
+
+      <!-- Three Wavy Water Curves -->
+      <svg class="landing-waves-svg" width="70" height="16" viewBox="0 0 70 16" fill="none" stroke="var(--signal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M 2 8 C 8 2, 14 2, 20 8 C 26 14, 32 14, 38 8 C 44 2, 50 2, 56 8 C 62 14, 68 14, 72 9" />
+      </svg>
+
+      <!-- Exact Tagline from Previous UI -->
+      <p class="landing-hero-desc">
         Ocean Remote-Sensing & Tactical Marine Intelligence Copilot
       </p>
 
-      <!-- Centered Prompt Capsule -->
+      <!-- Search Capsule Input -->
       <div class="landing-search-capsule" id="landing-search-capsule">
-        <button class="capsule-btn capsule-mic-btn" id="btn-landing-mic" title="Voice Input (Speech Recognition)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
-          </svg>
-        </button>
-
-        <input type="text" id="landing-chat-input" class="capsule-input"
-          placeholder="Ask about sea conditions, fish hotspots, or harbor safety in English, Hindi, Marathi, Tamil..."
+        <input type="text" id="landing-chat-input" class="landing-capsule-input"
+          placeholder="Ask about sea conditions, fish hotspots or harbor safety — English, हिंदी, বাংলা, தமிழ்..."
           autocomplete="off" />
-
-        <button class="capsule-btn capsule-send-btn" id="btn-landing-send" title="Launch Tactical Analysis">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="landing-capsule-send-btn" id="btn-landing-send" title="Launch Tactical Analysis" aria-label="Send Query">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
           </svg>
         </button>
       </div>
 
-      <!-- Quick Directive Suggestion Pills -->
+      <!-- Quick Query Buttons from Previous UI -->
       <div class="landing-chips-row">
         <button class="landing-chip" onclick="handleLandingChip('Where can I catch Bangda near Mumbai Sassoon Docks?')">
-          Bangda in Mumbai
+          <span>Bangda in Mumbai</span>
         </button>
-        <button class="landing-chip" onclick="handleLandingChip('Bay of Bengal ocean state and wave swell advisory')">
-          Bay of Bengal Status
+        <button class="landing-chip chip-hazard" onclick="handleLandingChip('Bay of Bengal ocean state and wave swell advisory')">
+          <span>Bay of Bengal Status</span>
         </button>
         <button class="landing-chip" onclick="handleLandingChip('Is it safe for motorized skiff to depart from Kochi harbor?')">
-          Kochi Harbor Safety
+          <span>Kochi Harbor Safety</span>
         </button>
         <button class="landing-chip" onclick="handleLandingChip('daryavar jaycha ka vatavaran kase ahe Dapoli la')">
-          Daryavar Jaycha Ka (Dapoli)
+          <span>Daryavar Jaycha Ka (Dapoli)</span>
         </button>
         <button class="landing-chip" onclick="handleLandingChip('inniku kadal epdi irukku meen pidikka pogalama Chennai')">
-          Inniku Kadal Epdi (Chennai)
+          <span>Inniku Kadal Epdi (Chennai)</span>
         </button>
       </div>
     </div>

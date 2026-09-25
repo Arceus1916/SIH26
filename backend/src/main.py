@@ -8,7 +8,7 @@ from .api.routes import analytics, chat, health
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version="1.0.0",
+    version="6.2.0",
     description="Agentic Marine Intelligence Platform backend microservices, PFZ analytics, and conversational advisory."
 )
 

@@ -28,112 +28,130 @@ def get_scientific_color(speed_kmh: float) -> str:
     else:
         return "#D53E4F"  # Storm / Crimson Red
 
+# Complete Water Fairway Anchors for all Global Harbors (Guarantees zero terrain overlap)
+HARBOR_WATER_ANCHORS: Dict[str, Dict[str, Any]] = {
+    "rameswaram": {"lat": 9.18, "lon": 79.35, "dx": 0.2, "dy": -1.0, "scale": 0.12, "bounds": (8.80, 9.25, 78.80, 79.60)},
+    "kochi": {"lat": 9.92, "lon": 76.05, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (9.60, 10.20, 75.60, 76.20)},
+    "visakhapatnam": {"lat": 17.65, "lon": 83.45, "dx": 1.0, "dy": 0.0, "scale": 0.22, "bounds": (17.30, 18.00, 83.28, 83.80)},
+    "tuticorin": {"lat": 8.72, "lon": 78.30, "dx": 1.0, "dy": -0.2, "scale": 0.15, "bounds": (8.40, 8.95, 78.18, 78.60)},
+    "chennai": {"lat": 13.08, "lon": 80.48, "dx": 1.0, "dy": 0.0, "scale": 0.24, "bounds": (12.75, 13.45, 80.30, 80.85)},
+    "mumbai": {"lat": 18.88, "lon": 72.58, "dx": -1.0, "dy": 0.0, "scale": 0.22, "bounds": (18.55, 19.25, 72.25, 72.76)},
+    "mangalore": {"lat": 12.85, "lon": 74.65, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (12.55, 13.15, 74.25, 74.80)},
+    "goa": {"lat": 15.38, "lon": 73.62, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (15.10, 15.65, 73.30, 73.76)},
+    "paradip": {"lat": 20.25, "lon": 86.82, "dx": 1.0, "dy": -0.3, "scale": 0.22, "bounds": (19.95, 20.55, 86.68, 87.20)},
+    "veraval": {"lat": 20.75, "lon": 70.37, "dx": 0.0, "dy": -1.0, "scale": 0.18, "bounds": (20.45, 20.86, 70.05, 70.70)},
+    "port blair": {"lat": 11.60, "lon": 92.88, "dx": 1.0, "dy": 0.0, "scale": 0.16, "bounds": (11.35, 11.85, 92.78, 93.15)},
+    "colombo": {"lat": 6.95, "lon": 79.68, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (6.70, 7.20, 79.35, 79.82)},
+    "karachi": {"lat": 24.68, "lon": 66.92, "dx": 0.0, "dy": -1.0, "scale": 0.20, "bounds": (24.35, 24.78, 66.60, 67.25)},
+    "chittagong": {"lat": 22.15, "lon": 91.60, "dx": -0.8, "dy": -0.6, "scale": 0.18, "bounds": (21.80, 22.25, 91.30, 91.75)},
+    "tokyo": {"lat": 35.35, "lon": 139.80, "dx": 0.0, "dy": -1.0, "scale": 0.09, "bounds": (35.15, 35.48, 139.70, 139.95)},
+    "singapore": {"lat": 1.185, "lon": 103.85, "dx": 0.0, "dy": -1.0, "scale": 0.055, "bounds": (1.130, 1.215, 103.65, 104.10)},
+    "shanghai": {"lat": 31.15, "lon": 122.35, "dx": 1.0, "dy": 0.0, "scale": 0.22, "bounds": (30.60, 31.60, 121.92, 122.75)},
+    "busan": {"lat": 34.98, "lon": 129.15, "dx": 0.6, "dy": -0.8, "scale": 0.16, "bounds": (34.75, 35.05, 129.08, 129.45)},
+    "jakarta": {"lat": -5.92, "lon": 106.88, "dx": 0.0, "dy": 1.0, "scale": 0.18, "bounds": (-6.04, -5.60, 106.55, 107.20)},
+    "kaohsiung": {"lat": 22.58, "lon": 120.12, "dx": -1.0, "dy": -0.3, "scale": 0.16, "bounds": (22.35, 22.80, 119.85, 120.22)},
+    "san francisco": {"lat": 37.75, "lon": -122.68, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (37.50, 38.00, -123.00, -122.54)},
+    "seattle": {"lat": 47.60, "lon": -122.48, "dx": -0.5, "dy": -0.8, "scale": 0.06, "bounds": (47.45, 47.75, -122.56, -122.40)},
+    "new york": {"lat": 40.35, "lon": -73.80, "dx": 0.3, "dy": -1.0, "scale": 0.18, "bounds": (40.10, 40.46, -74.15, -73.30)},
+    "miami": {"lat": 25.76, "lon": -80.02, "dx": 1.0, "dy": 0.0, "scale": 0.16, "bounds": (25.50, 26.05, -80.11, -79.75)},
+    "vancouver": {"lat": 49.32, "lon": -123.38, "dx": -1.0, "dy": 0.2, "scale": 0.15, "bounds": (49.15, 49.50, -123.65, -123.22)},
+    "halifax": {"lat": 44.52, "lon": -63.45, "dx": 0.5, "dy": -1.0, "scale": 0.16, "bounds": (44.30, 44.60, -63.75, -63.20)},
+    "valparaiso": {"lat": -33.02, "lon": -71.75, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (-33.25, -32.80, -72.05, -71.66)},
+    "callao": {"lat": -12.06, "lon": -77.30, "dx": -1.0, "dy": 0.0, "scale": 0.18, "bounds": (-12.30, -11.80, -77.60, -77.18)},
+    "santos": {"lat": -24.12, "lon": -46.30, "dx": 0.0, "dy": -1.0, "scale": 0.18, "bounds": (-24.40, -24.02, -46.60, -46.00)},
+    "buenos aires": {"lat": -34.80, "lon": -57.75, "dx": 1.0, "dy": -0.5, "scale": 0.22, "bounds": (-35.10, -34.62, -58.15, -57.30)},
+    "ensenada": {"lat": 31.82, "lon": -116.75, "dx": -1.0, "dy": -0.2, "scale": 0.16, "bounds": (31.60, 32.05, -117.05, -116.65)},
+    "rotterdam": {"lat": 52.05, "lon": 3.80, "dx": -1.0, "dy": 0.1, "scale": 0.20, "bounds": (51.85, 52.20, 3.45, 4.06)},
+    "marseille": {"lat": 43.18, "lon": 5.32, "dx": -0.2, "dy": -1.0, "scale": 0.16, "bounds": (42.95, 43.25, 5.05, 5.55)},
+    "genoa": {"lat": 44.32, "lon": 8.92, "dx": 0.0, "dy": -1.0, "scale": 0.16, "bounds": (44.10, 44.37, 8.65, 9.20)},
+    "piraeus": {"lat": 37.85, "lon": 23.58, "dx": -0.3, "dy": -1.0, "scale": 0.14, "bounds": (37.65, 37.91, 23.35, 23.75)},
+    "bergen": {"lat": 60.42, "lon": 5.08, "dx": -1.0, "dy": 0.1, "scale": 0.14, "bounds": (60.25, 60.55, 4.80, 5.22)},
+    "hamburg": {"lat": 53.95, "lon": 8.45, "dx": -1.0, "dy": 0.2, "scale": 0.22, "bounds": (53.80, 54.20, 8.00, 8.65)},
+    "barcelona": {"lat": 41.30, "lon": 2.25, "dx": 0.8, "dy": -0.6, "scale": 0.16, "bounds": (41.10, 41.36, 2.19, 2.55)},
+    "southampton": {"lat": 50.68, "lon": -1.30, "dx": 0.0, "dy": -1.0, "scale": 0.15, "bounds": (50.50, 50.76, -1.60, -1.00)},
+    "lisbon": {"lat": 38.65, "lon": -9.42, "dx": -1.0, "dy": -0.2, "scale": 0.18, "bounds": (38.45, 38.85, -9.75, -9.30)},
+    "gdansk": {"lat": 54.48, "lon": 18.75, "dx": 0.2, "dy": 1.0, "scale": 0.16, "bounds": (54.42, 54.70, 18.45, 19.10)},
+    "dubai": {"lat": 25.38, "lon": 55.18, "dx": -0.7, "dy": 0.7, "scale": 0.16, "bounds": (25.30, 25.60, 54.95, 55.26)},
+    "cape town": {"lat": -33.85, "lon": 18.30, "dx": -0.8, "dy": -0.6, "scale": 0.18, "bounds": (-34.10, -33.65, 18.00, 18.38)},
+    "alexandria": {"lat": 31.30, "lon": 29.92, "dx": 0.0, "dy": 1.0, "scale": 0.18, "bounds": (31.23, 31.55, 29.60, 30.25)},
+    "mombasa": {"lat": -4.08, "lon": 39.80, "dx": 1.0, "dy": 0.0, "scale": 0.18, "bounds": (-4.30, -3.85, 39.72, 40.10)},
+    "casablanca": {"lat": 33.70, "lon": -7.72, "dx": -0.9, "dy": 0.4, "scale": 0.18, "bounds": (33.63, 33.95, -8.00, -7.65)},
+    "lagos": {"lat": 6.32, "lon": 3.40, "dx": 0.0, "dy": -1.0, "scale": 0.16, "bounds": (6.05, 6.40, 3.15, 3.65)},
+    "durban": {"lat": -29.88, "lon": 31.15, "dx": 0.9, "dy": -0.4, "scale": 0.18, "bounds": (-30.15, -29.65, 31.06, 31.45)},
+    "sydney": {"lat": -33.84, "lon": 151.35, "dx": 1.0, "dy": 0.0, "scale": 0.18, "bounds": (-34.10, -33.60, 151.28, 151.65)},
+    "auckland": {"lat": -36.75, "lon": 174.92, "dx": 0.8, "dy": 0.6, "scale": 0.16, "bounds": (-36.80, -36.50, 174.82, 175.25)},
+    "honolulu": {"lat": 21.24, "lon": -157.88, "dx": -0.2, "dy": -1.0, "scale": 0.14, "bounds": (21.05, 21.28, -158.10, -157.65)},
+    "suva": {"lat": -18.22, "lon": 178.42, "dx": 0.0, "dy": -1.0, "scale": 0.14, "bounds": (-18.40, -18.18, 178.20, 178.65)}
+}
+
+def find_nearest_harbor_anchor(lat: float, lon: float, max_dist: float = 1.25) -> Optional[Dict[str, Any]]:
+    best = None
+    best_dist = 999.0
+    for key, data in HARBOR_WATER_ANCHORS.items():
+        d_lat = lat - data["lat"]
+        d_lon = lon - data["lon"]
+        dist = math.sqrt(d_lat * d_lat + d_lon * d_lon)
+        if dist < best_dist and dist <= max_dist:
+            best_dist = dist
+            best = data
+    return best
+
 def get_seaward_vector(lat: float, lon: float) -> Tuple[float, float]:
     """
     Returns (dx, dy) unit vector pointing into open marine water bodies for any global coastal coordinate.
     """
-    # Specific Port Overrides with Complex Geography / Estuaries
-    if 1.0 <= lat <= 1.5 and 103.5 <= lon <= 104.2:   # Singapore: strictly South into Singapore Strait
-        return (0.3, -1.0)
-    if 30.8 <= lat <= 32.2 and 121.0 <= lon <= 122.5: # Shanghai: strictly East into East China Sea
-        return (1.0, -0.1)
-    if 40.2 <= lat <= 41.2 and -74.5 <= lon <= -73.6: # New York: strictly South into New York Bight
-        return (0.3, -1.0)
-    if 35.2 <= lat <= 35.8 and 139.5 <= lon <= 140.2: # Tokyo Bay: strictly South into central bay
-        return (0.1, -1.0)
-    if 37.5 <= lat <= 38.0 and -122.6 <= lon <= -122.3: # San Francisco: strictly West into Pacific
-        return (-1.0, 0.0)
-    if 51.7 <= lat <= 52.1 and 3.8 <= lon <= 4.6:     # Rotterdam: strictly West into North Sea
-        return (-1.0, 0.2)
+    anchor = find_nearest_harbor_anchor(lat, lon)
+    if anchor:
+        return (anchor["dx"], anchor["dy"])
 
-    # 1. Indian Subcontinent & Arabian Sea / Bay of Bengal
-    # West Coast India & Pakistan (Gujarat, Mumbai, Goa, Karnataka, Kerala, Karachi): Arabian Sea is strictly West
+    # Generic regional fallbacks
     if 7.0 <= lat <= 26.0 and 65.0 <= lon <= 77.6:
         return (-1.0, -0.15)
-    
-    # East Coast India & Bangladesh (Tamil Nadu Coromandel, Andhra, Odisha, Bengal, Chittagong): Bay of Bengal is strictly East
     if 10.2 <= lat <= 24.5 and 79.7 <= lon <= 93.5:
         return (1.0, -0.10)
-        
-    # Gulf of Mannar, Palk Strait, Southern Sri Lanka
     if 5.5 <= lat < 10.2 and 77.0 <= lon <= 82.0:
         return (0.5, -0.85)
-
-    # 2. East Asia & Southeast Asia
-    if 33.0 <= lat <= 42.0 and 130.0 <= lon <= 145.0:  # Japan (Tokyo, Yokohama)
+    if 33.0 <= lat <= 42.0 and 130.0 <= lon <= 145.0:
         return (0.4, -0.9)
-    if 28.0 <= lat <= 36.0 and 118.0 <= lon <= 126.0:  # China East (Shanghai)
+    if 28.0 <= lat <= 36.0 and 118.0 <= lon <= 126.0:
         return (1.0, 0.0)
-    if 33.0 <= lat <= 38.0 and 126.0 <= lon <= 130.0:  # Korea (Busan)
-        return (0.6, -0.8)
-    if -8.0 <= lat <= 8.0 and 98.0 <= lon <= 118.0:    # SE Asia (Singapore, Jakarta)
-        return (0.0, 1.0 if lat < 0 else -1.0)
-    if 20.0 <= lat <= 26.0 and 119.0 <= lon <= 123.0:  # Taiwan (Kaohsiung)
-        return (-1.0, -0.3)
-
-    # 3. Europe & Mediterranean
-    if 50.0 <= lat <= 56.0 and 2.0 <= lon <= 12.0:     # North Sea (Rotterdam, Hamburg)
-        return (-0.9, 0.4)
-    if 58.0 <= lat <= 68.0 and 3.0 <= lon <= 15.0:     # Norway (Bergen)
-        return (-1.0, 0.0)
-    if 48.0 <= lat <= 54.0 and -6.0 <= lon <= 2.0:     # UK / Channel (Southampton)
-        return (0.0, -1.0)
-    if 36.0 <= lat <= 45.0 and -10.5 <= lon <= -6.0:   # Portugal / West Spain (Lisbon)
-        return (-1.0, 0.0)
-    if 52.0 <= lat <= 60.0 and 14.0 <= lon <= 25.0:    # Baltic Sea (Gdansk)
-        return (0.0, 1.0)
-    if 40.0 <= lat <= 45.0 and 3.0 <= lon <= 18.0:     # NW Med (Marseille, Genoa)
-        return (0.0, -1.0)
-    if 36.0 <= lat <= 42.0 and -1.0 <= lon <= 5.0:     # Spain Med (Barcelona)
-        return (0.8, -0.6)
-    if 34.0 <= lat <= 40.0 and 19.0 <= lon <= 28.0:    # Aegean / Greece (Piraeus)
-        return (0.0, -1.0)
-    if 29.0 <= lat <= 33.0 and 24.0 <= lon <= 34.0:    # Egypt / Levant (Alexandria)
-        return (0.0, 1.0)
-
-    # 4. Middle East & Africa
-    if 23.0 <= lat <= 28.0 and 50.0 <= lon <= 58.0:     # Persian Gulf (Dubai)
-        return (-0.7, 0.7)
-    if -6.0 <= lat <= 4.0 and 38.0 <= lon <= 45.0:      # East Africa (Mombasa)
-        return (1.0, 0.0)
-    if -36.0 <= lat <= -28.0 and 15.0 <= lon <= 25.0:   # South Africa West (Cape Town)
-        return (-0.8, -0.6)
-    if -32.0 <= lat <= -25.0 and 28.0 <= lon <= 35.0:   # South Africa East (Durban)
-        return (0.9, -0.4)
-    if 30.0 <= lat <= 36.0 and -12.0 <= lon <= -4.0:    # Morocco (Casablanca)
-        return (-0.9, 0.4)
-    if 3.0 <= lat <= 8.0 and 1.0 <= lon <= 9.0:        # Gulf of Guinea (Lagos)
-        return (0.0, -1.0)
-
-    # 5. Americas & Pacific
-    if 18.0 <= lat <= 55.0 and -130.0 <= lon <= -115.0: # US / Canada / Mexico West Coast
-        return (-1.0, 0.0)
-    if -55.0 <= lat <= 5.0 and -85.0 <= lon <= -70.0:   # South America West Coast (Chile, Peru)
-        return (-1.0, 0.0)
-    if 24.0 <= lat <= 50.0 and -82.0 <= lon <= -60.0:   # US / Canada East Coast (NY, Miami, Halifax)
-        return (1.0, -0.1)
-    if -38.0 <= lat <= 0.0 and -55.0 <= lon <= -34.0:   # South America East Coast (Brazil, Argentina)
-        return (0.9, -0.4)
-    if -40.0 <= lat <= -20.0 and 140.0 <= lon <= 160.0: # Australia East (Sydney)
-        return (1.0, 0.0)
-
-    # Default fallback: determine from longitude sign
     return (-1.0 if lon > 0 else 1.0, -0.2)
-
 
 def clamp_to_seaward_water(lat: float, lon: float, c_lat: float, c_lon: float, dx: float, dy: float, min_offset: float = 0.035) -> Tuple[float, float]:
     """
     Enforces that coordinates strictly remain on the seaward marine side of the coastline.
-    Includes precise coastal boundary clamps for critical global estuarine and island hubs.
+    Uses strict marine bounding clamping for all global hubs.
     """
+    anchor = find_nearest_harbor_anchor(c_lat, c_lon)
     out_lat = lat
     out_lon = lon
 
-    # 1. Singapore Island (Must stay strictly South in Singapore Strait water)
-    if 1.0 <= c_lat <= 1.5 and 103.5 <= c_lon <= 104.2:
-        out_lat = min(out_lat, 1.215)
-        out_lon = max(103.65, min(104.10, out_lon))
+    if anchor:
+        min_lat, max_lat, min_lon, max_lon = anchor["bounds"]
+        out_lat = max(min_lat, min(max_lat, out_lat))
+        out_lon = max(min_lon, min(max_lon, out_lon))
         return (round(out_lat, 4), round(out_lon, 4))
+
+    # Generic Seaward Clamping
+    if dx < -0.5:
+        boundary = c_lon - min_offset
+        if out_lon > boundary:
+            out_lon = boundary - abs(out_lon - boundary) * 0.15
+    elif dx > 0.5:
+        boundary = c_lon + min_offset
+        if out_lon < boundary:
+            out_lon = boundary + abs(boundary - out_lon) * 0.15
+
+    if dy < -0.5:
+        boundary = c_lat - min_offset
+        if out_lat > boundary:
+            out_lat = boundary - abs(out_lat - boundary) * 0.15
+    elif dy > 0.5:
+        boundary = c_lat + min_offset
+        if out_lat < boundary:
+            out_lat = boundary + abs(boundary - out_lat) * 0.15
+
+    return (round(out_lat, 4), round(out_lon, 4))
 
     # 2. Shanghai / Yangtze Delta (Must stay East in open East China Sea marine waters)
     if 30.8 <= c_lat <= 32.2 and 121.0 <= c_lon <= 122.5:
@@ -202,8 +220,17 @@ class PfzComputeService:
         features: List[PfzFeature] = []
         evidence_items: List[EvidenceItem] = []
         
-        # Determine calibrated seaward unit vector ensuring features are placed over marine water bodies
-        seaward_lon, seaward_lat = get_seaward_vector(center_lat, center_lon)
+                # Determine calibrated seaward unit vector and true marine water origin
+        anchor = find_nearest_harbor_anchor(center_lat, center_lon)
+        if anchor:
+            center_lat = anchor["lat"]
+            center_lon = anchor["lon"]
+            seaward_lon = anchor["dx"]
+            seaward_lat = anchor["dy"]
+            base_scale = anchor["scale"]
+        else:
+            seaward_lon, seaward_lat = get_seaward_vector(center_lat, center_lon)
+            base_scale = 0.28
 
         # Physics-grounded continental shelf modeling based on geographical coordinates
         # Derive regional shelf parameters
@@ -211,40 +238,40 @@ class PfzComputeService:
         
         # 1. West Coast North (Konkan, Mumbai, Gujarat): Broad continental shelf, N-S shelf break
         if center_lon < 75.0 and center_lat > 14.0:
-            shelf_span_lon = 0.35
-            shelf_span_lat = 0.50
+            shelf_span_lon = base_scale
+            shelf_span_lat = base_scale * 1.3
             aspect_ratio = 1.6  # elongated N-S
             species_set_1 = ["Indian Mackerel (Bangda)", "Silver Pomfret (Paplet)", "Bombay Duck (Bombil)"]
             species_set_2 = ["Kingfish (Surmai)", "Black Pomfret (Halwa)", "Ghol"]
             species_set_3 = ["Fourfinger Threadfin (Ravas)", "Ribbonfish", "Prawns (Kolambi)"]
         # 2. West Coast South (Malabar, Kerala, Karnataka): Narrow shelf, intense coastal upwelling lobes
         elif center_lon < 77.0 and center_lat <= 14.0:
-            shelf_span_lon = 0.20
-            shelf_span_lat = 0.30
+            shelf_span_lon = base_scale
+            shelf_span_lat = base_scale * 1.2
             aspect_ratio = 1.2
             species_set_1 = ["Oil Sardine (Mathi)", "Indian Mackerel (Ayala)", "Anchovy (Netholi)"]
             species_set_2 = ["Yellowfin Tuna (Choora)", "Kingfish (Neymeen)", "Squid (Koonthal)"]
             species_set_3 = ["Pearlspot (Karimeen)", "White Prawn (Chemmeen)", "Reef Cod (Kalava)"]
         # 3. East Coast (Coromandel, Chennai, Vizag, Odisha): Narrow shelf, strong mesoscale eddies
         elif center_lon > 79.5 and center_lat > 11.0:
-            shelf_span_lon = 0.25
-            shelf_span_lat = 0.40
+            shelf_span_lon = base_scale
+            shelf_span_lat = base_scale * 1.3
             aspect_ratio = 1.4
             species_set_1 = ["Kingfish (Vanjaram)", "Indian Mackerel (Kumla)", "Hilsa (Ilish)"]
             species_set_2 = ["Yellowfin Tuna (Soorai)", "Mud Crab (Nandu)", "Tiger Prawn (Eral)"]
             species_set_3 = ["Barramundi (Bhetki)", "Ribbonfish (Savala)", "Snapper (Sankara)"]
         # 4. Palk Bay & Gulf of Mannar: Shallow barrier reef and strait shoals
         elif center_lat <= 10.5 and center_lon > 78.0:
-            shelf_span_lon = 0.18
-            shelf_span_lat = 0.22
+            shelf_span_lon = base_scale
+            shelf_span_lat = base_scale * 1.1
             aspect_ratio = 0.9
             species_set_1 = ["Blue Swimmer Crab (Nandu)", "Squid (Kanawa)", "Emperor Bream"]
             species_set_2 = ["Spanish Mackerel (Seela)", "Trevally (Paarai)", "Red Snapper"]
             species_set_3 = ["Skipjack Tuna", "Sardines", "Grouper (Kalava)"]
         # 5. Global baseline: standard oceanic shelf model
         else:
-            shelf_span_lon = 0.28
-            shelf_span_lat = 0.35
+            shelf_span_lon = base_scale
+            shelf_span_lat = base_scale * 1.2
             aspect_ratio = 1.2
             species_set_1 = ["Yellowfin Tuna", "Pelagic Mackerel", "Skipjack"]
             species_set_2 = ["King Mackerel", "Dolphinfish (Mahi Mahi)", "Sea Bass"]

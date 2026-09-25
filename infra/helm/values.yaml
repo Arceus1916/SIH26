@@ -4,7 +4,7 @@ replicaCount: 2
 image:
   repository: orca/backend
   pullPolicy: IfNotPresent
-  tag: "v0.1.0"
+  tag: "v6.2.0"
 
 service:
   type: ClusterIP

@@ -41,7 +41,29 @@ const ALLOWED_HEX = [
   '#104c2e', // Chlorophyll
   '#d48b68', // Wave height
   '#b84333', // Wave height
-  '#661824'  // Wave height
+  '#661824', // Wave height
+
+  // v6.1 Chart Paper & Night Bridge Tokens
+  '#ede7d8', // Light --bg
+  '#e3dcc8', // Light --bg-2
+  '#1d2b26', // Light --ink
+  '#55645c', // Light --ink-secondary
+  '#8b7f63', // Light --ink-muted
+  '#8a6f45', // Light --contour
+  '#2b6f7a', // Light --signal
+  '#f4f1e6', // Light --signal-ink
+  '#b5651d', // Light --hazard
+  '#3a2408', // Light --hazard-ink
+  '#0a1520', // Dark --bg
+  '#101e29', // Dark --bg-2
+  '#e9e4d6', // Dark --ink
+  '#9fb0ac', // Dark --ink-secondary
+  '#6e8480', // Dark --ink-muted
+  '#3e6672', // Dark --contour
+  '#7fc4d2', // Dark --signal
+  '#06232a', // Dark --signal-ink
+  '#e2a23d', // Dark --hazard
+  '#2b1b04'  // Dark --hazard-ink
 ];
 
 // Emoji detection regex

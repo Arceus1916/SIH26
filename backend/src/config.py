@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(case_sensitive=True, env_file=".env", extra="ignore")
 
     PROJECT_NAME: str = "Project ORCA — Agentic Marine Intelligence"
+    VERSION: str = "6.2.0"
     API_V1_STR: str = "/v1"
     ENVIRONMENT: str = "development"
     PORT: int = 8000

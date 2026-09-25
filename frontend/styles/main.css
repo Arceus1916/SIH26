@@ -28,9 +28,9 @@ body {
    Tactical Top Header (Stitch ORCA Intelligence Console)
    ========================================================================== */
 .tactical-header {
-  background-color: var(--theme-bg-panel);
-  border-bottom: 1px solid var(--theme-border);
-  padding: 8px 18px;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 8px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,15 +46,26 @@ body {
 }
 
 .hud-icon-box {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: 1px solid var(--theme-border-accent);
-  background-color: var(--theme-bg-floor);
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-tide);
+  flex-shrink: 0;
+}
+
+.hud-brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+[data-theme="dark"] .hud-brand-logo-img,
+[data-theme="dark"] .landing-hero-logo-img {
+  filter: drop-shadow(0 0 1px rgba(233, 228, 214, 0.40)) drop-shadow(0 0 6px rgba(127, 196, 210, 0.20));
 }
 
 .brand-text-col {
@@ -66,16 +77,35 @@ body {
   font-size: 15px;
   font-weight: 800;
   letter-spacing: 0.04em;
-  color: var(--theme-text-primary);
+  color: var(--ink);
   line-height: 1.1;
 }
 
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-version-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background-color: var(--hazard-bg);
+  color: var(--hazard);
+  border: 1px solid var(--panel-border);
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
 .hud-brand-sub {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--theme-text-secondary);
-  font-family: monospace;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
 }
 
 /* Progressive View Switcher Pills */
@@ -115,68 +145,82 @@ body {
 .hud-header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .hud-status-live {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background-color: var(--theme-bg-floor);
-  border: 1px solid var(--theme-border);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 10px;
+  gap: 8px;
+  background-color: transparent;
+  border: none;
+  padding: 4px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-secondary);
 }
 
 .live-beacon {
-  width: 6px;
-  height: 6px;
-  border-radius: 4px;
-  background-color: var(--color-clear-night);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--signal);
 }
 
 .live-feed-text {
-  color: var(--theme-text-primary);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.live-feed-sep {
-  color: var(--theme-border);
-}
-
-.live-feed-sync {
-  color: var(--color-tide);
+  color: var(--ink-secondary);
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
 
 .hud-clock {
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--theme-text-secondary);
-  background-color: var(--theme-bg-floor);
-  border: 1px solid var(--theme-border);
+  color: var(--ink-secondary);
+  background-color: var(--bg-2);
+  border: 1px solid var(--panel-border);
   padding: 5px 10px;
   border-radius: 4px;
 }
 
 .header-action-btn {
-  background-color: var(--theme-bg-floor);
-  border: 1px solid var(--theme-border);
-  color: var(--theme-text-primary);
+  background-color: var(--bg-2);
+  border: 1px solid var(--panel-border);
+  color: var(--ink);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
-  font-family: monospace;
+  font-family: var(--font-mono);
 }
 
 .header-action-btn:hover {
-  border-color: var(--color-deep-current);
-  color: var(--color-tide);
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.theme-icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background-color: var(--bg-2);
+  color: var(--ink-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theme-icon-btn:hover {
+  color: var(--ink);
+  border-color: var(--signal);
 }
 
 /* ==========================================================================
@@ -236,7 +280,7 @@ body.layout-workspace-mode #workspace-header-controls {
 }
 
 /* ==========================================================================
-   STAGE 1: Minimalist Landing Screen (ChatGPT / Gemini Style)
+   STAGE 1: Landing Screen (Chart Paper & Night Bridge Layout)
    ========================================================================== */
 .landing-screen {
   position: fixed;
@@ -246,146 +290,183 @@ body.layout-workspace-mode #workspace-header-controls {
   bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: var(--theme-bg-floor);
+  justify-content: flex-start;
+  background-color: var(--bg);
   z-index: 100;
-  overflow-y: auto;
-  padding: 24px 16px;
+  overflow: hidden;
+  padding: 0;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.landing-content-box {
-  max-width: 740px;
+/* Bathymetric Depth Contour & Chart Background Canvas */
+#chart-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Main Left-Aligned Content Box */
+.landing-content-box {
+  position: relative;
+  z-index: 5;
+  margin-left: 80px;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 20px 0;
+}
+
+.landing-hero-brand-row {
+  display: flex;
   align-items: center;
-  text-align: center;
+  gap: 16px;
+  margin: 0 0 12px 0;
 }
 
-.landing-badge {
-  font-size: 10px;
-  font-family: monospace;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-tide);
-  background-color: var(--theme-bg-panel);
-  border: 1px solid var(--theme-border);
-  padding: 4px 12px;
-  border-radius: 4px;
-  margin-bottom: 14px;
-  text-transform: uppercase;
+.landing-hero-logo-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-.landing-title {
-  font-size: 32px;
+.landing-hero-title {
+  font-size: 48px;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--theme-text-primary);
-  margin-bottom: 6px;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.08;
 }
 
-.landing-subtitle {
-  font-size: 13px;
-  color: var(--theme-text-secondary);
-  max-width: 560px;
-  line-height: 1.5;
-  margin-bottom: 28px;
+.landing-waves-svg {
+  margin-bottom: 18px;
+  color: var(--signal);
+  stroke: var(--signal);
+}
+
+.landing-hero-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+  margin: 0 0 26px 0;
+  max-width: 520px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 /* Prompt Search Capsule */
 .landing-search-capsule {
   width: 100%;
-  max-width: 660px;
-  background-color: var(--theme-bg-panel);
-  border: 1px solid var(--theme-border);
+  max-width: 520px;
+  height: 48px;
+  background-color: var(--bg-2);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
-  padding: 6px 8px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
+  padding: 4px 6px 4px 16px;
+  margin-bottom: 14px;
   transition: border-color 0.15s ease;
 }
 
 .landing-search-capsule:focus-within {
-  border-color: var(--color-deep-current);
+  border-color: var(--signal);
 }
 
-.capsule-input {
+.landing-capsule-input {
   flex: 1;
   background: transparent;
   border: none;
-  color: var(--theme-text-primary);
+  color: var(--ink);
   font-size: 13px;
-  padding: 8px 6px;
+  padding: 6px 4px;
   outline: none;
   font-family: var(--font-family);
 }
 
-.capsule-btn {
+.landing-capsule-input::placeholder {
+  color: var(--ink-muted);
+}
+
+.landing-capsule-send-btn {
   width: 36px;
   height: 36px;
   border-radius: 6px;
-  border: 1px solid var(--theme-border);
-  background-color: var(--theme-bg-floor);
-  color: var(--theme-text-primary);
+  background-color: var(--hazard);
+  border: none;
+  color: var(--hazard-ink);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease;
   flex-shrink: 0;
 }
 
-.capsule-btn:hover {
-  border-color: var(--color-deep-current);
-  color: var(--color-tide);
+[data-theme="light"] .landing-capsule-send-btn {
+  color: #F4F1E6;
 }
 
-.capsule-mic-btn.recording {
-  background-color: var(--alert-take-action-day);
-  border-color: var(--alert-take-action-day);
-  color: #FFFFFF;
+[data-theme="dark"] .landing-capsule-send-btn {
+  color: #2B1B04;
 }
 
-.capsule-send-btn {
-  background-color: var(--color-deep-current);
-  border-color: var(--color-deep-current);
-  color: #FFFFFF;
+.landing-capsule-send-btn:hover {
+  opacity: 0.9;
 }
 
-.capsule-send-btn:hover {
-  background-color: var(--color-neel-indigo);
-  border-color: var(--color-neel-indigo);
-}
-
-/* Suggestion Chips */
-.landing-chips-row {
+/* Suggestion Chips Row (from Previous UI) */
+.landing-chips-row,
+.landing-chips-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  max-width: 660px;
+  gap: 8px 10px;
+  width: 100%;
+  max-width: 520px;
 }
 
 .landing-chip {
-  background-color: var(--theme-bg-panel);
-  border: 1px solid var(--theme-border);
+  background-color: var(--bg-2);
+  border: 1px solid var(--panel-border);
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   font-size: 11px;
-  font-weight: 600;
-  font-family: monospace;
-  color: var(--theme-text-secondary);
+  font-weight: 500;
+  font-family: var(--font-mono);
+  color: var(--ink);
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .landing-chip:hover {
-  border-color: var(--color-deep-current);
-  color: var(--color-tide);
-  background-color: var(--theme-bg-floor);
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.landing-chip.chip-hazard {
+  background-color: var(--hazard-bg);
+  border-color: var(--hazard);
+  color: var(--hazard);
+}
+
+.landing-chip.chip-hazard:hover {
+  opacity: 0.9;
+}
+
+.chip-icon {
+  flex-shrink: 0;
+  color: inherit;
 }
 
 /* ==========================================================================

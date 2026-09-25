@@ -63,6 +63,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Check in frontend root or frontend/public directory
+  if (!fs.existsSync(filePath)) {
+    const publicPath = path.join(FRONTEND_DIR, 'public', pathname);
+    if (fs.existsSync(publicPath) && fs.statSync(publicPath).isFile()) {
+      filePath = publicPath;
+    }
+  }
+
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
       // Fallback to index.html for SPA routing
