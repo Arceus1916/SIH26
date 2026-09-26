@@ -2,5 +2,5 @@ apiVersion: v2
 name: orca-platform
 description: Helm chart for Project ORCA Marine Intelligence Services
 type: application
-version: 6.2.0
-appVersion: "6.2.0"
+version: 7.0.0
+appVersion: "7.0.0"

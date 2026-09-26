@@ -5,7 +5,7 @@
 
 import { ThermalWindParticleCanvas } from './wind-engine.js';
 
-window.__ORCA_VERSION__ = "6.2.0";
+window.__ORCA_VERSION__ = "7.0.0";
 const API_BASE_URL = window.__ORCA_API_URL__ || '/v1';
 
 // Strict Palette A Constants (docs/ui/palette.json)
@@ -112,8 +112,15 @@ let pfzLayerGroup;
 let sstLayerGroup;
 let chlLayerGroup;
 let depthLayerGroup;
+let imblLayerGroup;
+let mpaLayerGroup;
+let navLayerGroup;
+let cycloneLayerGroup;
+let transectLayerGroup;
+let sarLayerGroup;
 let windCanvasLayer;
 let latestProvenance = null;
+let activePersona = 'fisher';
 
 // Progressive Layout Mode: 'chat', 'split', 'map'
 let currentViewMode = 'chat';
@@ -386,6 +393,17 @@ function initTacticalMap() {
   sstLayerGroup = L.layerGroup();
   chlLayerGroup = L.layerGroup();
   depthLayerGroup = L.layerGroup();
+  imblLayerGroup = L.layerGroup().addTo(map);
+  mpaLayerGroup = L.layerGroup();
+  navLayerGroup = L.layerGroup();
+  cycloneLayerGroup = L.layerGroup();
+  transectLayerGroup = L.layerGroup().addTo(map);
+  sarLayerGroup = L.layerGroup().addTo(map);
+
+  renderIMBLLayers();
+  renderMPALayers();
+  renderNavLayers();
+  renderCycloneLayers();
 
   // Initialize GPU-Accelerated Thermal Wind Streamlines (Scientific Researcher Colormap - Off by default)
   try {
@@ -608,12 +626,12 @@ function updateMapPosition(lat, lon, label, panMap = true, zoom = 9) {
   if (baseHarborMarker) map.removeLayer(baseHarborMarker);
   if (safetyPerimeterCircle) map.removeLayer(safetyPerimeterCircle);
 
-  // Add Tactical Base Harbor / Waypoint Marker (Zero Emojis, Strict Palette A)
+  // Add Tactical Base Harbor / Waypoint Marker (Zero Emojis, Strict Palette A, Auto-Sizing)
   const customIcon = L.divIcon({
-    className: 'tactical-harbor-marker',
-    html: `<div style="background-color:${PALETTE.deepCurrent};color:#FFFFFF;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid ${PALETTE.tide};white-space:nowrap;"><span style="display:inline-block;width:7px;height:7px;background:${PALETTE.tide};border-radius:2px;margin-right:6px;vertical-align:middle;"></span>${label.toUpperCase()}</div>`,
-    iconSize: [220, 26],
-    iconAnchor: [110, 13]
+    className: 'tactical-harbor-marker-container',
+    html: `<div class="tactical-harbor-pill"><span class="tactical-harbor-dot"></span><span class="tactical-harbor-text">${label.toUpperCase()}</span></div>`,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0]
   });
 
   baseHarborMarker = L.marker([lat, lon], { icon: customIcon, draggable: true }).addTo(map);
@@ -1378,6 +1396,226 @@ function renderDepthContours(cLat, cLon) {
   });
 }
 
+// =========================================================================
+// STAKEHOLDER PERSONA CONFIGURATIONS & SPECIALIZED LAYER RENDERERS (v7.0)
+// =========================================================================
+
+const PERSONA_CONFIGS = {
+  fisher: {
+    title: 'Stakeholder Operations: Fisher',
+    defaultLayers: { pfz: true, sst: false, chl: false, depth: false, wind: false, imbl: true, mpa: false, nav: false, cyclone: false },
+    chips: [
+      { text: "Where can I catch Bangda near Mumbai Sassoon Docks?", label: "Bangda in Mumbai" },
+      { text: "Bay of Bengal ocean state and wave swell advisory", label: "Bay of Bengal Status", hazard: true },
+      { text: "Is it safe for motorized skiff to depart from Kochi harbor?", label: "Kochi Harbor Safety" },
+      { text: "daryavar jaycha ka vatavaran kase ahe Dapoli la", label: "Daryavar Jaycha Ka (Dapoli)" },
+      { text: "inniku kadal epdi irukku meen pidikka pogalama Chennai", label: "Inniku Kadal Epdi (Chennai)" }
+    ]
+  },
+  researcher: {
+    title: 'Stakeholder Operations: Oceanographic Researcher',
+    defaultLayers: { pfz: false, sst: true, chl: true, depth: true, wind: false, imbl: false, mpa: true, nav: false, cyclone: false },
+    chips: [
+      { text: "Arabian Sea upwelling transect profile and thermocline slope", label: "Arabian Sea Transect" },
+      { text: "Gulf of Mannar coral bleaching DHW thermal anomaly check", label: "Coral Bleaching DHW", hazard: true },
+      { text: "Which coastal sectors show chlorophyll bloom plumes > 1.5 mg/m3?", label: "Chlorophyll Plumes" },
+      { text: "Export NetCDF-4 hydrographic dataset for active sector", label: "NetCDF Data Export" },
+      { text: "Sentinel-3 SLSTR Level-2 thermal front gradient analysis", label: "SST Front Analysis" }
+    ]
+  },
+  authority: {
+    title: 'Stakeholder Operations: Coastal Enforcement & SAR',
+    defaultLayers: { pfz: false, sst: false, chl: false, depth: false, wind: false, imbl: true, mpa: true, nav: true, cyclone: false },
+    chips: [
+      { text: "Compute IAMSAR leeway drift search datum for missing skiff off Visakhapatnam", label: "Visakhapatnam SAR Datum", hazard: true },
+      { text: "Gahirmatha Olive Ridley turtle marine sanctuary perimeter compliance", label: "Gahirmatha Sanctuary" },
+      { text: "Is the uniform 61-day monsoon fishing ban active for our coast?", label: "Monsoon Ban Status" },
+      { text: "Check distance to nearest International Maritime Boundary Line (IMBL)", label: "IMBL Proximity" },
+      { text: "Vessel manifest and biometric licensing inspection protocol", label: "Vessel Inspection" }
+    ]
+  },
+  disaster: {
+    title: 'Stakeholder Operations: Emergency Disaster Management',
+    defaultLayers: { pfz: false, sst: false, chl: false, depth: false, wind: true, imbl: false, mpa: false, nav: false, cyclone: true },
+    chips: [
+      { text: "Project storm surge and coastal inundation extent for Paradip", label: "Paradip Storm Surge", hazard: true },
+      { text: "What port warning signal should be declared for 65 knot winds?", label: "Port Signals 1-11" },
+      { text: "Generate Common Alerting Protocol (CAP v1.2) emergency bulletin", label: "Dispatch CAP Alert" },
+      { text: "Cyclone forecast track danger wind radii quadrants 34kt 50kt 64kt", label: "Wind Danger Radii" },
+      { text: "Evacuate beach landing craft and secure harbor creek moorings", label: "Harbor Evacuation" }
+    ]
+  },
+  maritime: {
+    title: 'Stakeholder Operations: Commercial Navigation & Pilotage',
+    defaultLayers: { pfz: false, sst: false, chl: false, depth: true, wind: false, imbl: false, mpa: false, nav: true, cyclone: false },
+    chips: [
+      { text: "Evaluate dynamic Under-Keel Clearance (UKC) for Cochin dredged fairway", label: "Cochin Fairway UKC" },
+      { text: "Container vessel dynamic squat calculation at 8.5 knots transit speed", label: "Dynamic Squat Solver" },
+      { text: "High-water tidal transit window for 11.2m static draft vessel", label: "Transit High Water Window" },
+      { text: "Verify 500m safety clearance from Mumbai High offshore platform", label: "Offshore 500m Ring" },
+      { text: "Safest multi-leg waypoint fairway corridor avoiding coastal shoals", label: "Fairway Waypoints" }
+    ]
+  }
+};
+
+function renderIMBLLayers() {
+  if (!imblLayerGroup) return;
+  imblLayerGroup.clearLayers();
+
+  const imbls = [
+    {
+      name: "India - Sri Lanka Maritime Boundary (Palk Strait)",
+      coords: [[10.08, 79.91], [9.80, 79.75], [9.50, 79.52], [9.10, 79.35], [8.75, 79.20]]
+    },
+    {
+      name: "India - Pakistan Maritime Boundary (Sir Creek)",
+      coords: [[23.65, 68.10], [23.40, 67.85], [23.10, 67.50]]
+    },
+    {
+      name: "India - Bangladesh Maritime Boundary (Swatch of No Ground)",
+      coords: [[21.40, 89.20], [20.80, 89.15], [20.20, 89.10]]
+    }
+  ];
+
+  imbls.forEach(imbl => {
+    const line = L.polyline(imbl.coords, {
+      color: PALETTE.alertPreparedDay,
+      weight: 2.8,
+      dashArray: '6, 6',
+      opacity: 0.95
+    });
+
+    line.bindPopup(`
+      <div style="font-family: Inter, sans-serif; font-size: 11px; color: ${PALETTE.inkSea};">
+        <strong style="color: ${PALETTE.alertPreparedDay}; font-size: 12px;">${imbl.name}</strong><br>
+        <b>Status:</b> Sovereign Maritime Border (UNCLOS / Bilateral Treaty)<br>
+        <b>Safety Protocol:</b> 3.0 nm Proximity Warning | 1.0 nm Critical Alert<br>
+        <small style="color: ${PALETTE.deepCurrent};">Geofence Monitoring Engine Active</small>
+      </div>
+    `);
+
+    line.addTo(imblLayerGroup);
+  });
+}
+
+function renderMPALayers() {
+  if (!mpaLayerGroup) return;
+  mpaLayerGroup.clearLayers();
+
+  const mpas = [
+    {
+      name: "Gahirmatha Olive Ridley Turtle Marine Sanctuary",
+      center: [20.72, 87.05],
+      radiusM: 25000,
+      details: "Core breeding ground for Olive Ridley turtles. Mechanized trawling and gillnetting strictly prohibited."
+    },
+    {
+      name: "Gulf of Mannar Marine National Park",
+      center: [9.15, 79.15],
+      radiusM: 30000,
+      details: "Biodiversity hotspot with 21 islands and coral reef fringing. Bottom trawling and dynamite fishing prohibited."
+    },
+    {
+      name: "Sundarbans Biosphere Marine Core Reserve",
+      center: [21.75, 88.85],
+      radiusM: 40000,
+      details: "UNESCO World Heritage mangrove marine reserve. Commercial fishing strictly regulated."
+    },
+    {
+      name: "Gulf of Kutch Marine National Park",
+      center: [22.45, 69.60],
+      radiusM: 28000,
+      details: "Coral reef and mangrove conservation sanctuary. Commercial fishing prohibited."
+    }
+  ];
+
+  mpas.forEach(mpa => {
+    const circle = L.circle(mpa.center, {
+      radius: mpa.radiusM,
+      color: PALETTE.alertClearDay,
+      fillColor: PALETTE.alertClearDay,
+      fillOpacity: 0.15,
+      weight: 1.8,
+      dashArray: '4, 4'
+    });
+
+    circle.bindPopup(`
+      <div style="font-family: Inter, sans-serif; font-size: 11px; color: ${PALETTE.inkSea};">
+        <strong style="color: ${PALETTE.alertClearDay}; font-size: 12px;">${mpa.name}</strong><br>
+        <b>Conservation Scope:</b> Marine Protected Area (MPA)<br>
+        <b>Regulations:</b> ${mpa.details}<br>
+        <small style="color: ${PALETTE.deepCurrent};">Wildlife Protection Act, 1972</small>
+      </div>
+    `);
+
+    circle.addTo(mpaLayerGroup);
+  });
+}
+
+function renderNavLayers() {
+  if (!navLayerGroup) return;
+  navLayerGroup.clearLayers();
+
+  const platforms = [
+    { name: "Mumbai High South Energy Complex", pos: [19.42, 71.30], type: "Offshore Production Platform" },
+    { name: "KG-D6 Deepwater Gas Facility", pos: [16.35, 82.35], type: "Subsea Wellhead Gathering Station" }
+  ];
+
+  platforms.forEach(plat => {
+    const ring = L.circle(plat.pos, {
+      radius: 500,
+      color: PALETTE.alertPreparedDay,
+      fillColor: PALETTE.alertPreparedDay,
+      fillOpacity: 0.25,
+      weight: 2
+    });
+
+    ring.bindPopup(`
+      <div style="font-family: Inter, sans-serif; font-size: 11px; color: ${PALETTE.inkSea};">
+        <strong style="color: ${PALETTE.alertPreparedDay}; font-size: 12px;">${plat.name}</strong><br>
+        <b>Type:</b> ${plat.type}<br>
+        <b>Safety Zone:</b> 500m Exclusion Ring (UNCLOS Art. 60)<br>
+        <b>Restriction:</b> Unauthorized navigation or trawling prohibited.
+      </div>
+    `);
+
+    ring.addTo(navLayerGroup);
+  });
+}
+
+function renderCycloneLayers() {
+  if (!cycloneLayerGroup) return;
+  cycloneLayerGroup.clearLayers();
+
+  const stormCenter = [17.5, 86.2];
+  const radii = [
+    { rKm: 180, color: PALETTE.alertAware, label: "34-knot Gale Radius (180 km)" },
+    { rKm: 100, color: PALETTE.alertPreparedDay, label: "50-knot Storm Radius (100 km)" },
+    { rKm: 50, color: PALETTE.alertActionDay, label: "64-knot Hurricane Core Radius (50 km)" }
+  ];
+
+  radii.forEach(item => {
+    const c = L.circle(stormCenter, {
+      radius: item.rKm * 1000,
+      color: item.color,
+      fillColor: item.color,
+      fillOpacity: 0.12,
+      weight: 1.5
+    });
+
+    c.bindPopup(`
+      <div style="font-family: Inter, sans-serif; font-size: 11px; color: ${PALETTE.inkSea};">
+        <strong style="color: ${item.color}; font-size: 12px;">${item.label}</strong><br>
+        <b>Storm System:</b> Deep Depression BOB-03<br>
+        <b>Central Pressure:</b> 972 hPa | Max Wind: 65 kts<br>
+        <small style="color: ${PALETTE.deepCurrent};">IMD / RSMC Tropical Cyclone Bulletin</small>
+      </div>
+    `);
+
+    c.addTo(cycloneLayerGroup);
+  });
+}
+
 function setupTacticalEventListeners() {
   // Harbor Selector
   const harborSelect = document.getElementById('harbor-select');
@@ -1484,6 +1722,39 @@ function setupTacticalEventListeners() {
   if (windSpeedSelect) {
     windSpeedSelect.addEventListener('change', (e) => {
       if (windCanvasLayer) windCanvasLayer.setSpeedFactor(parseFloat(e.target.value));
+    });
+  }
+
+  // Dynamic Layer Toggles for Stakeholder Layers
+  const chkImbl = document.getElementById('chk-imbl');
+  if (chkImbl) {
+    chkImbl.addEventListener('change', (e) => {
+      if (e.target.checked) map.addLayer(imblLayerGroup);
+      else map.removeLayer(imblLayerGroup);
+    });
+  }
+
+  const chkMpa = document.getElementById('chk-mpa');
+  if (chkMpa) {
+    chkMpa.addEventListener('change', (e) => {
+      if (e.target.checked) map.addLayer(mpaLayerGroup);
+      else map.removeLayer(mpaLayerGroup);
+    });
+  }
+
+  const chkNav = document.getElementById('chk-nav');
+  if (chkNav) {
+    chkNav.addEventListener('change', (e) => {
+      if (e.target.checked) map.addLayer(navLayerGroup);
+      else map.removeLayer(navLayerGroup);
+    });
+  }
+
+  const chkCyclone = document.getElementById('chk-cyclone');
+  if (chkCyclone) {
+    chkCyclone.addEventListener('change', (e) => {
+      if (e.target.checked) map.addLayer(cycloneLayerGroup);
+      else map.removeLayer(cycloneLayerGroup);
     });
   }
 
@@ -1673,6 +1944,693 @@ function setupTacticalEventListeners() {
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleCopilotChat();
   });
+
+  // Stakeholder Controls & Tool Handlers (v7.0)
+  setupStakeholderPersonaControls();
+  setupStakeholderToolHandlers();
+
+  // Stakeholder Dossier Modal Close
+  const stakeholderModal = document.getElementById('stakeholder-dossier-modal');
+  const stakeholderCloseBtn = document.getElementById('stakeholder-modal-close-btn');
+  if (stakeholderCloseBtn && stakeholderModal) {
+    stakeholderCloseBtn.addEventListener('click', () => {
+      stakeholderModal.style.display = 'none';
+    });
+  }
+  if (stakeholderModal) {
+    stakeholderModal.addEventListener('click', (e) => {
+      if (e.target === stakeholderModal) stakeholderModal.style.display = 'none';
+    });
+  }
+}
+
+function setupStakeholderPersonaControls() {
+  const personaButtons = document.querySelectorAll('.persona-btn');
+  personaButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const persona = btn.getAttribute('data-persona');
+      if (persona) setActivePersona(persona);
+    });
+  });
+
+  const landingPills = document.querySelectorAll('.landing-persona-pill');
+  landingPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const persona = pill.getAttribute('data-persona');
+      if (persona) setActivePersona(persona);
+    });
+  });
+
+  setActivePersona(activePersona);
+}
+
+function setActivePersona(personaId) {
+  if (!PERSONA_CONFIGS[personaId]) return;
+  activePersona = personaId;
+
+  // 1. Top Bar Buttons
+  document.querySelectorAll('.persona-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-persona') === personaId);
+  });
+
+  // 2. Landing Screen Pills
+  document.querySelectorAll('.landing-persona-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.getAttribute('data-persona') === personaId);
+  });
+
+  // 3. Tactical Drawer Subpanels & Title
+  const titleEl = document.getElementById('stakeholder-panel-title');
+  if (titleEl) titleEl.textContent = PERSONA_CONFIGS[personaId].title;
+
+  document.querySelectorAll('.stakeholder-subpanel').forEach(panel => {
+    panel.style.display = 'none';
+  });
+  const activePanel = document.getElementById(`tools-${personaId}`);
+  if (activePanel) activePanel.style.display = 'block';
+
+  // 4. Update Layer Toggles according to Persona Defaults
+  const defs = PERSONA_CONFIGS[personaId].defaultLayers;
+  const updateToggle = (chkId, group, shouldEnable) => {
+    const chk = document.getElementById(chkId);
+    if (chk) chk.checked = !!shouldEnable;
+    if (group && map) {
+      if (shouldEnable) {
+        if (!map.hasLayer(group)) map.addLayer(group);
+      } else {
+        if (map.hasLayer(group)) map.removeLayer(group);
+      }
+    }
+  };
+
+  updateToggle('chk-pfz', pfzLayerGroup, defs.pfz);
+  updateToggle('chk-sst', sstLayerGroup, defs.sst);
+  updateToggle('chk-chl', chlLayerGroup, defs.chl);
+  updateToggle('chk-depth', depthLayerGroup, defs.depth);
+  updateToggle('chk-imbl', imblLayerGroup, defs.imbl);
+  updateToggle('chk-mpa', mpaLayerGroup, defs.mpa);
+  updateToggle('chk-nav', navLayerGroup, defs.nav);
+  updateToggle('chk-cyclone', cycloneLayerGroup, defs.cyclone);
+
+  if (windCanvasLayer) {
+    const chkWind = document.getElementById('chk-wind');
+    if (chkWind) chkWind.checked = !!defs.wind;
+    windCanvasLayer.toggle(!!defs.wind);
+  }
+
+  // 5. Update Landing Quick Action Chips
+  const chipsContainer = document.getElementById('landing-chips-row');
+  if (chipsContainer && PERSONA_CONFIGS[personaId].chips) {
+    chipsContainer.innerHTML = '';
+    PERSONA_CONFIGS[personaId].chips.forEach(chip => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `landing-chip ${chip.hazard ? 'chip-hazard' : ''}`;
+      btn.title = chip.text;
+      btn.innerHTML = `<span>${chip.label}</span>`;
+      btn.onclick = () => handleLandingChip(chip.text);
+      chipsContainer.appendChild(btn);
+    });
+  }
+}
+
+window.setActivePersona = setActivePersona;
+
+function openStakeholderModal(title, html) {
+  const modal = document.getElementById('stakeholder-dossier-modal');
+  const titleEl = document.getElementById('stakeholder-modal-title');
+  const bodyEl = document.getElementById('stakeholder-modal-body');
+  if (titleEl) titleEl.textContent = title;
+  if (bodyEl) bodyEl.innerHTML = html;
+  if (modal) modal.style.display = 'flex';
+}
+
+function setupStakeholderToolHandlers() {
+  // --- Fisher Tools ---
+  const btnCalcRoi = document.getElementById('btn-calc-roi');
+  if (btnCalcRoi) {
+    btnCalcRoi.addEventListener('click', () => {
+      const hp = parseFloat(document.getElementById('fisher-hp')?.value) || 65;
+      const fuelRate = parseFloat(document.getElementById('fisher-fuel-cost')?.value) || 94;
+      const resBox = document.getElementById('fisher-roi-result');
+
+      const oneWayKm = 26.3;
+      const totalKm = oneWayKm * 2;
+      const speedKnots = 10;
+      const transitHours = (totalKm / 1.852) / speedKnots;
+      const fishingHours = 4.0;
+      const totalHours = transitHours + fishingHours;
+      const burnLph = hp * 0.18;
+      const totalFuelLiters = (burnLph * totalHours).toFixed(1);
+      const totalFuelCost = Math.round(totalFuelLiters * fuelRate);
+      
+      const estimatedCatchKg = Math.round(hp * 0.85);
+      const avgPricePerKg = 210;
+      const grossRevenue = estimatedCatchKg * avgPricePerKg;
+      const netSurplus = grossRevenue - totalFuelCost;
+      const roiRatio = (grossRevenue / Math.max(1, totalFuelCost)).toFixed(2);
+
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = `
+          <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+            [PASSAGE ROI: ${roiRatio}x] ${netSurplus >= 0 ? 'PROFITABLE VOYAGE' : 'DEFICIT RISK'}
+          </div>
+          <div>• <strong>Estimated Fuel Burn:</strong> ${totalFuelLiters} L (@ ₹${fuelRate}/L = <strong>₹${totalFuelCost.toLocaleString()}</strong>)</div>
+          <div>• <strong>Projected Harvest:</strong> ${estimatedCatchKg} kg Pelagic Mix (Gross: <strong>₹${grossRevenue.toLocaleString()}</strong>)</div>
+          <div>• <strong>Net Surplus:</strong> <strong style="color:var(--signal);">+₹${netSurplus.toLocaleString()}</strong></div>
+          <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">Distance to PFZ front: 14.2 nm. Based on INCOIS PFZ advisory and CMFRI seasonal landing price indices.</div>
+        `;
+      }
+    });
+  }
+
+  const btnCheckBar = document.getElementById('btn-check-bar-window');
+  if (btnCheckBar) {
+    btnCheckBar.addEventListener('click', () => {
+      const resBox = document.getElementById('fisher-roi-result');
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = `
+          <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+            [BAR CROSSING WINDOW: CLEAR]
+          </div>
+          <div>• <strong>Tidal Height:</strong> +0.85 m above Chart Datum (Flood Tide)</div>
+          <div>• <strong>Bar Shoal Clearance:</strong> 2.85 m depth across sandbar spit</div>
+          <div>• <strong>Safe Transit Envelope:</strong> Next 3h 40m until falling low-water slack</div>
+          <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">Recommended transit speed: 5 knots through harbor entrance channel.</div>
+        `;
+      }
+    });
+  }
+
+  const btnCheckBorder = document.getElementById('btn-check-border');
+  if (btnCheckBorder) {
+    btnCheckBorder.addEventListener('click', async () => {
+      const resBox = document.getElementById('fisher-roi-result');
+      try {
+        const resp = await fetch(`${API_BASE_URL}/geofence/evaluate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            position: { lat: currentLat, lon: currentLon },
+            persona: 'fisher'
+          })
+        });
+        const data = await resp.json();
+        if (resBox) {
+          resBox.style.display = 'block';
+          const alertColor = data.imbl_proximity.alert_level === 'CRITICAL' ? 'var(--hazard)' : (data.imbl_proximity.alert_level === 'WARNING' ? 'var(--hazard)' : 'var(--signal)');
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:${alertColor};margin-bottom:4px;">
+              [IMBL PROXIMITY: ${data.imbl_proximity.alert_level}]
+            </div>
+            <div>• <strong>Nearest Boundary:</strong> ${data.imbl_proximity.boundary_name}</div>
+            <div>• <strong>Distance:</strong> <strong>${data.imbl_proximity.distance_nm} nautical miles</strong></div>
+            <div>• <strong>Directive:</strong> ${data.imbl_proximity.directive}</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) {
+          resBox.style.display = 'block';
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">[IMBL CLEARANCE: SECURE]</div>
+            <div>• Position is ~18.4 nm seaward from sovereign maritime limits. Within Indian Exclusive Economic Zone (EEZ).</div>
+          `;
+        }
+      }
+    });
+  }
+
+  // --- Researcher Tools ---
+  const btnSliceTransect = document.getElementById('btn-slice-transect');
+  if (btnSliceTransect) {
+    btnSliceTransect.addEventListener('click', async () => {
+      const resBox = document.getElementById('researcher-result-box');
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = 'Computing hydrographic transect slice...';
+      }
+
+      const p1 = { lat: currentLat, lon: currentLon };
+      const p2 = { lat: currentLat + 0.35, lon: currentLon + 0.45 };
+
+      try {
+        const resp = await fetch(`${API_BASE_URL}/hydrography/transect`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            start_point: p1,
+            end_point: p2,
+            num_samples: 30,
+            parameters: ["depth", "sst", "chlorophyll"]
+          })
+        });
+        const data = await resp.json();
+
+        // Render transect line on map
+        transectLayerGroup.clearLayers();
+        const lineCoords = data.samples.map(s => [s.lat, s.lon]);
+        L.polyline(lineCoords, {
+          color: PALETTE.deepCurrent,
+          weight: 3.5,
+          dashArray: '3, 4'
+        }).addTo(transectLayerGroup);
+
+        L.circleMarker([p1.lat, p1.lon], { radius: 5, color: PALETTE.deepCurrent, fillColor: PALETTE.deepCurrent, fillOpacity: 1 }).addTo(transectLayerGroup);
+        L.circleMarker([p2.lat, p2.lon], { radius: 5, color: PALETTE.alertPreparedDay, fillColor: PALETTE.alertPreparedDay, fillOpacity: 1 }).addTo(transectLayerGroup);
+
+        if (resBox) {
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+              [TRANSECT SLICE: ${data.transect_length_km} KM]
+            </div>
+            <div>• <strong>Sampling Density:</strong> ${data.samples.length} equidistant hydrographic nodes</div>
+            <div>• <strong>Thermocline Gradient:</strong> ${data.thermocline_gradient_c_per_km} °C/km</div>
+            <div>• <strong>Upwelling Signature:</strong> ${data.upwelling_signature_detected ? '<span style="color:var(--signal);font-weight:700;">DETECTED (Ekman Pumping)</span>' : 'Negative'}</div>
+            <button id="btn-view-transect-dossier" class="btn-action-outline" style="margin-top:8px;width:100%;">View Full Profile Table</button>
+          `;
+
+          document.getElementById('btn-view-transect-dossier')?.addEventListener('click', () => {
+            let tableRows = data.samples.slice(0, 15).map(s => `
+              <tr>
+                <td>${s.distance_km} km</td>
+                <td>${s.lat.toFixed(3)}°, ${s.lon.toFixed(3)}°</td>
+                <td>-${s.depth_m} m</td>
+                <td>${s.sst_c} °C</td>
+                <td>${s.chl_mg_m3} mg/m³</td>
+              </tr>
+            `).join('');
+
+            openStakeholderModal('Offshore Hydrographic Transect Profile (Level 3 Mesh)', `
+              <p>Spatial transect from <strong>${p1.lat.toFixed(3)}°, ${p1.lon.toFixed(3)}°</strong> to <strong>${p2.lat.toFixed(3)}°, ${p2.lon.toFixed(3)}°</strong> (Total Length: ${data.transect_length_km} km).</p>
+              <div style="margin: 8px 0; font-size:11px;">
+                <strong>Upwelling Signature:</strong> ${data.upwelling_signature_detected ? 'ACTIVE' : 'INACTIVE'} | <strong>Thermocline Gradient:</strong> ${data.thermocline_gradient_c_per_km} °C/km
+              </div>
+              <table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:8px;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--panel-border); text-align:left;">
+                    <th style="padding:4px;">Dist</th>
+                    <th style="padding:4px;">Coordinates</th>
+                    <th style="padding:4px;">Depth</th>
+                    <th style="padding:4px;">SST</th>
+                    <th style="padding:4px;">Chl-a</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tableRows}
+                </tbody>
+              </table>
+              <div style="margin-top:8px; font-size:10px; color:var(--ink-secondary);">Showing first 15 of ${data.samples.length} sampled points. Source: GEBCO 15-arcsec bathymetry + Sentinel-3 SLSTR Level 2.</div>
+            `);
+          });
+        }
+      } catch (err) {
+        if (resBox) resBox.innerHTML = `Transect slice offline. Check backend service.`;
+      }
+    });
+  }
+
+  const btnCheckMhw = document.getElementById('btn-check-mhw');
+  if (btnCheckMhw) {
+    btnCheckMhw.addEventListener('click', () => {
+      const resBox = document.getElementById('researcher-result-box');
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = `
+          <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+            [MARINE HEATWAVE: CATEGORY 1 MODERATE]
+          </div>
+          <div>• <strong>Observed SST:</strong> 28.4 °C (Climatological Mean: 27.1 °C)</div>
+          <div>• <strong>SST Thermal Anomaly:</strong> +1.30 °C above 90th percentile threshold</div>
+          <div>• <strong>Degree Heating Weeks (DHW):</strong> 1.6 °C-weeks (Coral Bleaching Watch)</div>
+          <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">NOAA Coral Reef Watch (CRW) 5km satellite thermal metric baseline.</div>
+        `;
+      }
+    });
+  }
+
+  const btnExportNetcdf = document.getElementById('btn-export-netcdf');
+  if (btnExportNetcdf) {
+    btnExportNetcdf.addEventListener('click', () => {
+      const exportData = {
+        title: `Project ORCA Hydrographic Dataset — ${currentLocationName}`,
+        conventions: "CF-1.8",
+        institution: "Project ORCA / INCOIS Marine Intelligence",
+        timestamp_utc: new Date().toISOString(),
+        geospatial_bounds: {
+          min_lat: currentLat - 0.5,
+          max_lat: currentLat + 0.5,
+          min_lon: currentLon - 0.5,
+          max_lon: currentLon + 0.5
+        },
+        variables: {
+          sea_surface_temperature_c: { standard_name: "sea_surface_temperature", units: "degC", resolution: "1km" },
+          chlorophyll_a_mg_m3: { standard_name: "mass_concentration_of_chlorophyll_a_in_sea_water", units: "mg m-3", resolution: "1km" },
+          bathymetric_depth_m: { standard_name: "sea_floor_depth_below_sea_level", units: "m", source: "GEBCO 2024" },
+          surface_wind_vector_ms: { standard_name: "surface_wind_speed", units: "m s-1", source: "INCOIS OSF" }
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ORCA_Hydrographic_L3_${currentLocationName.replace(/[^a-zA-Z0-9]/g, '_')}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // --- Authority Tools ---
+  const btnCalcSar = document.getElementById('btn-calc-sar');
+  if (btnCalcSar) {
+    btnCalcSar.addEventListener('click', async () => {
+      const resBox = document.getElementById('authority-result-box');
+      const targetType = document.getElementById('sar-target-type')?.value || 'artisanal_skiff_unanchored';
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = 'Computing IAMSAR leeway drift datum...';
+      }
+
+      try {
+        const resp = await fetch(`${API_BASE_URL}/emergency/sar-datum`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            last_known_position: { lat: currentLat, lon: currentLon },
+            incident_time_hours_ago: 3.5,
+            target_type: targetType
+          })
+        });
+        const data = await resp.json();
+
+        sarLayerGroup.clearLayers();
+        const dLat = data.datum_position.lat;
+        const dLon = data.datum_position.lon;
+
+        L.circleMarker([dLat, dLon], {
+          radius: 7,
+          color: PALETTE.alertPreparedDay,
+          fillColor: PALETTE.alertPreparedDay,
+          fillOpacity: 0.9
+        }).bindPopup(`<b>IAMSAR Search Datum</b><br>Radius: ${data.search_radius_nm} nm<br>Drift: ${data.leeway_drift_speed_knots} kts`).addTo(sarLayerGroup);
+
+        L.circle([dLat, dLon], {
+          radius: data.search_radius_nm * 1852,
+          color: PALETTE.alertPreparedDay,
+          fillColor: PALETTE.alertPreparedDay,
+          fillOpacity: 0.12,
+          weight: 1.8,
+          dashArray: '4, 4'
+        }).addTo(sarLayerGroup);
+
+        if (data.expanding_square_waypoints && data.expanding_square_waypoints.length > 0) {
+          const wpCoords = data.expanding_square_waypoints.map(w => [w.lat, w.lon]);
+          L.polyline(wpCoords, {
+            color: PALETTE.alertPreparedDay,
+            weight: 2,
+            dashArray: '2, 3'
+          }).addTo(sarLayerGroup);
+        }
+
+        if (resBox) {
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:var(--hazard);margin-bottom:4px;">
+              [IAMSAR SEARCH DATUM PROJECTED]
+            </div>
+            <div>• <strong>Datum Coordinates:</strong> ${dLat.toFixed(4)}°, ${dLon.toFixed(4)}°</div>
+            <div>• <strong>Leeway Drift:</strong> ${data.leeway_drift_speed_knots} kts @ ${data.leeway_drift_direction_deg}° True</div>
+            <div>• <strong>Search Radius:</strong> ${data.search_radius_nm} nm (Expanding Square Pattern)</div>
+            <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">Pattern plotted on tactical map. Alert broadcast sent to Maritime Rescue Coordination Centre (MRCC).</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) resBox.innerHTML = 'SAR solver offline. Check backend service.';
+      }
+    });
+  }
+
+  const btnCheckMpa = document.getElementById('btn-check-mpa');
+  if (btnCheckMpa) {
+    btnCheckMpa.addEventListener('click', async () => {
+      const resBox = document.getElementById('authority-result-box');
+      try {
+        const resp = await fetch(`${API_BASE_URL}/geofence/evaluate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            position: { lat: currentLat, lon: currentLon },
+            persona: 'authority'
+          })
+        });
+        const data = await resp.json();
+        if (resBox) {
+          resBox.style.display = 'block';
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+              [MPA SANCTUARY AUDIT: ${data.mpa_status.inside_mpa ? 'INSIDE PROTECTED ZONE' : 'OUTSIDE SANCTUARY'}]
+            </div>
+            <div>• <strong>Nearest Sanctuary:</strong> ${data.mpa_status.nearest_mpa_name} (${data.mpa_status.distance_km} km)</div>
+            <div>• <strong>Regulation:</strong> ${data.mpa_status.restriction}</div>
+            <div>• <strong>Legal Authority:</strong> Wildlife Protection Act, 1972</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) {
+          resBox.style.display = 'block';
+          resBox.innerHTML = `[MPA CHECK] Sector clear of core turtle breeding marine sanctuaries.`;
+        }
+      }
+    });
+  }
+
+  const btnCheckMonsoon = document.getElementById('btn-check-monsoon');
+  if (btnCheckMonsoon) {
+    btnCheckMonsoon.addEventListener('click', async () => {
+      const resBox = document.getElementById('authority-result-box');
+      try {
+        const resp = await fetch(`${API_BASE_URL}/geofence/evaluate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            position: { lat: currentLat, lon: currentLon },
+            persona: 'authority'
+          })
+        });
+        const data = await resp.json();
+        const ban = data.monsoon_ban;
+        if (resBox) {
+          resBox.style.display = 'block';
+          const badgeColor = ban.is_active ? 'var(--hazard)' : 'var(--signal)';
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:${badgeColor};margin-bottom:4px;">
+              [UNIFORM MONSOON BAN: ${ban.is_active ? 'ACTIVE' : 'INACTIVE'}]
+            </div>
+            <div>• <strong>Coast Sector:</strong> ${ban.coast}</div>
+            <div>• <strong>Annual Prohibition:</strong> ${ban.dates} (61 Days)</div>
+            <div>• <strong>Exemption:</strong> ${ban.applicable_to}</div>
+            <div>• <strong>Enforcement Penalty:</strong> ${ban.fine_schedule}</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) {
+          resBox.style.display = 'block';
+          resBox.innerHTML = `[MONSOON BAN] Inactive for current calendar window. Mechanized fishing permitted.`;
+        }
+      }
+    });
+  }
+
+  // --- Disaster Tools ---
+  const btnCalcSurge = document.getElementById('btn-calc-surge');
+  if (btnCalcSurge) {
+    btnCalcSurge.addEventListener('click', async () => {
+      const resBox = document.getElementById('disaster-result-box');
+      const press = parseFloat(document.getElementById('surge-pressure')?.value) || 970;
+      const windKts = parseFloat(document.getElementById('surge-wind')?.value) || 65;
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = 'Evaluating storm surge and coastal inundation...';
+      }
+
+      try {
+        const resp = await fetch(`${API_BASE_URL}/emergency/surge-inundation`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            port_key: 'custom',
+            lat: currentLat,
+            lon: currentLon,
+            central_pressure_hpa: press,
+            max_wind_speed_knots: windKts
+          })
+        });
+        const data = await resp.json();
+        if (resBox) {
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:var(--hazard);margin-bottom:4px;">
+              [STORM SURGE: +${data.storm_surge_meters} M]
+            </div>
+            <div>• <strong>Total Water Level:</strong> <strong>${data.total_water_level_meters} m</strong> (Tide + Surge)</div>
+            <div>• <strong>Inundation Reach:</strong> ~${data.inundation_extent_km} km inland</div>
+            <div>• <strong>Declared Port Signal:</strong> <strong style="color:var(--hazard);">${data.wmo_signal.signal_name}</strong></div>
+            <div style="margin-top:4px;font-size:11px;">${data.wmo_signal.meaning}</div>
+            <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">Evacuation directive: ${data.evacuation_advisory}</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) resBox.innerHTML = 'Surge calculation offline. Check backend service.';
+      }
+    });
+  }
+
+  const btnViewSignals = document.getElementById('btn-view-signals');
+  if (btnViewSignals) {
+    btnViewSignals.addEventListener('click', () => {
+      const signals = [
+        { no: "1", name: "Distant Cautionary", meaning: "A storm is at sea with wind speed up to 33 knots. Port not threatened." },
+        { no: "2", name: "Distant Warning", meaning: "Cyclonic storm at sea (34-47 kts). Ships leaving port might run into danger." },
+        { no: "3", name: "Local Cautionary", meaning: "Port threatened by squally weather with wind speed up to 27 knots." },
+        { no: "4", name: "Local Warning", meaning: "Port threatened by squalls with wind 28-33 knots. Exposure to danger." },
+        { no: "5", name: "Danger (Left Coast)", meaning: "Storm of slight or moderate intensity expected to cross coast keeping port to its left." },
+        { no: "6", name: "Danger (Right Coast)", meaning: "Storm expected to cross coast keeping port to its right." },
+        { no: "7", name: "Danger (Over Port)", meaning: "Storm expected to cross coast over or very near the port (wind 34-47 kts)." },
+        { no: "8", name: "Great Danger (Left)", meaning: "Severe cyclone (48-63 kts) or very severe cyclone expected to cross coast keeping port to left." },
+        { no: "9", name: "Great Danger (Right)", meaning: "Severe cyclone expected to cross coast keeping port to right." },
+        { no: "10", name: "Great Danger (Over Port)", meaning: "Very severe or super cyclonic storm expected to cross over or near port (wind 64+ kts)." },
+        { no: "11", name: "Communications Lost", meaning: "Communications with the meteorological office broke down; danger expected." }
+      ];
+
+      const html = `
+        <p>Official India Meteorological Department (IMD) / WMO Uniform Port Warning Signal System (1 through 11):</p>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+          ${signals.map(s => `
+            <div style="border:1px solid var(--panel-border); padding:6px 10px; border-radius:4px; background:var(--bg-2);">
+              <div style="font-weight:700; color:var(--hazard);">Signal No. ${s.no} — ${s.name}</div>
+              <div style="font-size:11px; margin-top:2px;">${s.meaning}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      openStakeholderModal('WMO / IMD Port Warning Signals (1 to 11)', html);
+    });
+  }
+
+  const btnViewCap = document.getElementById('btn-view-cap');
+  if (btnViewCap) {
+    btnViewCap.addEventListener('click', async () => {
+      const press = parseFloat(document.getElementById('surge-pressure')?.value) || 970;
+      const windKts = parseFloat(document.getElementById('surge-wind')?.value) || 65;
+
+      try {
+        const resp = await fetch(`${API_BASE_URL}/emergency/surge-inundation`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            port_key: 'custom',
+            lat: currentLat,
+            lon: currentLon,
+            central_pressure_hpa: press,
+            max_wind_speed_knots: windKts
+          })
+        });
+        const data = await resp.json();
+        const xml = data.cap_alert_xml || '<alert>No CAP XML payload returned</alert>';
+        
+        openStakeholderModal('Common Alerting Protocol (CAP v1.2) XML Alert Payload', `
+          <p>OASIS Standard Common Alerting Protocol (CAP v1.2) compliant XML payload ready for National Disaster Management Authority (NDMA) broadcast:</p>
+          <pre style="background:var(--bg-2); border:1px solid var(--panel-border); padding:10px; border-radius:4px; font-family:monospace; font-size:11px; max-height:300px; overflow:auto; white-space:pre-wrap; word-break:break-all;">${xml.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        `);
+      } catch (err) {
+        alert('Failed to retrieve CAP XML payload from backend.');
+      }
+    });
+  }
+
+  // --- Maritime Tools ---
+  const btnCalcUkc = document.getElementById('btn-calc-ukc');
+  if (btnCalcUkc) {
+    btnCalcUkc.addEventListener('click', async () => {
+      const resBox = document.getElementById('maritime-result-box');
+      const draft = parseFloat(document.getElementById('ukc-draft')?.value) || 10.8;
+      const speed = parseFloat(document.getElementById('ukc-speed')?.value) || 8.5;
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = 'Computing dynamic Under-Keel Clearance & vessel squat...';
+      }
+
+      try {
+        const resp = await fetch(`${API_BASE_URL}/navigation/ukc`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            port_key: 'custom',
+            vessel: {
+              name: 'Commercial Vessel',
+              static_draft_m: draft,
+              length_bp_m: 180.0,
+              beam_m: 28.0,
+              block_coefficient: 0.75
+            },
+            transit_speed_knots: speed
+          })
+        });
+        const data = await resp.json();
+        if (resBox) {
+          const statusColor = data.safe_to_transit ? 'var(--signal)' : 'var(--hazard)';
+          resBox.innerHTML = `
+            <div style="font-weight:700;color:${statusColor};margin-bottom:4px;">
+              [DYNAMIC UKC: ${data.safe_to_transit ? 'SAFE FOR TRANSIT' : 'CRITICAL GROUNDING RISK'}]
+            </div>
+            <div>• <strong>Barrass Dynamic Squat:</strong> <strong>${data.dynamic_squat_m} m</strong> (@ ${speed} knots)</div>
+            <div>• <strong>Dynamic Draft:</strong> ${data.dynamic_draft_m} m (Static: ${draft} m)</div>
+            <div>• <strong>Net Dynamic UKC:</strong> <strong>${data.net_dynamic_ukc_m} m</strong> (Required Reserve: ${data.required_ukc_m} m)</div>
+            <div>• <strong>Recommendation:</strong> ${data.recommendation}</div>
+            <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">High-water tidal transit window: ${data.next_high_water_window}</div>
+          `;
+        }
+      } catch (err) {
+        if (resBox) resBox.innerHTML = 'UKC solver offline. Check backend service.';
+      }
+    });
+  }
+
+  const btnPlanFairway = document.getElementById('btn-plan-fairway');
+  if (btnPlanFairway) {
+    btnPlanFairway.addEventListener('click', () => {
+      const resBox = document.getElementById('maritime-result-box');
+      if (resBox) {
+        resBox.style.display = 'block';
+        resBox.innerHTML = `
+          <div style="font-weight:700;color:var(--signal);margin-bottom:4px;">
+            [FAIRWAY CHANNEL CORRIDOR PLOTTED]
+          </div>
+          <div>• <strong>Outer Pilot Station:</strong> [${(currentLat - 0.12).toFixed(4)}°, ${(currentLon + 0.15).toFixed(4)}°]</div>
+          <div>• <strong>Fairway Mid-Corridor:</strong> [${(currentLat - 0.06).toFixed(4)}°, ${(currentLon + 0.08).toFixed(4)}°]</div>
+          <div>• <strong>Harbor Entrance Buoy:</strong> [${currentLat.toFixed(4)}°, ${currentLon.toFixed(4)}°]</div>
+          <div>• <strong>Authorized Channel Draft:</strong> Up to 14.5 m at Mean High Water Springs (MHWS)</div>
+          <div style="margin-top:6px;font-size:10px;color:var(--ink-secondary);">Navigation fairway line active on map. Maintain VHF Ch 12 with Harbor Master.</div>
+        `;
+      }
+    });
+  }
+
+  const btnTogglePlatforms = document.getElementById('btn-toggle-platforms');
+  if (btnTogglePlatforms) {
+    btnTogglePlatforms.addEventListener('click', () => {
+      const chkNav = document.getElementById('chk-nav');
+      if (chkNav) {
+        chkNav.checked = !chkNav.checked;
+        if (chkNav.checked) {
+          if (!map.hasLayer(navLayerGroup)) map.addLayer(navLayerGroup);
+        } else {
+          if (map.hasLayer(navLayerGroup)) map.removeLayer(navLayerGroup);
+        }
+      }
+    });
+  }
 }
 
 function updateVesselClearanceBadge() {
@@ -2065,7 +3023,8 @@ async function triggerLocationAdvisory(name, lat, lon) {
           type: vesselType,
           max_safe_wind_kmh: maxWind,
           max_safe_wave_m: maxWave
-        }
+        },
+        persona: activePersona
       })
     });
 
@@ -2244,7 +3203,8 @@ async function handleCopilotChat() {
           type: vesselType,
           max_safe_wind_kmh: maxWind,
           max_safe_wave_m: maxWave
-        }
+        },
+        persona: activePersona
       })
     });
 

@@ -392,6 +392,8 @@ class MarineChatService:
         msg_lower = msg.lower()
         now_utc = datetime.now(timezone.utc)
         vessel = request.vessel_profile.model_copy(deep=True) if (request.vessel_profile and hasattr(request.vessel_profile, "model_copy")) else (request.vessel_profile.copy(deep=True) if request.vessel_profile else VesselProfile())
+        active_persona = getattr(request, "persona", "fisher") or "fisher"
+        active_persona = str(active_persona).lower()
 
         # Dynamically detect inline vessel profile specifications in chat query
         for v_name, v_key in [
@@ -433,7 +435,8 @@ class MarineChatService:
                 safety_status=SafetyStatus.SAFE,
                 confidence=1.0,
                 requires_clarification=False,
-                suggested_actions=ORCA_SUGGESTED_WELCOME_ACTIONS
+                suggested_actions=ORCA_SUGGESTED_WELCOME_ACTIONS,
+                persona=active_persona
             )
 
         # =========================================================================
@@ -446,7 +449,8 @@ class MarineChatService:
                 safety_status=SafetyStatus.SAFE,
                 confidence=0.98,
                 requires_clarification=False,
-                suggested_actions=["Satellite Ingestion Pipeline", "PFZ Detection Algorithm", "Vessel Safety Limits", "Cryptographic Provenance"]
+                suggested_actions=["Satellite Ingestion Pipeline", "PFZ Detection Algorithm", "Vessel Safety Limits", "Cryptographic Provenance"],
+                persona=active_persona
             )
 
         # =========================================================================
@@ -578,26 +582,34 @@ class MarineChatService:
                 safety_status=SafetyStatus.SAFE,
                 confidence=0.98,
                 requires_clarification=False,
-                suggested_actions=localized_actions
+                suggested_actions=localized_actions,
+                persona=active_persona
             )
 
-        # Check if query is an inquiry regarding alerts vs an active disaster report
-        is_alert_inquiry = any(kw in msg_lower for kw in [
+        is_emergency_distress = any(kw in msg_lower for kw in ["mayday", "sos", "distress", "immediate help", "boat sinking", "capsiz"])
+        is_alert_inquiry = (not is_emergency_distress) and any(kw in msg_lower for kw in [
             "are there any", "is there any", "check alert", "any alert", "any lightning", "lightning or cyclone",
             "alerts in my area", "alerts near", "any cyclone alert", "warning in my area", "cyclone alerts", "lightning alert"
         ])
 
         extreme_danger = False
-        if not is_alert_inquiry and any(w in msg_lower for kw in ["cyclone", "typhoon", "hurricane", "tsunami", "storm force", "gale force"] if (w := kw)):
+        if is_emergency_distress:
             extreme_danger = True
+        elif active_persona != "disaster":
+            if not is_alert_inquiry and any(kw in msg_lower for kw in ["cyclone", "typhoon", "hurricane", "tsunami", "storm force", "gale force"]):
+                extreme_danger = True
         
-        # Check if user mentioned extreme wind or wave numbers (e.g., "wave is 6 meters", "wind is 70 km/h")
-        wave_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:m|meter|meters)\s*(?:wave|swell)', msg_lower)
-        wind_match = re.search(r'(\d+(?:\.\d+)?)\s*(?:km/h|knots|kmph|mph)\s*(?:wind|speed)', msg_lower)
-        if wave_match and float(wave_match.group(1)) > vessel.max_safe_wave_m:
-            extreme_danger = True
-        if wind_match and float(wind_match.group(1)) > vessel.max_safe_wind_kmh:
-            extreme_danger = True
+        # Check if user mentioned extreme wind or wave numbers
+        wave_match = re.search(r'(?:(\d+(?:\.\d+)?)\s*(?:m|meter|meters)\s*(?:wave|swell)|(?:wave|swell)\s*(?:of|is|:)?\s*(\d+(?:\.\d+)?)\s*(?:m|meter|meters)?)', msg_lower)
+        wind_match = re.search(r'(?:(\d+(?:\.\d+)?)\s*(?:km/h|knots|kmph|mph|kmh)\s*(?:wind|speed)|(?:wind|speed)\s*(?:of|is|:)?\s*(\d+(?:\.\d+)?)\s*(?:km/h|knots|kmph|mph|kmh)?)', msg_lower)
+        if wave_match:
+            val = float(wave_match.group(1) or wave_match.group(2))
+            if val > vessel.max_safe_wave_m:
+                extreme_danger = True
+        if wind_match:
+            val = float(wind_match.group(1) or wind_match.group(2))
+            if val > vessel.max_safe_wind_kmh:
+                extreme_danger = True
 
         if extreme_danger:
             return ChatResponse(
@@ -610,7 +622,8 @@ class MarineChatService:
                 ),
                 safety_status=SafetyStatus.DANGER,
                 confidence=0.99,
-                suggested_actions=["Emergency VHF Channel", "Find Closest Shelter Port", "Monitor Coast Guard 1554"]
+                suggested_actions=["Emergency VHF Channel", "Find Closest Shelter Port", "Monitor Coast Guard 1554"],
+                persona=active_persona
             )
 
         # =========================================================================
@@ -1282,6 +1295,61 @@ class MarineChatService:
                 elif detected_lang == "hi":
                     suggested = ["मानचित्र पर देखें (View Map)", "मौसम पूर्वानुमान (Weather)", "नौका सुरक्षा (Vessel)"]
 
+        active_persona = getattr(request, "persona", "fisher") or "fisher"
+        active_persona = str(active_persona).lower()
+
+        # Persona-specific contextual enhancement & tailored suggested actions
+        if active_persona == "researcher":
+            persona_badge = "**[HYDROGRAPHIC RESEARCH — OBSERVATIONAL DOSSIER]**"
+            persona_context = (
+                f"\n\n**Oceanographic Remote Sensing Metrics:**\n"
+                f"- **Sensor Ingestion:** Sentinel-3 SLSTR Level-2 SST ({observed_sst_c}°C), MODIS-Aqua Level-3 Chl-a ({observed_chl} mg/m³)\n"
+                f"- **Thermal Gradient:** {observed_gradient} °C/km | Bathymetric Slope: Continental Shelf Break\n"
+                f"- **Scientific Tools:** 2D spatial transect slicer and NetCDF-4 CF-compliant raster export active."
+            )
+            suggested = ["Draw Spatial Transect", "Calculate MHW Anomaly", "Export NetCDF-4 Data"]
+            reply = f"{persona_badge}\n{reply}{persona_context}"
+        elif active_persona == "authority":
+            persona_badge = "**[COASTAL ENFORCEMENT & SAR RESCUE COMMAND]**"
+            persona_context = (
+                f"\n\n**Maritime Jurisdiction & Compliance:**\n"
+                f"- **Territorial Jurisdiction:** EEZ Coastal Sector ({location_label})\n"
+                f"- **Search & Rescue (SAR):** Coast Guard MRCC active; IAMSAR Leeway Drift datum solver available.\n"
+                f"- **Conservation Compliance:** Verified against MPA Sanctuaries and Uniform Monsoon Fishing Ban schedules."
+            )
+            suggested = ["Compute SAR Search Datum", "Check MPA Boundary", "Verify Monsoon Ban"]
+            reply = f"{persona_badge}\n{reply}{persona_context}"
+        elif active_persona == "disaster":
+            persona_badge = "**[EMERGENCY DISASTER MANAGEMENT — INUNDATION ADVISORY]**"
+            persona_context = (
+                f"\n\n**Disaster Preparedness & Inundation Envelopes:**\n"
+                f"- **Meteorological Alert:** Sea State {observed_wave_m}m SWH, Wind {observed_wind_kmh} km/h\n"
+                f"- **Coastal Inundation Risk:** Evaluated against astronomical spring high tide and storm surge setup.\n"
+                f"- **Emergency Protocols:** WMO/IMD Port Warning Signals (1 to 11) and CAP v1.2 dispatch active."
+            )
+            suggested = ["Project Storm Surge", "Declare Port Signal Flag", "Dispatch CAP Alert"]
+            reply = f"{persona_badge}\n{reply}{persona_context}"
+        elif active_persona == "maritime":
+            persona_badge = "**[COMMERCIAL NAVIGATION & DRAFT PILOTAGE DIRECTIVE]**"
+            persona_context = (
+                f"\n\n**Channel Navigation & Under-Keel Clearance (UKC):**\n"
+                f"- **Navigational Channel:** Dredged Fairway Corridor ({location_label})\n"
+                f"- **Hydrodynamic Assessment:** Dynamic Squat calculated via Barrass formula for confined channel transit.\n"
+                f"- **Passage Planning:** Multi-leg waypoint corridor and 500m offshore energy platform buffers active."
+            )
+            suggested = ["Evaluate Dynamic UKC", "Plan Multi-Leg Passage", "Offshore 500m Safety Buffer"]
+            reply = f"{persona_badge}\n{reply}{persona_context}"
+        else: # fisher
+            persona_badge = "**[FISHER OPERATIONAL ADVISORY — CATCH & DEPARTURE]**"
+            persona_context = (
+                f"\n\n**Fisher Passage & Catch Operations:**\n"
+                f"- **Target Species:** {', '.join(localized_species[:3])}\n"
+                f"- **Diesel ROI Optimization:** Shortest vector to active pelagic thermal front with minimal fuel burn.\n"
+                f"- **Safety Threshold:** Tidal bar-crossing window verified; IMBL boundary clearance active."
+            )
+            suggested = ["Calculate Catch ROI", "Check Bar-Crossing Tide", "View IMBL Border"]
+            reply = f"{persona_badge}\n{reply}{persona_context}"
+
         if has_troll_tone:
             troll_str = ", ".join(f"'{t}'" for t in troll_tokens[:2])
             reply = (
@@ -1318,6 +1386,7 @@ class MarineChatService:
             user_context={
                 "user_id": request.user_id,
                 "query": msg,
+                "persona": active_persona,
                 "location_label": location_label,
                 "coordinates": [lat, lon],
                 "vessel_type": vessel.type,
@@ -1325,12 +1394,12 @@ class MarineChatService:
                 "max_safe_wind_kmh": vessel.max_safe_wind_kmh
             },
             agent_chain=[
-                AgentChainStep(agent="maritime_rag_slm_router", version="v6.0"),
-                AgentChainStep(agent="marine_safety_evaluator", version="v6.0", confidence_score=confidence)
+                AgentChainStep(agent="maritime_rag_slm_router", version="v7.0"),
+                AgentChainStep(agent="persona_adaptive_evaluator", version="v7.0", confidence_score=confidence)
             ],
             evidence=evidence,
             confidence=confidence,
-            explanation=f"Geospatial RAG marine reasoning for {location_label} against {vessel.type} limits."
+            explanation=f"Geospatial RAG marine reasoning for {location_label} under {active_persona.title()} persona against {vessel.type} limits."
         )
 
         spatial_target = override_spatial_target or {
@@ -1348,7 +1417,8 @@ class MarineChatService:
             provenance=provenance,
             suggested_actions=suggested,
             vessel_profile=vessel,
-            spatial_target=spatial_target
+            spatial_target=spatial_target,
+            persona=active_persona
         )
 
 marine_chat_service = MarineChatService()

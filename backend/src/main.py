@@ -4,12 +4,12 @@ Project ORCA — FastAPI Application Entrypoint
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .api.routes import analytics, chat, health
+from .api.routes import analytics, chat, health, stakeholders
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    version="6.2.0",
-    description="Agentic Marine Intelligence Platform backend microservices, PFZ analytics, and conversational advisory."
+    version="7.0.0",
+    description="Agentic Marine Intelligence Platform backend microservices, multi-stakeholder command, and conversational advisory."
 )
 
 # Configure CORS Middleware
@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(chat.router, prefix=settings.API_V1_STR)
 app.include_router(analytics.router, prefix=settings.API_V1_STR)
+app.include_router(stakeholders.router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
     import uvicorn

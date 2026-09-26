@@ -421,51 +421,152 @@ body.layout-workspace-mode #workspace-header-controls {
   opacity: 0.9;
 }
 
-/* Suggestion Chips Row (from Previous UI) */
+/* Suggestion Chips Row (Minimalist Landing Screen) */
+/* Suggestion Chips Row (Minimalist Landing Screen) */
 .landing-chips-row,
 .landing-chips-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 10px;
   width: 100%;
-  max-width: 520px;
+  max-width: 580px;
 }
 
-.landing-chip {
+.landing-chips-row button,
+.landing-chips-grid button,
+.landing-chip,
+.landing-chip-btn {
+  appearance: none;
+  -webkit-appearance: none;
   background-color: var(--bg-2);
   border: 1px solid var(--panel-border);
   border-radius: 6px;
-  padding: 7px 12px;
-  font-size: 11px;
+  padding: 7px 14px;
+  font-size: 11.5px;
   font-weight: 500;
-  font-family: var(--font-mono);
+  font-family: var(--font-family);
   color: var(--ink);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   text-align: left;
   white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  line-height: 1.3;
 }
 
-.landing-chip:hover {
+.landing-chips-row button:hover,
+.landing-chips-grid button:hover,
+.landing-chip:hover,
+.landing-chip-btn:hover {
   border-color: var(--signal);
   color: var(--signal);
+  background-color: var(--bg);
 }
 
-.landing-chip.chip-hazard {
+.landing-chips-row button.chip-hazard,
+.landing-chips-row button.hazard-chip,
+.landing-chip.chip-hazard,
+.landing-chip-btn.chip-hazard,
+.landing-chip.hazard-chip,
+.landing-chip-btn.hazard-chip {
   background-color: var(--hazard-bg);
   border-color: var(--hazard);
-  color: var(--hazard);
+  color: var(--hazard-ink);
+  font-weight: 600;
 }
 
-.landing-chip.chip-hazard:hover {
+.landing-chips-row button.chip-hazard:hover,
+.landing-chips-row button.hazard-chip:hover,
+.landing-chip.chip-hazard:hover,
+.landing-chip-btn.chip-hazard:hover,
+.landing-chip.hazard-chip:hover,
+.landing-chip-btn.hazard-chip:hover {
+  background-color: var(--hazard-bg);
+  border-color: var(--hazard);
   opacity: 0.9;
 }
 
 .chip-icon {
   flex-shrink: 0;
+  color: inherit;
+}
+
+/* ==========================================================================
+   Tactical Harbor & Waypoint Map Marker (Auto-Sizing & Dynamic Fit)
+   ========================================================================== */
+.tactical-harbor-marker-container {
+  background: transparent !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: auto !important;
+}
+
+.tactical-harbor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background-color: #0F6382;
+  color: #FFFFFF;
+  border: 1px solid #A9D1CB;
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  user-select: none;
+  white-space: nowrap;
+  width: max-content;
+  max-width: 440px;
+  transform: translate(-50%, -50%);
+  line-height: 1.2;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-theme="light"] .tactical-harbor-pill {
+  background-color: #2B6F7A;
+  color: #FFFFFF;
+  border: 1px solid #A9D1CB;
+}
+
+[data-theme="dark"] .tactical-harbor-pill {
+  background-color: #101E29;
+  color: #E9E4D6;
+  border: 1px solid #7FC4D2;
+}
+
+.tactical-harbor-pill:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.tactical-harbor-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: #A9D1CB;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .tactical-harbor-dot {
+  background-color: #7FC4D2;
+}
+
+[data-theme="light"] .tactical-harbor-dot {
+  background-color: #A9D1CB;
+}
+
+.tactical-harbor-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  letter-spacing: 0.03em;
   color: inherit;
 }
 
@@ -1668,4 +1769,155 @@ body.layout-workspace-mode #workspace-header-controls {
 
   body.tab-copilot .copilot-panel { display: flex !important; }
   body.tab-copilot .map-viewport, body.tab-copilot .tactical-sidebar { display: none !important; }
+}
+
+/* ==========================================================================
+   Stakeholder Persona Selector & Command Tools (v7.0 Palette A)
+   ========================================================================== */
+.persona-switch-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-2);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+  height: 32px;
+}
+
+.persona-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-secondary);
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.persona-btn:hover {
+  color: var(--ink);
+  background-color: var(--bg);
+}
+
+.persona-btn.active {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-weight: 600;
+  border-color: var(--panel-border);
+}
+
+.persona-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--ink-muted);
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.persona-btn.active .persona-dot {
+  background-color: var(--signal);
+}
+
+.landing-persona-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.landing-persona-tag {
+  font-family: var(--font-family);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+.landing-persona-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.landing-persona-pill {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background-color: var(--bg-2);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.landing-persona-pill:hover {
+  color: var(--ink);
+  border-color: var(--signal);
+}
+
+.landing-persona-pill.active {
+  background-color: var(--signal);
+  color: var(--signal-ink);
+  font-weight: 600;
+  border-color: var(--signal);
+}
+
+.stakeholder-subpanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.stakeholder-result-box {
+  background-color: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.stakeholder-result-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--signal);
+  margin-bottom: 4px;
+}
+
+.stakeholder-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0;
+  font-size: 11px;
+}
+
+.stakeholder-badge-danger {
+  color: #F0625E;
+  font-weight: 700;
+}
+
+.stakeholder-badge-clear {
+  color: var(--signal);
+  font-weight: 700;
+}
+
+.stakeholder-badge-caution {
+  color: var(--hazard);
+  font-weight: 700;
 }

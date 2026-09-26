@@ -26,6 +26,7 @@ class ChatRequest(BaseModel):
     coordinates: Optional[List[float]] = Field(None, min_length=2, max_length=2, description="[latitude, longitude]")
     vessel_profile: Optional[VesselProfile] = Field(default_factory=VesselProfile)
     language: str = Field("en", description="ISO 639-1 language code (e.g. en, ta, ml, te, hi)")
+    persona: Optional[str] = Field("fisher", description="Active stakeholder persona (fisher, researcher, authority, disaster, maritime)")
 
 class ChatResponse(BaseModel):
     reply: str = Field(..., description="Conversational advisory reply")
@@ -37,4 +38,5 @@ class ChatResponse(BaseModel):
     suggested_actions: List[str] = Field(default_factory=list)
     vessel_profile: Optional[VesselProfile] = Field(None, description="Resolved vessel profile parameters for UI sync")
     spatial_target: Optional[Dict[str, Any]] = Field(None, description="Spatial coordinates and bounds for dynamic map reveal")
+    persona: Optional[str] = Field("fisher", description="Active stakeholder persona used for inference")
 

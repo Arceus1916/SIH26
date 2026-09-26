@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Project ORCA v6.2 — Ocean Intelligence & Tactical Copilot</title>
+  <title>Project ORCA v7.0 — Multi-Stakeholder Ocean Command & Intelligence</title>
   <link rel="icon" type="image/png" sizes="128x128" href="./favicon.png">
   <link rel="shortcut icon" href="./favicon.ico">
   <link rel="apple-touch-icon" href="./favicon.png">
@@ -28,10 +28,29 @@
       <div class="brand-text-col">
         <div class="brand-title-row">
           <span class="hud-brand-title">ORCA</span>
-          <span class="brand-version-pill">v6.2</span>
+          <span class="brand-version-pill">v7.0</span>
         </div>
-        <span class="hud-brand-sub">Marine data system</span>
+        <span class="hud-brand-sub">Marine command system</span>
       </div>
+    </div>
+
+    <!-- Stakeholder Persona Switcher (Adaptive Marine Command) -->
+    <div class="persona-switch-group" id="persona-switch-group" role="radiogroup" aria-label="Stakeholder Persona">
+      <button class="persona-btn active" data-persona="fisher" id="btn-persona-fisher" title="Fisher: Catch Hotspots, ROI & Border Safety">
+        <span class="persona-dot"></span>Fisher
+      </button>
+      <button class="persona-btn" data-persona="researcher" id="btn-persona-researcher" title="Researcher: Ocean Transect, MHW & NetCDF">
+        <span class="persona-dot"></span>Researcher
+      </button>
+      <button class="persona-btn" data-persona="authority" id="btn-persona-authority" title="Authority: SAR Leeway, MPA & Monsoon Ban">
+        <span class="persona-dot"></span>Authority
+      </button>
+      <button class="persona-btn" data-persona="disaster" id="btn-persona-disaster" title="Disaster: Storm Surge, Inundation & Signals 1-11">
+        <span class="persona-dot"></span>Disaster
+      </button>
+      <button class="persona-btn" data-persona="maritime" id="btn-persona-maritime" title="Maritime: Dynamic UKC, Fairways & Offshore Zones">
+        <span class="persona-dot"></span>Maritime
+      </button>
     </div>
 
     <!-- Workspace View Controls (Visible when in Workspace Mode) -->
@@ -96,6 +115,18 @@
         Ocean Remote-Sensing & Tactical Marine Intelligence Copilot
       </p>
 
+      <!-- Stakeholder Persona Role Selector (Landing) -->
+      <div class="landing-persona-strip" id="landing-persona-strip">
+        <span class="landing-persona-tag">SELECT OPERATIONAL ROLE:</span>
+        <div class="landing-persona-btn-group" role="tablist">
+          <button class="landing-persona-pill active" data-persona="fisher" id="landing-pill-fisher">Fisher</button>
+          <button class="landing-persona-pill" data-persona="researcher" id="landing-pill-researcher">Researcher</button>
+          <button class="landing-persona-pill" data-persona="authority" id="landing-pill-authority">Authority</button>
+          <button class="landing-persona-pill" data-persona="disaster" id="landing-pill-disaster">Disaster</button>
+          <button class="landing-persona-pill" data-persona="maritime" id="landing-pill-maritime">Maritime</button>
+        </div>
+      </div>
+
       <!-- Search Capsule Input -->
       <div class="landing-search-capsule" id="landing-search-capsule">
         <input type="text" id="landing-chat-input" class="landing-capsule-input"
@@ -109,8 +140,8 @@
         </button>
       </div>
 
-      <!-- Quick Query Buttons from Previous UI -->
-      <div class="landing-chips-row">
+      <!-- Quick Query Buttons (Dynamically adaptable by Persona) -->
+      <div class="landing-chips-row" id="landing-chips-row">
         <button class="landing-chip" onclick="handleLandingChip('Where can I catch Bangda near Mumbai Sassoon Docks?')">
           <span>Bangda in Mumbai</span>
         </button>
@@ -402,6 +433,22 @@
               <span style="color: var(--color-tide); font-weight: 700;">Thermal Wind Streamlines</span>
               <input type="checkbox" id="chk-wind" />
             </label>
+            <label class="layer-toggle-item">
+              <span>IMBL Border Buffers (3nm/1nm)</span>
+              <input type="checkbox" id="chk-imbl" />
+            </label>
+            <label class="layer-toggle-item">
+              <span>Marine Protected Sanctuaries (MPAs)</span>
+              <input type="checkbox" id="chk-mpa" />
+            </label>
+            <label class="layer-toggle-item">
+              <span>Nav Channels & 500m Platforms</span>
+              <input type="checkbox" id="chk-nav" />
+            </label>
+            <label class="layer-toggle-item">
+              <span>Cyclone Danger Wind Radii</span>
+              <input type="checkbox" id="chk-cyclone" />
+            </label>
           </div>
           <div class="form-group" style="margin-top: 10px;">
             <label class="form-label">Thermal Front Sensitivity</label>
@@ -413,6 +460,101 @@
           </div>
           <button id="btn-refresh-pfz" class="btn-action-primary">Recompute Local Layers</button>
           <button id="btn-show-provenance" class="btn-action-outline">Provenance Tree Inspector</button>
+        </div>
+
+        <!-- Stakeholder Specialized Operations Panel -->
+        <div class="tactical-panel" id="stakeholder-tools-panel">
+          <div class="panel-header">
+            <span id="stakeholder-panel-title">Stakeholder Operations: Fisher</span>
+          </div>
+
+          <!-- Section 1: Fisher Mode Tools -->
+          <div class="stakeholder-subpanel" id="tools-fisher">
+            <div style="font-size: 11px; color: var(--theme-text-secondary); margin-bottom: 8px;">
+              Fuel burn vs. expected catch ROI index and bar-crossing tide clearance window.
+            </div>
+            <div class="form-group">
+              <label class="form-label">Engine Horsepower (HP)</label>
+              <input type="number" id="fisher-hp" class="form-input" value="65" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Diesel Fuel Rate (INR/L)</label>
+              <input type="number" id="fisher-fuel-cost" class="form-input" value="94" />
+            </div>
+            <button id="btn-calc-roi" class="btn-action-primary" style="margin-top: 6px;">Calculate Passage Catch ROI</button>
+            <button id="btn-check-bar-window" class="btn-action-outline" style="margin-top: 6px;">Check Harbor Bar Tide Window</button>
+            <button id="btn-check-border" class="btn-action-outline" style="margin-top: 6px;">Check IMBL Border Clearance</button>
+            <div id="fisher-roi-result" class="stakeholder-result-box" style="display: none;"></div>
+          </div>
+
+          <!-- Section 2: Researcher Mode Tools -->
+          <div class="stakeholder-subpanel" id="tools-researcher" style="display: none;">
+            <div style="font-size: 11px; color: var(--theme-text-secondary); margin-bottom: 8px;">
+              Multi-parameter spatial transect slicing (Depth, SST, Chl-a) and NetCDF export.
+            </div>
+            <button id="btn-slice-transect" class="btn-action-primary">Slice Offshore Transect Profile</button>
+            <button id="btn-check-mhw" class="btn-action-outline" style="margin-top: 6px;">Evaluate Marine Heatwave (MHW)</button>
+            <button id="btn-export-netcdf" class="btn-action-outline" style="margin-top: 6px;">Export NetCDF-4 / GeoTIFF</button>
+            <div id="researcher-result-box" class="stakeholder-result-box" style="display: none;"></div>
+          </div>
+
+          <!-- Section 3: Authority Mode Tools -->
+          <div class="stakeholder-subpanel" id="tools-authority" style="display: none;">
+            <div style="font-size: 11px; color: var(--theme-text-secondary); margin-bottom: 8px;">
+              IAMSAR leeway drift datum projection, MPA intrusion alerts, and monsoon ban checks.
+            </div>
+            <div class="form-group">
+              <label class="form-label">Missing Target Craft</label>
+              <select id="sar-target-type" class="form-select">
+                <option value="artisanal_skiff_unanchored" selected>Artisanal Skiff (Unanchored)</option>
+                <option value="life_raft_without_drogue">Life Raft (No Drogue)</option>
+                <option value="mechanized_trawler_disabled">Disabled Trawler</option>
+                <option value="person_in_water">Person in Water (PIW)</option>
+              </select>
+            </div>
+            <button id="btn-calc-sar" class="btn-action-primary">Compute SAR Search Datum</button>
+            <button id="btn-check-mpa" class="btn-action-outline" style="margin-top: 6px;">Scan MPA Sanctuary Perimeter</button>
+            <button id="btn-check-monsoon" class="btn-action-outline" style="margin-top: 6px;">Verify Uniform Monsoon Ban</button>
+            <div id="authority-result-box" class="stakeholder-result-box" style="display: none;"></div>
+          </div>
+
+          <!-- Section 4: Disaster Mode Tools -->
+          <div class="stakeholder-subpanel" id="tools-disaster" style="display: none;">
+            <div style="font-size: 11px; color: var(--theme-text-secondary); margin-bottom: 8px;">
+              Storm surge water rise modeling, Port Warning Signals 1-11, and CAP dispatch.
+            </div>
+            <div class="form-group">
+              <label class="form-label">Central Barometric Pressure (hPa)</label>
+              <input type="number" id="surge-pressure" class="form-input" value="970" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Sustained Wind (knots)</label>
+              <input type="number" id="surge-wind" class="form-input" value="65" />
+            </div>
+            <button id="btn-calc-surge" class="btn-action-primary">Project Storm Surge & Inundation</button>
+            <button id="btn-view-signals" class="btn-action-outline" style="margin-top: 6px;">Port Warning Signals (1 to 11)</button>
+            <button id="btn-view-cap" class="btn-action-outline" style="margin-top: 6px;">Generate CAP v1.2 XML Alert</button>
+            <div id="disaster-result-box" class="stakeholder-result-box" style="display: none;"></div>
+          </div>
+
+          <!-- Section 5: Maritime Mode Tools -->
+          <div class="stakeholder-subpanel" id="tools-maritime" style="display: none;">
+            <div style="font-size: 11px; color: var(--theme-text-secondary); margin-bottom: 8px;">
+              Under-Keel Clearance (UKC) dynamic squat solver and fairway channel windows.
+            </div>
+            <div class="form-group">
+              <label class="form-label">Static Draft (m)</label>
+              <input type="number" id="ukc-draft" class="form-input" value="10.8" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Transit Speed (knots)</label>
+              <input type="number" id="ukc-speed" class="form-input" value="8.5" step="0.5" />
+            </div>
+            <button id="btn-calc-ukc" class="btn-action-primary">Evaluate Dynamic UKC</button>
+            <button id="btn-plan-fairway" class="btn-action-outline" style="margin-top: 6px;">Show Channel Fairway Waypoints</button>
+            <button id="btn-toggle-platforms" class="btn-action-outline" style="margin-top: 6px;">Toggle Offshore 500m Safety Rings</button>
+            <div id="maritime-result-box" class="stakeholder-result-box" style="display: none;"></div>
+          </div>
         </div>
 
         <!-- Vessel Limits Settings in Drawer -->
@@ -515,6 +657,19 @@
         <button class="modal-close" id="modal-close-btn">&times;</button>
       </div>
       <div id="provenance-details" style="font-size: 12px; line-height: 1.6;">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Stakeholder Operations & Dossier Modal -->
+  <div class="modal-overlay" id="stakeholder-dossier-modal">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="stakeholder-modal-title">Stakeholder Operational Dossier</h3>
+        <button class="modal-close" id="stakeholder-modal-close-btn">&times;</button>
+      </div>
+      <div id="stakeholder-modal-body" style="font-size: 12px; line-height: 1.6; max-height: 480px; overflow-y: auto;">
         <!-- Filled dynamically -->
       </div>
     </div>

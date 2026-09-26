@@ -1,15 +1,43 @@
-# Project ORCA — Ocean Intelligence & Tactical Marine Copilot (AMIP v6.2)
+# Project ORCA — Ocean Intelligence & Tactical Marine Copilot (AMIP v7.0 - Tethys Sentinel)
 
-[![Version](https://img.shields.io/badge/Version-v6.2.0-0F6382)](#-key-features--capabilities-v62)
-[![CI Status](https://img.shields.io/badge/CI%20Pipeline-Passing%20(51%2F51%20Tests)-1E8449)](#-testing--validation)
+[![Version](https://img.shields.io/badge/Version-v7.0.0-0F6382)](#-key-features--capabilities-v70)
+[![CI Status](https://img.shields.io/badge/CI%20Pipeline-Passing%20(58%2F58%20Tests)-1E8449)](#-testing--validation)
 [![Design System](https://img.shields.io/badge/Palette%20A-100%25%20Compliant-2F4B9B)](#-tactical-uiux-design-system)
-[![Multi-Lingual SLM](https://img.shields.io/badge/SLM-Multi--Lingual%20(15+%20Languages)-0D2B45)](#2-global-multi-lingual-maritime-slm)
+[![Adaptive Personas](https://img.shields.io/badge/Stakeholder%20Personas-5%20Adaptive%20Roles-0D2B45)](#-multi-stakeholder-intelligence-engine-v70)
 [![Strict Provenance](https://img.shields.io/badge/Provenance-Zero%20Hallucination%20Enforced-A9D1CB)](file:///d:/coding/Github/SIH26/docs/provenance_guidelines.md)
 [![License](https://img.shields.io/badge/License-Proprietary%20%2F%20Open%20Marine-D9CDB8)](#)
 
-**Project ORCA** (Agentic Marine Intelligence Platform — AMIP) is an evidence-first, high-density marine command center and ocean tactical copilot engineered for coastal fishers, mechanized vessel fleets, oceanographers, and maritime search-and-rescue operators worldwide.
+**Project ORCA** (Agentic Marine Intelligence Platform — AMIP) is an evidence-first, high-density marine command center and ocean tactical copilot engineered for coastal fishers, mechanized vessel fleets, oceanographers, disaster agencies, and maritime search-and-rescue operators worldwide.
 
-The platform autonomously harmonizes multi-mission satellite earth observation rasters (**Sentinel-3 SLSTR/OLCI**, **MODIS Aqua**) with real-time numerical ocean forecasts (**INCOIS OSF**, **GEBCO Bathymetry**, **NOAA GFS**) to deliver real-time **Potential Fishing Zone (PFZ)** detection, Great-Circle navigational route planning, dynamic ship seaworthiness risk matrices, and multi-lingual conversational marine advisory reasoning across 50 international and domestic ports.
+The platform autonomously harmonizes multi-mission satellite earth observation rasters (**Sentinel-3 SLSTR/OLCI**, **MODIS Aqua**) with real-time numerical ocean forecasts (**INCOIS OSF**, **GEBCO Bathymetry**, **NOAA GFS**) to deliver real-time **Potential Fishing Zone (PFZ)** detection, hydrographic transect slicing, dynamic Under-Keel Clearance (UKC) squat solving, IAMSAR search-and-rescue datum projection, storm surge inundation modeling, and multi-lingual conversational marine advisory reasoning across 50 international and domestic ports.
+
+---
+
+## 👥 Multi-Stakeholder Intelligence Engine (v7.0)
+
+Project ORCA v7.0 introduces the **Adaptive Stakeholder Persona Engine**, reconfiguring the entire tactical command center (map layers, specialized drawer toolkits, telemetry density, and SLM conversational reasoning) across 5 core maritime domains:
+
+1. **Fishermen (`fisher`)**:
+   - Catch ROI Calculator: Analyzes engine horsepower, diesel fuel burn, and nautical transit distance against CMFRI pelagic landing prices.
+   - Harbor Bar-Crossing Tide Window: Evaluates astronomical tidal heights for safe shoal clearance.
+   - IMBL Border Compliance: Monitors real-time distance to sovereign maritime boundary lines with 3.0 nm and 1.0 nm hazard warnings.
+2. **Marine Researchers (`researcher`)**:
+   - Hydrographic Transect Slicer: Interpolates multi-parameter vertical profiles (Depth, SST, Chlorophyll-a) across arbitrary offshore polylines.
+   - Upwelling & Thermocline Gradient Detection: Detects Ekman pumping and thermal front slopes ($^\circ\text{C/km}$).
+   - Marine Heatwave (MHW) & Coral Bleaching Anomaly: Evaluates Degree Heating Weeks (DHW) against NOAA CRW baselines.
+   - Scientific Data Export: Exports CF-1.8 compliant NetCDF-4 / GeoTIFF metadata packages.
+3. **Coastal Authorities (`authority`)**:
+   - IAMSAR Leeway Drift Solver: Combines Total Water Currents and 10m wind leeway to project search datum positions and expanding square search patterns.
+   - Marine Protected Area (MPA) Sanctuary Audits: Enforces no-trawling boundaries around sensitive breeding grounds (e.g. Gahirmatha Olive Ridley Sanctuary, Gulf of Mannar).
+   - Uniform 61-Day Monsoon Ban Verification: Validates temporal fishing prohibitions and fine schedules across East and West coasts.
+4. **Disaster Management Agencies (`disaster`)**:
+   - Cyclonic Storm Surge Modeling: Evaluates inverted barometer effects and shallow-water wind setups to project water rise and inland inundation extent.
+   - WMO / IMD Port Warning Signals 1–11: Declares official cautionary, warning, danger, and great danger signals with operational flag specifications.
+   - OASIS CAP v1.2 Dispatch: Generates valid Common Alerting Protocol XML emergency bulletins for NDMA integration.
+5. **Commercial Maritime Operators (`maritime`)**:
+   - Dynamic Under-Keel Clearance (UKC): Solves dynamic vessel squat using the Dr. C.B. Barrass hydrographic formula in confined and open fairways.
+   - Tidal High-Water Transit Windows: Computes optimal passage times for deep-draft cargo ships.
+   - Offshore Platform 500m Safety Rings: Enforces UNCLOS Art. 60 exclusion zones around energy facilities.
 
 ---
 
@@ -208,8 +236,15 @@ node server.js
 ```bash
 py -m pytest backend/tests -v
 ```
-All **51 test suites** pass with 100% green coverage:
-- Japanese & Chinese multi-lingual parsing & non-stale language switching
+All **58 test suites** pass with 100% green coverage:
+- Stakeholder persona catalog (`/v1/personas`)
+- Hydrographic transect slicing & thermocline slope (`/v1/hydrography/transect`)
+- Dynamic Under-Keel Clearance & Barrass vessel squat (`/v1/navigation/ukc`)
+- IAMSAR leeway drift datum projection (`/v1/emergency/sar-datum`)
+- Storm surge water rise, WMO signals 1-11, and CAP v1.2 XML dispatch (`/v1/emergency/surge-inundation`)
+- Sovereign IMBL proximity, MPA sanctuary compliance, and monsoon bans (`/v1/geofence/evaluate`)
+- Adaptive persona-conditioned SLM marine advisory reasoning
+- Japanese, Chinese, European & Indic multi-lingual parsing & non-stale language switching
 - Global port seaward water clamping (Singapore, Shanghai, New York, Tokyo Bay, Rotterdam, San Francisco)
 - 8 Core Marine Question answers & PFZ polygon topology closure
 - Satellite raster ingest pipelines & cryptographic provenance verification
@@ -225,6 +260,14 @@ Palette & Design System validation passed: 100% compliant with Palette A.
 ---
 
 ## 📡 API Reference Summary
+
+### Stakeholder Endpoints (v7.0)
+- `GET /v1/personas`: Returns configuration, default layers, and toolsets for all 5 stakeholder personas.
+- `POST /v1/hydrography/transect`: Slices multi-parameter depth, SST, and chlorophyll-a profiles across coordinates.
+- `POST /v1/navigation/ukc`: Evaluates vessel dynamic squat, astronomical tidal height, and Under-Keel Clearance.
+- `POST /v1/emergency/sar-datum`: Computes IAMSAR leeway drift datum position and expanding square search waypoints.
+- `POST /v1/emergency/surge-inundation`: Models storm surge water level rise, assigns WMO port warning signals 1-11, and produces CAP v1.2 XML.
+- `POST /v1/geofence/evaluate`: Evaluates vessel coordinates against IMBL borders, MPAs, 500m safety rings, and 61-day monsoon bans.
 
 ### `POST /v1/chat`
 Process multi-lingual conversational marine queries with dynamic SLM routing and vessel safety evaluations.
