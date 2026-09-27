@@ -1102,6 +1102,22 @@ class RegionalLanguageService:
                 f"{vessel_block}"
             )
 
+        # 5B. NATIVE BENGALI
+        elif script == "bengali" or lang == "bn":
+            vessel_block = (
+                f"\n\n**নৌযান নিরাপত্তা ও সমুদ্রযাত্রার যোগ্যতা (Vessel Matrix):**\n"
+                f"- **ছাড়পত্র স্ট্যাটাস (Status):** **{risk_badge}**\n"
+                f"- **নিরাপত্তা পরামর্শ (Advisory):** {risk_summary}"
+            ) if include_vessel_matrix else ""
+            return (
+                f"**সামুদ্রিক আবহাওয়া ও মৎস্য নিরাপত্তা প্রতিবেদন ({loc_str}):**\n\n"
+                f"- **ঢেউয়ের উচ্চতা (Wave Height):** **{wave} m**\n"
+                f"- **বাতাসের গতি (Wind Speed):** **{wind} km/h**\n"
+                f"- **সমুদ্রপৃষ্ঠের তাপমাত্রা (SST):** **{sst} °C**\n"
+                f"- **সম্ভাব্য মৎস্য অঞ্চল (Target Species / PFZ):** {species_str}"
+                f"{vessel_block}"
+            )
+
         # 6. JAPANESE (Tokyo Bay, Yokohama, Osaka, Kobe, Nagoya)
         elif lang == "ja" or script == "japanese":
             bearing_block = f"\n- **航行針路と距離 (Nav Bearing):** {bearing_info}" if bearing_info else ""

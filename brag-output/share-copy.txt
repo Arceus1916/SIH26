@@ -1,0 +1,3 @@
+From traditional skiffs to deep-sea research fleets: Project ORCA v7.0 fuses Sentinel-3 SLSTR satellite telemetry, bathymetric modeling, and INCOIS ocean state forecasts into a unified tactical command center for all 5 maritime stakeholders. 
+
+Deploy precision marine intelligence across 50+ ports: https://github.com/Arceus1916/SIH26
